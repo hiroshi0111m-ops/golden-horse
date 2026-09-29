@@ -1,0 +1,48 @@
+{
+  "checkpoint": "V147_RECOVERY_CHECKPOINT_01",
+  "created_jst": "2026-09-30",
+  "baseline": {
+    "name": "GoldenHorse_Friend_V147_20260930-0556JST",
+    "library_archive": "GoldenHorse_Friend_V147_20260930-0556JST.zip",
+    "zip_size_bytes": 16481195,
+    "zip_sha256": "10e2a04f9d281c77e9ecbad212fa970a2879b57db6e0a064d2a8d008a016aca5",
+    "index_sha256": "872d8a895377fdd7b958150d00077d48d715b49af994f2f51d8f1b4b2d81b272",
+    "rollback_version": "V146",
+    "rollback_sha256": "317a7449286d4dceb8ced533f296f218e4ec9aea8bd6084c77d045497649d2eb"
+  },
+  "verification": {
+    "zip_integrity": "PASS",
+    "guest_distribution_contract": "11/11 PASS",
+    "gacha_rarity_behavior": "PASS",
+    "gacha_rarity_integrity": "PASS",
+    "guest_gacha_copy_behavior": "PASS",
+    "guest_gacha_counter_behavior": "PASS",
+    "v145_venue_contract": "PASS",
+    "v146_gacha_integration": "PASS",
+    "inline_scripts": 181,
+    "javascript_syntax_failures": 0,
+    "browser_execution": "PENDING_ENVIRONMENT",
+    "browser_failure_reason": "Playwright dependency unavailable in current runtime; not classified as application failure"
+  },
+  "invariants": {
+    "horses": 7,
+    "bet_seconds": 120,
+    "bet_skip": true,
+    "fixed_odds": true,
+    "photo_finish": true,
+    "fanfare_complete_then_silence_ms": 700,
+    "existing_security_preserved": true
+  },
+  "safety": {
+    "production_modified": false,
+    "production_db_modified": false,
+    "baseline_overwritten": false
+  },
+  "next": [
+    "Preserve V147 as rollback baseline",
+    "Create next working version without overwriting V147",
+    "Deploy only to isolated test URL",
+    "Perform smartphone/browser verification",
+    "Save each verified step to GitHub checkpoint"
+  ]
+}
