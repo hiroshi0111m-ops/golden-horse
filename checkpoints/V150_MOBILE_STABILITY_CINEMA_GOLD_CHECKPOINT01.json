@@ -1,0 +1,50 @@
+{
+  "checkpoint": "V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01",
+  "created_jst": "2026-09-30",
+  "baseline": {
+    "file": "GoldenHorse_V149_CINEMA_GOLD_CHECKPOINT01_index.html",
+    "sha256": "a5d2233c16819299256de90dbc160b8b28db8a507436feb50a7a7174ebc87478",
+    "size_bytes": 2025779
+  },
+  "output": {
+    "file": "GoldenHorse_V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01_index.html",
+    "sha256": "5c6ba2099b92825f8f7f3e3d7cb2d91417ebbe13de389ccc329853b9ba211763",
+    "size_bytes": 2030013
+  },
+  "changes": [
+    "FIX7 observer narrowing ported to remove HOME self-trigger loop",
+    "FIX9 lightweight guest/demo race entry ported; member path untouched",
+    "V149 CINEMA GOLD visual layer preserved"
+  ],
+  "syntax": {
+    "inline_scripts_found": 185,
+    "node_checked": 185,
+    "skipped": 0,
+    "failures": []
+  },
+  "static_invariant_checks": {
+    "seven_runner_loop": true,
+    "bet_120_literal": true,
+    "skip_to_10": true,
+    "photo_finish": true,
+    "result_hold_7": true,
+    "silence_700": true,
+    "minimap": true,
+    "commentary": true,
+    "multi_bet_types": true,
+    "stakes": true,
+    "fix7_broad_observer_removed": true,
+    "fix7_narrow_nodes_present": true,
+    "fix9_guest_only": true,
+    "v149_visual_preserved": true,
+    "v150_marker": true
+  },
+  "verification_scope": {
+    "static_and_js_syntax": "PASS",
+    "browser_runtime": "PENDING_ISOLATED_DEPLOY",
+    "smartphone_real_device": "PENDING"
+  },
+  "production_modified": false,
+  "supabase_modified": false,
+  "rollback": "V149_CINEMA_GOLD_CHECKPOINT01"
+}
