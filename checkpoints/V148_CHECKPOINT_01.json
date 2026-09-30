@@ -13,8 +13,8 @@
   },
   "v148": {
     "index_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
-    "zip_sha256": "34003703be60c597d085f709e0cf226c27613b87af6cc485a2e7f9b9838c3a77",
-    "zip_size_bytes": 17184072,
+    "zip_sha256": "efbe0a77f2a53a9920af828228fea64bffcf2c49ebd940520de20a3e28d657fb",
+    "zip_size_bytes": 17184233,
     "changes": [
       "source style id gh-v116-cinema-audio -> gh-v116-cinema-audio-style",
       "source script id gh-v116-cinema-audio -> gh-v116-cinema-audio-script",
@@ -64,7 +64,14 @@
     "full_source_reason": "Connector text-read normalization prevented byte-exact 1.8 MB source upload; incomplete upload was deleted.",
     "v147_library_baseline": true,
     "drive": "BLOCKED_403",
-    "production": "UNCHANGED"
+    "production": "UNCHANGED",
+    "final_library_zip": {
+      "path": "/ゴールデンホースゲーム本体/GOLDEN_HORSE_V148_CHECKPOINT_01_FINAL/GoldenHorse_Friend_V148_20260930_CHECKPOINT01_FINAL.zip",
+      "library_file_id": "libfile_0339b429851881918a054d63176a669a",
+      "file_id": "file_0000000043248209982da330ec54a978",
+      "saved": true
+    },
+    "github_checkpoint_readback": true
   },
   "current_public_test": {
     "url": "https://golden-horse-integrated56-test.netlify.app",
