@@ -1,0 +1,1000 @@
+ }
+ const margin1=raceState.margins[0]||'判定';
+ const margin2=raceState.margins[1]||'判定';
+ if(!await raceSpeak(`上位の着差です。1着と2着の差は${margin1}。2着と3着の差は${margin2}です。`,epoch,{cancel:false}))return;
+ if(!await racePause(250,epoch))return;
+ if(settled.wins){
+  if(!await raceSpeak(`マイベットは${settled.wins}件的中。払戻は合計${settled.total.toLocaleString('ja-JP')}ゴールドです。払戻を残高へ反映しました。`,epoch,{cancel:false}))return;
+ }else{
+  if(!await raceSpeak('今回のマイベットは的中なしです。次のレースで改めてお楽しみください。',epoch,{cancel:false}))return;
+ }
+ if(!await racePause(250,epoch))return;
+ if(!await raceSpeak(`以上をもちまして、第${raceNo}レースの結果発表を終了します。結果画面をこのあと7秒間表示してから、次の投票画面へ戻ります。`,epoch,{cancel:false}))return;
+ if(epoch!==raceEpoch||!running)return;
+ holdResult(7);
+}
+const PHASES=[
+ {key:'gate',d:1600,p:'各馬ゲートへ',dur:2500},
+ {key:'gate',d:1600,p:'ゲートイン',dur:2600},
+ {key:'fan',d:1600,p:'FANFARE',dur:5200,fan:true},
+ {key:'start',d:1500,p:'スタート',dur:3000,target:'start'},
+ {key:'first',d:1200,p:'第1コーナー',dur:3000,target:'first'},
+ {key:'back',d:850,p:'向こう正面',dur:3000,target:'back'},
+ {key:'corner',d:500,p:'最終コーナー',dur:3000,target:'corner'},
+ {key:'sprint',d:400,p:'最終直線',dur:3000,target:'sprint',sprint:true},
+ {key:'final',d:200,p:'残り200',dur:3100,target:'final',hit:true},
+ {key:'goal',d:0,p:'GOAL',dur:2600,target:'goal',hit:true}
+];
+function venueArt(i){
+ const cfg=[
+  {key:'himeji',name:'HIMEJI / CASTLE NIGHT',sky1:'#03101f',sky2:'#102944',accent:'#ffe3a0'},
+  {key:'osaka',name:'大阪ナイト競馬 / GRAND RACECOURSE',sky1:'#040713',sky2:'#142746',accent:'#ffd96b'},
+  {key:'tokyo',name:'TOKYO / FUTURE SKYLINE',sky1:'#020916',sky2:'#0a2746',accent:'#6ee8ff'},
+  {key:'kyoto',name:'KYOTO / GION NIGHT',sky1:'#100911',sky2:'#26203b',accent:'#ffca76'},
+  {key:'kobe',name:'KOBE / HARBOR LIGHTS',sky1:'#020b17',sky2:'#082d4f',accent:'#78e8ff'},
+  {key:'sapporo',name:'SAPPORO / SNOW DOME',sky1:'#15324b',sky2:'#8ab6d1',accent:'#f6fbff'},
+  {key:'fukuoka',name:'FUKUOKA / BAY NIGHT',sky1:'#031020',sky2:'#0a3150',accent:'#8ceaff'},
+  {key:'okinawa',name:'OKINAWA / SUNSET TRACK',sky1:'#f17454',sky2:'#4b517e',accent:'#ffe4a1'},
+  {key:'nagoya',name:'NAGOYA / GOLD CASTLE',sky1:'#05111e',sky2:'#163047',accent:'#ffe29a'},
+  {key:'yokohama',name:'YOKOHAMA / MINATO MIRAI',sky1:'#031020',sky2:'#123453',accent:'#72e8ff'}
+ ][i%10];
+ const windows=(x,y,cols,rows,dx,dy,color='#8de8ff')=>{let o='';for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if((r+c*3)%4!==0)o+=`<rect x="${x+c*dx}" y="${y+r*dy}" width="3" height="5" rx="1" fill="${color}" opacity="${.28+((r+c)%3)*.13}"/>`;return o};
+ const building=(x,y,w,h,c='#10253a')=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${c}"/><path d="M${x} ${y}h${w}" stroke="#ffffff18"/>${windows(x+9,y+16,Math.max(2,Math.floor(w/24)),Math.max(3,Math.floor(h/28)),18,21)}`;
+ let landmark='';
+ if(cfg.key==='himeji'||cfg.key==='nagoya'){
+  const roof=cfg.key==='nagoya'?'#315c3f':'#d8e0e6';
+  landmark=`<g transform="translate(540 116)" filter="url(#glow)"><rect x="-120" y="92" width="240" height="112" rx="4" fill="#dce3e5"/><path d="M-145 98L0 15L145 98Z" fill="${roof}"/><rect x="-72" y="52" width="144" height="70" fill="#eef3f1"/><path d="M-96 60L0 -5L96 60Z" fill="${roof}"/><rect x="-36" y="16" width="72" height="48" fill="#f4f7f3"/><path d="M-52 22L0 -28L52 22Z" fill="${roof}"/><g fill="#17222d" opacity=".72"><rect x="-82" y="118" width="14" height="36"/><rect x="-38" y="118" width="14" height="36"/><rect x="10" y="118" width="14" height="36"/><rect x="56" y="118" width="14" height="36"/></g></g>`;
+ }
+ if(cfg.key==='tokyo'){
+  landmark=`<g opacity=".98">${building(415,92,70,220)}${building(500,42,112,270,'#132c46')}${building(627,104,78,208)}${building(722,66,126,246,'#0d2238')}<path d="M563 42V8" stroke="#78eaff" stroke-width="3"/><circle cx="563" cy="7" r="5" fill="#7ef3ff" filter="url(#glow)"/></g>`;
+ }
+ if(cfg.key==='osaka'){
+  landmark=`<g filter="url(#glow)">
+  <path d="M55 318V155Q55 120 90 120H290Q325 120 325 155V318" fill="#081522" stroke="#b99549" stroke-width="4"/><path d="M78 142H302" stroke="#ffe29a" stroke-width="4"/>
+  <g fill="#f4d27a" opacity=".9">${Array.from({length:10},(_,k)=>`<rect x="${92+k*19}" y="166" width="10" height="6" rx="2"/>`).join('')}</g>
+  <rect x="365" y="78" width="285" height="150" rx="12" fill="#02070d" stroke="#d9b45f" stroke-width="5"/><rect x="381" y="94" width="253" height="118" rx="7" fill="#071a2c" stroke="#62dcff" opacity=".96"/>
+  <path d="M399 190Q492 116 616 184" fill="none" stroke="#5bdcff" stroke-width="3" opacity=".55"/><ellipse cx="506" cy="165" rx="84" ry="27" fill="none" stroke="#e5bd5b" stroke-width="4"/><text x="506" y="135" text-anchor="middle" fill="#ffe7a0" font-size="15" font-weight="900" letter-spacing="3">GOLDEN HORSE</text><text x="506" y="174" text-anchor="middle" fill="#fff" font-size="24" font-weight="1000">LIVE RACE</text>
+  <path d="M650 318L695 108L740 318Z" fill="#bfcbd4" opacity=".9"/><path d="M695 108V318" stroke="#ffe9ae" stroke-width="7"/><circle cx="695" cy="105" r="9" fill="#ffd65a"/>
+  <path d="M760 318V174Q760 146 788 146H938Q966 146 966 174V318" fill="#0a1724" stroke="#688aa2" stroke-width="3"/><path d="M782 164H944" stroke="#f0d486" stroke-width="4"/>
+  <g fill="#ffe4a0" opacity=".65">${Array.from({length:24},(_,k)=>`<circle cx="${785+(k%8)*21}" cy="${190+Math.floor(k/8)*22}" r="3"/>`).join('')}</g>
+  </g>`;
+ }
+ if(cfg.key==='kyoto'){
+  landmark=`<g transform="translate(600 90)" filter="url(#glow)" fill="#c84433"><rect x="-220" y="40" width="440" height="24" rx="4"/><rect x="-175" y="64" width="28" height="190"/><rect x="147" y="64" width="28" height="190"/><rect x="-150" y="105" width="300" height="20"/><rect x="-105" y="125" width="24" height="130"/><rect x="81" y="125" width="24" height="130"/></g><circle cx="600" cy="92" r="58" fill="#ffdc86" opacity=".14"/>`;
+ }
+ if(cfg.key==='kobe'){
+  landmark=`<g filter="url(#glow)"><path d="M665 310L718 68L770 310Z" fill="#e84c52"/><rect x="707" y="70" width="22" height="242" fill="#ff7479"/><circle cx="330" cy="220" r="108" fill="none" stroke="#77eaff" stroke-width="6" opacity=".66"/><path d="M330 112V328M222 220H438M254 144L406 296M406 144L254 296" stroke="#77eaff55" stroke-width="3"/></g>`;
+ }
+ if(cfg.key==='sapporo'){
+  landmark=`<g><ellipse cx="600" cy="236" rx="190" ry="92" fill="#dfeef4" stroke="#ffffff99"/><path d="M430 232Q600 112 770 232" fill="none" stroke="#a8cadb" stroke-width="14" opacity=".85"/><circle cx="820" cy="82" r="46" fill="#fff" opacity=".45" filter="url(#glow)"/></g>`;
+ }
+ if(cfg.key==='fukuoka'){
+  landmark=`${building(375,115,110,200)}${building(510,145,95,170)}<g filter="url(#glow)"><rect x="690" y="74" width="66" height="238" fill="#d4ecf6" opacity=".9"/><path d="M675 96L723 30L771 96Z" fill="#f4fbff"/><rect x="710" y="110" width="25" height="120" fill="#58d8ff" opacity=".42"/></g>`;
+ }
+ if(cfg.key==='okinawa'){
+  landmark=`<path d="M0 305Q250 270 500 302T1000 296V430H0Z" fill="#08758c" opacity=".9"/><g stroke="#183420" stroke-width="10"><path d="M155 330Q180 220 235 140"/><path d="M845 330Q820 220 770 150"/></g><g fill="#205129"><path d="M235 140q-88 5-138 54q72-24 137-16q-49-66-108-77q67 28 111 67q35-69 103-82q-58 31-101 83q79-22 137 15q-79-10-141 5Z"/><path d="M770 150q-76 5-120 45q67-22 120-15q-40-57-92-67q57 24 94 57q33-59 88-69q-50 25-88 70q67-18 120 12q-66-6-122 4Z"/></g>`;
+ }
+ if(cfg.key==='yokohama'){
+  landmark=`${building(350,120,90,190)}${building(458,84,118,226,'#132d47')}<g filter="url(#glow)"><circle cx="744" cy="210" r="112" fill="none" stroke="#72e8ff" stroke-width="7" opacity=".76"/><path d="M744 98V322M632 210H856M664 130L824 290M824 130L664 290" stroke="#72e8ff55" stroke-width="3"/></g>`;
+ }
+ return `<svg viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky${i}" x1="0" y1="0" x2="0" y2="1"><stop stop-color="${cfg.sky1}"/><stop offset="1" stop-color="${cfg.sky2}"/></linearGradient><linearGradient id="track${i}" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8a693f"/><stop offset="1" stop-color="#2c2115"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="${17+i}"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .08"/></feComponentTransfer></filter></defs><rect width="1000" height="560" fill="url(#sky${i})"/><circle cx="160" cy="80" r="3" fill="#fff" opacity=".75"/><circle cx="290" cy="48" r="2" fill="#fff" opacity=".55"/><circle cx="885" cy="110" r="2" fill="#fff" opacity=".7"/><g opacity=".95">${landmark}</g><g opacity=".96"><path d="M0 320H1000V410H0Z" fill="#08131d"/><path d="M0 335Q500 286 1000 335" fill="none" stroke="#e8d090" stroke-width="3" opacity=".45"/><g fill="#ffd889" opacity=".55">${Array.from({length:48},(_,k)=>`<circle cx="${10+k*21}" cy="347" r="2"/>`).join('')}</g></g><g filter="url(#glow)" opacity=".94"><g stroke="#d8e7f0" stroke-width="5"><path d="M95 322V190M905 322V175M255 322V210M745 322V202"/></g><g fill="#f7fbff"><rect x="67" y="182" width="56" height="10" rx="5"/><rect x="877" y="167" width="56" height="10" rx="5"/><rect x="227" y="202" width="56" height="10" rx="5"/><rect x="717" y="194" width="56" height="10" rx="5"/></g></g><path d="M-40 404Q500 350 1040 408V590H-40Z" fill="url(#track${i})"/><path d="M-40 420Q500 365 1040 422" fill="none" stroke="#f6f0d9" stroke-width="7"/><path d="M-40 446Q500 390 1040 446" fill="none" stroke="#ffffff55" stroke-width="2"/><path d="M-40 510Q500 454 1040 510" fill="none" stroke="#ffffff22" stroke-width="2"/><rect y="396" width="1000" height="164" filter="url(#noise)" opacity=".6"/><text x="34" y="50" fill="${cfg.accent}" font-size="22" font-weight="900" letter-spacing="3">${cfg.name}</text></svg>`;
+}
+const VENUE_ART=VENUES.map((_,i)=>venueArt(i));
+function setRaceTheme(){
+ const v=VENUES[venueIndex];
+ $('#raceVenue').textContent=v;
+ $('#announcer').textContent='🎙 実況：'+ann.name;
+ const bg=$('#raceBg');
+ bg.className='raceBg'+(venueIndex%3===1?' osaka':venueIndex%3===2?' tokyo':'');
+ // 背景は開催地専用SVGのみ。背景画像に馬・騎手を混在させない。
+ bg.style.backgroundImage='linear-gradient(180deg,rgba(0,8,16,.08),rgba(0,0,0,.18))';
+ bg.style.backgroundSize='cover';bg.style.backgroundPosition='center';
+ const sc=$('#venueScenery');if(sc)sc.innerHTML=VENUE_ART[venueIndex%VENUE_ART.length];
+ applyWeather();
+}
+function applyRaceMotionPhase(key){
+ $$('.runner').forEach((r,i)=>{
+   r.classList.remove('whipping','closing');
+   const style=HORSE_META[i].style;
+   if(key==='first'&&style==='逃げ')r.classList.add('whipping');
+   if(key==='sprint'&&(style==='差し'||style==='先行'))r.classList.add('whipping');
+   if(key==='final'&&(style==='差し'||style==='追込'))r.classList.add('whipping','closing');
+   if(key==='goal')r.classList.add('closing');
+ });
+}
+function launchRace(){
+ const rs=$('#raceScreen');
+ if(rs)rs.classList.add('on');
+ Promise.resolve(startRace()).catch(err=>{
+   console.error('RACE_START_ERROR',err);
+   running=false;
+   if(rs)rs.classList.add('on');
+   const phase=$('#racePhase');if(phase)phase.textContent='RETRY';
+   const cap=$('#phaseCaption');if(cap)cap.textContent='レース開始を再試行';
+   toast('レース開始処理を再試行します');
+   setTimeout(()=>{if(!running)Promise.resolve(startRace()).catch(e=>console.error('RACE_RETRY_ERROR',e))},900);
+ });
+}
+async function startRace(){
+ if(running)return;
+ running=true;raceState.skipInProgress=false;raceState.transitioning=false;const nextBtn=$('#resultNext');if(nextBtn){nextBtn.disabled=false;nextBtn.textContent='次のレース準備へ';}
+ const epoch=invalidateRaceTimeline();
+ stopBettingBgm();cancelNarrationNow();
+ /* 開催地はBET画面で確定済み。レース開始時には変更しない */
+ ann=ANNOUNCERS[Math.floor(Math.random()*ANNOUNCERS.length)];
+ makeRacePlan();phaseTargets=buildPhaseTargets();setRaceTheme();
+ $('#raceScreen').classList.add('on');startCanvasRace();buildRaceUI();markMyBetRunners();raceState.phaseIndex=0;
+ $('#racePhase').textContent='BETTING CLOSED';$('#phaseCaption').textContent='投票締切';
+ if(!await raceSpeak('投票を締め切りました。これよりレース進行に入ります。投票内容をご確認ください。',epoch))return;
+ if(!await racePause(950,epoch))return;
+ $('#racePhase').textContent='RACE INFORMATION';$('#phaseCaption').textContent='レース案内';
+ if(!await raceSpeak(`${window.GH_FUSION_VENUE_LABEL?.()||VENUES[venueIndex]}、第${72+state.todayRaces%20}レース。距離はダート1600メートル。${weatherComment()}`,epoch))return;
+ if(!await racePause(750,epoch))return;
+ $('#racePhase').textContent='PADDOCK TO GATE';$('#phaseCaption').textContent='各馬ゲートへ';
+ if(!await raceSpeak(`各馬、ゲートへ向かいます。1番${raceName(1)}、2番${raceName(2)}、3番${raceName(3)}。各馬、発走準備に入ります。`,epoch))return;
+ if(!await racePause(900,epoch))return;
+ raceState.phaseIndex=0;
+ if(!await raceSpeak(commentaryFor('gate'),epoch))return;
+ if(!await racePause(900,epoch))return;
+ $('#racePhase').textContent='GATE IN';$('#phaseCaption').textContent='ゲートイン';raceState.phaseIndex=1;
+ if(raceState.scratch!==null){
+   const id=raceState.scratch,r=$('#runner'+id);if(r)r.classList.add('scratched');const stalls=$$('#gateStalls i');if(stalls[id-1])stalls[id-1].classList.add('scratched');
+   showRaceAlert(`${id}番 ${raceName(id)}　ゲート入り再試行`,'一度ゲート入りを嫌がりました。係員と騎手が再度誘導します。','START GATE',6500);$('#phaseCaption').textContent=`${id}番 ゲート入り再試行`;
+   if(!await raceSpeak(`${id}番${raceName(id)}、ゲート入りを嫌がっています。係員と騎手がもう一度誘導します。安全を確認しながら、再度ゲート入りを試みます。`,epoch))return;
+   if(!await racePause(1500,epoch))return;
+   $('#phaseCaption').textContent=`${id}番 再審査`;
+   if(!await raceSpeak(`${id}番、もう一度ゲートへ近づきます。騎手が落ち着かせています。係員が最終確認を行っています。`,epoch))return;
+   if(!await racePause(1500,epoch))return;
+   raceState.scratchAnnounced=true;showRaceAlert(`${id}番 ${raceName(id)}　競走除外`,'再度ゲート入りを試みましたが、安全な競走続行が難しいと判断されました。','RACE CONTROL',7000);$('#phaseCaption').textContent=`${id}番 競走除外`;
+   if(!await raceSpeak(`${id}番${raceName(id)}、再度ゲート入りを試みましたが、競走続行が難しいと判断されました。${id}番は競走除外となります。`,epoch))return;
+   if(!await racePause(1000,epoch))return;
+   liveOdds=BASE_ODDS.map((o,i)=>i===id-1?null:Math.max(1.2,+(o*(.88+Math.random()*.06)).toFixed(1)));enforceOddsInvariant();
+   let refund=0;state.raceBets=state.raceBets||[];const keep=[];for(const b of state.raceBets){const hs=b.horses||[b.horse];if(hs.includes(id))refund+=b.stake;else keep.push(b)}state.raceBets=keep;if(refund>0){state.gold+=refund;state.totalBet=Math.max(0,state.totalBet-refund)}save();renderHome();renderOdds();renderBetSlips();
+   const oddsLine=HORSES.map((h,i)=>i===id-1?`${i+1}番は取消`:`${i+1}番、単勝${liveOdds[i]}倍、複勝${placeOddsDisplay(i)}`).join('。');
+   showRaceAlert('出走取消・最終オッズ確定',`${id}番は競走除外。${refund?`取消馬への投票 ${refund}Gold は返還済み。`:'取消馬への投票はありません。'}<br>この表示を最終オッズとします。`,'BETTING CLOSED',8000);
+   if(!await raceSpeak(`競走除外に伴い、最終オッズを更新します。${refund?`${id}番への投票、合計${refund}ゴールドは返還しました。`:''}${oddsLine}。以上を最終オッズといたします。`,epoch))return;
+   if(!await racePause(1600,epoch))return;
+ }else{
+   if(!await raceSpeak('各馬、順調にゲートへ収まりました。係員が最終確認を行っています。発走まで、もうしばらくお待ちください。',epoch))return;
+   if(!await racePause(1150,epoch))return;
+ }
+ const eligible=raceState.scratch!==null?`${raceState.scratch}番を除く各馬、ゲートに揃いました。`:'各馬、ゲートに揃いました。';
+ $('#racePhase').textContent='FINAL CHECK';$('#phaseCaption').textContent='発走前 最終確認';
+ if(!await raceSpeak(eligible+'発走前の最終確認が完了しました。',epoch))return;
+ if(!await racePause(850,epoch))return;
+ $('#racePhase').textContent='FANFARE';$('#phaseCaption').textContent='FANFARE';const fanDur=fanfare();showRaceAlert(activeFanfare?.name||'GOLDEN HORSE FANFARE','発走前セレモニー演奏中','CEREMONY',fanDur);$('#phaseCaption').textContent=`FANFARE / ${activeFanfare?.name||'GOLDEN HORSE'}`;
+ if(!await racePause(fanDur+250,epoch))return;
+ $('#racePhase').textContent='READY';$('#phaseCaption').textContent='静寂 0.7秒';
+ cancelNarrationNow();stopFanfare();
+ if(!await racePause(700,epoch))return;
+ $('#startGate').classList.remove('on');$('#raceScreen').classList.remove('inGate');startGallopLoop();tone(92,.35,'sawtooth',.085);noise(250,.025);navigator.vibrate?.([35,20,55]);
+ $('#racePhase').textContent='START';$('#phaseCaption').textContent='スタート';Object.assign(target,phaseTargets.start);raceState.phaseIndex=3;
+ if(!await raceSpeak(commentaryFor('start'),epoch,{cancel:false}))return;
+ if(!await racePause(420,epoch))return;
+ const runPhases=[['first',1200,'第1コーナー',phaseTargets.first],['back',850,'向こう正面',phaseTargets.back],['corner',500,'最終コーナー',phaseTargets.corner],['sprint',400,'最終直線',phaseTargets.sprint],['final',200,'残り200',phaseTargets.final],['goal',0,'GOAL',phaseTargets.goal]];
+ for(const [key,d,label,tg] of runPhases){if(!await runRacePhase(key,d,label,tg,epoch))return;}
+ await finishRaceFlow(epoch);
+}
+function closeRace(){stopGallopLoop();
+ running=false;raceState.slowMotion=false;invalidateRaceTimeline();stopFanfare();cancelNarrationNow();clearTimeout(raceTimer);
+ $('#raceScreen').classList.remove('on','sprint','photo','photoApproach','photoFreeze');
+ stopCanvasRace();
+ $('#finishOverlay').classList.remove('on');
+ $('#photoReview').classList.remove('on');$('#finishPanel').classList.remove('hidden');
+ $('#raceAlert').classList.remove('on');clearInterval(thunderTimer);clearInterval(resultTimer);
+}
+$('#closeRace').onclick=()=>{if(running){toast('レース進行中です。結果画面から次のレースへ進んでください');return false;}closeRace();return true;};
+$('#resultNext').onclick=finishAndReturn;
+$('#raceSkip').onclick=()=>{
+ if(!running||raceState.skipInProgress||raceState.phaseIndex>=7)return;
+ const epoch=invalidateRaceTimeline();raceState.skipInProgress=true;
+ Promise.resolve(runFinalStretchFromSkip(epoch)).catch(e=>{console.error('RACE_SKIP_SYNC_ERROR',e);raceState.skipInProgress=false});
+};
+$('#cameraBtn').onclick=()=>{
+ camera=(camera+1)%3;const bg=$('#raceBg');
+ bg.style.backgroundPosition=camera===0?'center':camera===1?'38% center':'72% center';
+ bg.style.transform=camera===2?'scale(1.14)':'scale(1.05)';
+ tone(720,.08,'triangle',.03);toast('カメラ切替')
+};
+$('#raceSound').onclick=()=>{sound=!sound;$('#raceSound').textContent=sound?'🔊 SOUND ON':'🔇 SOUND OFF';$('#soundLabel').textContent=sound?'音量 ON':'音量 OFF';if(sound){ensureAudio();if(!running)startBettingBgm()}else{stopBettingBgm();stopGallopLoop();try{speechSynthesis.cancel()}catch(e){}}toast(sound?'BGM・実況・4D音響 ON':'音量 OFF')}
+$$('[data-gacha]').forEach(b=>b.onclick=()=>openGacha(b.dataset.gacha));$$('[data-action="sound"]').forEach(b=>b.onclick=()=>{$('#raceSound').click()});document.addEventListener('click',async e=>{const p=e.target.closest('[data-page]');if(p){e.preventDefault();if(p.dataset.page==='startPage'&&!(await ensureGameAllowed()))return;page(p.dataset.page);if(GH_DEMO&&p.dataset.page==='startPage'){document.querySelector('#home .raceCard')?.scrollIntoView({block:'start'});}if(p.dataset.page==='gacha')setGachaTab('horse');if(p.dataset.page==='cards')renderCards();if(p.dataset.page==='support')renderSupport();if(p.dataset.page==='seat')setTimeout(()=>syncSeatPanel(true),0)}const card=e.target.closest('[data-card]');if(card){e.preventDefault();openCardDetail(card.dataset.card)}const close=e.target.closest('[data-close-card]');if(close){e.preventDefault();closeCardModal()}const apply=e.target.closest('[data-apply-card]');if(apply){const c=state.cards.find(x=>x.name===apply.dataset.applyCard);if(c){if(c.type==='support')state.equippedSupport=c.name;else state.equippedGear[c.slot||'cloth']=c.name;save();renderCards();renderSupport();renderHorseCards();renderJockey();renderJockeyCards();toast(c.name+' を装備しました');}closeCardModal()}const tab=e.target.closest('[data-equip-tab]');if(tab){state.lookSlot=tab.dataset.equipTab;save();renderJockey()}const item=e.target.closest('[data-equip-item]');if(item){state.equippedGear[item.dataset.equipSlot]=item.dataset.equipItem;save();renderJockey();renderJockeyCards();renderCards();toast(item.dataset.equipItem+' に変更しました')}});
+let selectedSeat='';let reservedSeat='';let occupiedSeats=new Set();let seatServerState=null;
+const seatDefs=[['C1','空席'],['C2','空席'],['C3','空席'],['C4','空席'],['C5','空席'],['B1','空席'],['B2','空席'],['B3','空席'],['B4','空席'],['B5','空席']];
+function renderSeats(){
+ const g=$('#seatGrid');if(!g)return;ensureSeatTimes();
+ g.innerHTML=seatDefs.map(([id])=>{const occ=occupiedSeats.has(id)&&reservedSeat!==id;return `<button class="seatBtn ${occ?'occupied':''} ${selectedSeat===id?'selected':''}" data-seat="${id}" ${occ?'disabled':''}><span>${id}</span></button>`}).join('');
+ $$('[data-seat]').forEach(b=>b.onclick=()=>{selectedSeat=b.dataset.seat;renderSeats()});
+ $('#seatCurrent').textContent=reservedSeat||selectedSeat||'未選択';
+ const rs=seatServerState?.reservation;
+ $('#seatStatus').textContent=rs?({pending_payment:'支払い待ち',paid:'支払済み・確保済み',active:'利用中',completed:'終了',cancelled:'取消',expired:'期限切れ'}[rs.status]||rs.status):(selectedSeat?'1席選択中':'空席を1席選んでください');
+ if(rs){
+  $('#seatQrTitle').textContent=`${rs.seat_label} / ${new Date(rs.starts_at).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}〜${new Date(rs.ends_at).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}`;
+  const pay=seatServerState?.payment;$('#seatQrText').textContent=pay?.payment_code?`支払コード: ${pay.payment_code}`:'決済情報を確認中';
+  $('#seatQr').innerHTML=(pay?.payment_code?pay.payment_code.slice(0,6):rs.seat_label)+'<br>PAY';
+ }else{
+  $('#seatQrTitle').textContent='予約確定後に支払コードを表示';$('#seatQrText').textContent='支払い方法を選んで予約確定してください。';$('#seatQr').innerHTML='GH<br>PAY'
+ }
+}
+async function loadPaymentProviders(){
+ try{
+  const r=await fetch(GH_SEAT_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'provider_status'})});const j=await r.json();const arr=j.data||[];
+  const sel=$('#seatPaymentMethod');if(!sel)return;
+  for(const o of [...sel.options]){const code=['card','debit','prepaid'].includes(o.value)?'card_gateway':o.value;const p=arr.find(x=>x.provider_code===code);if(!p)continue;o.disabled=!(p.enabled&&p.mode==='live')&&o.value!=='counter';if(!o.disabled&&o.value!=='counter')o.textContent=o.textContent.replace(/（.*?）/g,'')+'（利用可）'}
+ }catch(e){}
+}
+async function refreshSeatAvailability(){
+ const token=localStorage.getItem('gh_session_token');if(!token){occupiedSeats=new Set();renderSeats();return}
+ ensureSeatTimes();const s=$('#seatStart').value,e=$('#seatEnd').value;if(!s||!e)return;
+ try{const d=await seatApi('availability',{starts_at:new Date(s).toISOString(),ends_at:new Date(e).toISOString()});occupiedSeats=new Set(d.occupied||[]);renderSeats()}catch(e){toast('空席情報を更新できませんでした')}
+}
+async function syncSeatPanel(refreshAvailability=false){
+ const token=localStorage.getItem('gh_session_token');ensureSeatTimes();loadPaymentProviders();
+ if(!token){seatServerState=null;reservedSeat='';$('#seatMemberNo').textContent='会員：未ログイン';$('#seatPhone').textContent='電話：---';$('#seatGold').textContent='Gold：---';$('#seatPaymentState').textContent='席予約にはマイログインが必要です。';renderSeats();return}
+ try{
+  seatServerState=await seatApi('reservation_state');const r=seatServerState.reservation,p=seatServerState.payment;
+  reservedSeat=r&&['pending_payment','paid','active'].includes(r.status)?r.seat_label:'';
+  selectedSeat=reservedSeat||selectedSeat;
+  $('#seatMemberNo').textContent='会員：'+(seatServerState.member_no||'---');
+  $('#seatPhone').textContent='電話：'+(seatServerState.phone_masked||'登録済み');
+  $('#seatGold').textContent='Gold：'+Number(seatServerState.gold||0).toLocaleString('ja-JP')+'G';
+  if(r){$('#seatStart').value=localDateTimeValue(new Date(r.starts_at));$('#seatEnd').value=localDateTimeValue(new Date(r.ends_at))}
+  $('#seatPaymentState').textContent=p?`決済: ${p.status} / ${p.method} / ${Number(p.amount_yen||0).toLocaleString('ja-JP')}円 / 支払コード ${p.payment_code||'---'}`:'未予約';
+  if(Number.isFinite(Number(seatServerState.gold))){state.gold=Number(seatServerState.gold);save();renderHome()}
+  if(refreshAvailability)await refreshSeatAvailability();else renderSeats();
+ }catch(e){$('#seatPaymentState').textContent='予約情報を取得できません: '+e.message;renderSeats()}
+}
+$('#refreshSeats').onclick=()=>refreshSeatAvailability();
+$('#seatStart').onchange=()=>{selectedSeat='';refreshSeatAvailability()};$('#seatEnd').onchange=()=>{selectedSeat='';refreshSeatAvailability()};
+$('#reserveSeat').onclick=async()=>{
+ const token=localStorage.getItem('gh_session_token');if(!token){toast('先にマイログインしてください');page('login');return}
+ if(reservedSeat)return toast('同時に確保できる席は1席だけです');
+ if(!selectedSeat)return toast('空席を1席選んでください');
+ ensureSeatTimes();const s=new Date($('#seatStart').value),e=new Date($('#seatEnd').value);if(!(e>s))return toast('予約時間を確認してください');
+ const method=$('#seatPaymentMethod').value;const opt=$('#seatPaymentMethod').selectedOptions[0];if(opt?.disabled)return toast('この決済方法は契約・接続準備中です');
+ try{
+  const d=await seatApi('reservation_create',{seat_label:selectedSeat,starts_at:s.toISOString(),ends_at:e.toISOString(),payment_method:method});
+  reservedSeat=d.seat_label;selectedSeat=d.seat_label;fourD();toast(`${reservedSeat} を予約しました`);
+  await syncSeatPanel(true)
+ }catch(e){
+  const m={member_already_has_open_reservation:'同時に予約できる席は1席だけです。',seat_already_reserved:'その時間はすでに予約済みです。別の席を選んでください。',invalid_reservation_time:'予約時間を確認してください。'}[e.message]||('予約できません: '+e.message);toast(m);await refreshSeatAvailability()
+ }
+};
+$('#releaseSeat').onclick=async()=>{
+ if(!localStorage.getItem('gh_session_token'))return toast('ログインしてください');
+ try{const d=await seatApi('release');reservedSeat='';selectedSeat='';seatServerState=null;toast(d.released?'席を空席へ戻しました':'解除する予約はありません');await syncSeatPanel(true)}catch(e){toast('解除できません: '+e.message)}
+};
+$('#beginSeatPayment').onclick=async()=>{
+ if(!localStorage.getItem('gh_session_token'))return toast('ログインしてください');
+ try{
+  const d=await seatApi('begin_payment');
+  if(d.checkout_url){location.href=d.checkout_url;return}
+  if(d.status==='counter_ready'){toast('支払コードを店内レジで提示してください');$('#seatPaymentState').textContent=`店内レジ支払コード: ${d.payment_code} / ${Number(d.amount_yen||0).toLocaleString('ja-JP')}円`;return}
+ }catch(e){
+  if(e.message==='provider_contract_required'||e.message==='provider_credentials_not_configured')toast('この決済方法は加盟店契約・API接続の準備中です');
+  else toast('支払いを開始できません: '+e.message)
+ }
+};
+/* ============================================================================
+   CINEMA 2330 EVENT-SYNC / ODDS-LOCK / SECURITY-READY PATCH
+   - 既存の豪華版・写真判定・結果発表・背景・音響を削除しない差分追加
+   - レース内部イベントを先に確定し、実際に発生した出来事だけ実況
+   - SKIPは画面・順位・残距離・実況・演出を同一点へ同期
+   - 複勝は単勝従属 + 締切時スナップショット固定
+   ============================================================================ */
+(function GH2330_EVENTSYNC_PATCH(){
+ const _makeRacePlan=makeRacePlan;
+ const _buildPhaseTargets=buildPhaseTargets;
+ const _renderRacePositions=renderRacePositions;
+ const _renderOdds=renderOdds;
+ function eligibleIds(){return [1,2,3,4,5,6,7].filter(id=>id!==raceState.scratch)}
+ function randPick(a){return a[Math.floor(Math.random()*a.length)]}
+ function clearRaceEventClasses(){
+  $$('.runner').forEach(r=>r.classList.remove('traffic','outside','rekick','earlymove','holdmove'));
+  $('#phaseCaption')?.classList.remove('eventLive');
+ }
+ function addEventClass(id,c){const r=$('#runner'+id);if(r)r.classList.add(c)}
+ function removeEventClass(id,c){const r=$('#runner'+id);if(r)r.classList.remove(c)}
+ function setEventCaption(t){const e=$('#phaseCaption');if(e){e.textContent=t;e.classList.add('eventLive')}}
+ makeRacePlan=function(){
+  _makeRacePlan();
+  // 別レースのRESULTを映像・実況・オッズに混ぜない。IDが一致するログイン中のスナップショットだけを採用。
+  const snapshot=window.__ghSecureServerState;
+  const srv=(window.GH_SECURE_MODE?.() ?? (typeof secureMode==='function'&&secureMode()))&&raceState.secureRaceId!=null&&snapshot?.race_id!=null&&
+   String(snapshot.race_id)===String(raceState.secureRaceId)?snapshot:null;
+  if(srv&&Array.isArray(srv.finish_order)&&srv.finish_order.length>=7){
+   const so=srv.finish_order.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=7);
+   if(so.length===7&&new Set(so).size===7){raceState.order=so;raceState.winner=so[0];raceState.scratch=null;raceState.scratchAnnounced=false;}
+  }
+  if(srv&&Array.isArray(srv.horses)&&srv.horses.length===7){
+   liveOdds=srv.horses.map(h=>Math.max(1.1,+Number(h.win).toFixed(1)));enforceOddsInvariant();
+  }
+  const ids=eligibleIds(), order=[...raceState.order];
+  const trafficCandidates=order.slice(2,Math.min(6,order.length)).filter(id=>id!==raceState.winner);
+  const outsideCandidates=order.slice(1,Math.min(5,order.length)).filter(id=>id!==raceState.winner);
+  const trafficHorse=trafficCandidates.length?randPick(trafficCandidates):(order[2]||order[1]);
+  const outsideHorse=outsideCandidates.filter(id=>id!==trafficHorse)[0]||outsideCandidates[0]||order[1];
+  const challenger=order[1]||order[0];
+  const fighter=order[0];
+  const jockeyChoices={};
+  ids.forEach(id=>{
+   const m=HORSE_META[id-1];
+   const holdBias=(m.style==='差し'||m.style==='追込')?0.68:0.32;
+   const smart=(m.jp+m.harmony)/200;
+   jockeyChoices[id]=(Math.random() < (holdBias*smart + .12))?'hold':'early';
+  });
+  // 勝ち馬は脚質を尊重して判断を少し安定させる。
+  const wm=HORSE_META[fighter-1];
+  jockeyChoices[fighter]=(wm.style==='差し'||wm.style==='追込')?'hold':'early';
+  raceState.eventPlan={
+   traffic:{horse:trafficHorse,phase:'back',dir:Math.random()<.5?-1:1,done:false},
+   outside:{horse:outsideHorse,phase:'corner',dir:Math.random()<.5?-1:1,done:false},
+   fight:{horse:fighter,challenger,phase:'final',done:false},
+   jockeyChoices
+  };
+  raceState.laneOffsets={};ids.forEach(id=>raceState.laneOffsets[id]=0);
+  raceState.skipRequested=false;raceState.skipConsumed=false;raceState.currentKey='gate';
+  raceState.timelineToken=(raceState.timelineToken||0)+1;
+  raceState.gallopStarted=false;raceState.oddsLocked=false;raceState.finalOddsSnapshot=null;
+ };
+ buildPhaseTargets=function(){
+  const base=_buildPhaseTargets();
+  const ep=raceState.eventPlan||{};
+  if(ep.traffic?.horse){
+   const h=ep.traffic.horse;
+   if(base.back[h]!=null)base.back[h]-=.055; // 前が詰まり一度減速
+   if(base.corner[h]!=null)base.corner[h]-=.018; // 進路変更のロス
+   if(base.sprint[h]!=null)base.sprint[h]+=.008; // 再加速
+  }
+  if(ep.outside?.horse){
+   const h=ep.outside.horse;
+   if(base.corner[h]!=null)base.corner[h]-=.030; // 外を回す距離ロス
+   if(base.sprint[h]!=null)base.sprint[h]-=.018;
+   if(base.final[h]!=null)base.final[h]-=.008;
+  }
+  const jc=ep.jockeyChoices||{};
+  Object.entries(jc).forEach(([sid,decision])=>{
+   const id=Number(sid);
+   if(decision==='early'){
+    if(base.corner[id]!=null)base.corner[id]+=.028; // 早仕掛け
+    if(base.final[id]!=null)base.final[id]-=.012; // 早く動いた分だけ終いに少し負担
+   }else{
+    if(base.corner[id]!=null)base.corner[id]-=.018; // 我慢
+    if(base.final[id]!=null)base.final[id]+=.026; // 追い出しを待った分の終い
+   }
+  });
+  // 並ばれた勝ち馬がもう一度伸びる。最終順位そのものは既存レースプランを維持。
+  if(ep.fight?.horse && base.final[ep.fight.horse]!=null)base.final[ep.fight.horse]+=.018;
+  if(raceState.scratch!==null)Object.values(base).forEach(t=>t[raceState.scratch]=0);
+  return base;
+ };
+ renderRacePositions=function(){
+  for(let i=1;i<=7;i++){
+   const x=Math.max(-.15,Math.min(1.42,pos[i]));
+   const inGate=$('#raceScreen')?.classList.contains('inGate');
+   const lane=Number(raceState.laneOffsets?.[i]||0);
+   const left=inGate?(6.4+(i%2)*.46):(23+x*54);
+   const dot=$('#dot'+i);if(dot)dot.style.left=(8+x*61)+'%';
+   const r=$('#runner'+i);
+   if(r){
+    r.style.left=left+'%';
+    // ゲート中は枠内。走行中だけ進路変更を上下方向で可視化。
+    r.style.top=(inGate?(25.8+i*6.35):(27+i*6.25+lane))+'%';
+    r.style.zIndex=18-i;
+   }
+  }
+ };
+ function oddsSnapshot(){
+  enforceOddsInvariant();
+  const win=liveOdds.map(v=>v===null?null:+Number(v).toFixed(1));
+  const place=win.map((v,i)=>v===null?null:canonicalPlaceOdds(i));
+  const ok=win.every((w,i)=>w===null||(Number.isFinite(w)&&Number.isFinite(place[i])&&place[i]>=1&&place[i]<w));
+  if(!ok)throw new Error('ODDS_SNAPSHOT_INVALID');
+  return {win,place,lockedAt:new Date().toISOString()};
+ }
+ function lockedCombo(type,nums,snap){
+  const os=nums.map(n=>snap.win[n-1]);if(os.some(v=>v===null||!Number.isFinite(v)))return null;
+  if(type==='単勝')return os[0];
+  if(type==='複勝')return snap.place[nums[0]-1];
+  const product=os.reduce((a,b)=>a*b,1),mult={馬連:.55,ワイド:.20,'3連複':.42,'3連単':1.32}[type]||1;
+  return Math.max(1.2,+(product*mult).toFixed(1));
+ }
+ function lockFinalOdds(){
+  const snap=oddsSnapshot();raceState.finalOddsSnapshot=snap;raceState.oddsLocked=true;
+  (state.raceBets||[]).filter(b=>!b.status||b.status==='active').forEach(b=>{
+   const hs=b.horses||[b.horse];const q=lockedCombo(b.betType,hs,snap);
+   if(b.serverBet||(Number.isFinite(Number(b.odds))&&Number(b.odds)>=1)){b.oddsFinal=true;return}if(q!==null){b.odds=q;b.oddsFinal=true;if(b.betType==='複勝'){b.oddsLow=q;b.oddsHigh=q}}
+  });
+  save();renderBetSlips();
+  return snap;
+ }
+ function auditOddsDOM(){
+  try{
+   $$('.oddsHorseCard').forEach((card,i)=>{
+    if(liveOdds[i]===null)return;
+    const w=Number(liveOdds[i]),p=canonicalPlaceOdds(i),el=card.querySelector('.placeVal');
+    if(!Number.isFinite(w)||!Number.isFinite(p)||p>=w){
+     console.error('ODDS_DOM_GUARD',i+1,w,p);enforceOddsInvariant();
+     if(el)el.textContent=placeOddsDisplay(i);
+    }
+    if(el)el.classList.add('oddsSafe');
+   });
+  }catch(e){console.error('ODDS_DOM_AUDIT',e)}
+ }
+ renderOdds=function(){_renderOdds();auditOddsDOM()};
+ function raceWait(ms,token){
+  return new Promise(resolve=>{
+   const end=Date.now()+ms;
+   const tick=()=>{
+    if(!running||token!==raceState.timelineToken||raceState.skipRequested)return resolve(true);
+    if(Date.now()>=end)return resolve(false);
+    setTimeout(tick,45);
+   };tick();
+  });
+ }
+ async function raceSay(text,token,opts={}){
+  if(!running||token!==raceState.timelineToken||raceState.skipRequested)return true;
+  // 残り200mとGOAL実況は、音声終了通知が欠けても最大4.8秒で必ず進行を解放する。
+  const spokenOpts=['final','goal'].includes(raceState.currentKey)&&!Number.isFinite(Number(opts.maxWaitMs))?{...opts,maxWaitMs:4800}:opts;
+  await speakFull(text,spokenOpts);
+  return !running||token!==raceState.timelineToken||raceState.skipRequested;
+ }
+ function ensureGallopStarted(){
+  if(raceState.gallopStarted)return;
+  raceState.gallopStarted=true;startGallopLoop();tone(92,.35,'sawtooth',.085);noise(250,.025);navigator.vibrate?.([35,20,55]);
+ }
+ function finalizeEventPositionsForSprint(){
+  const ep=raceState.eventPlan||{};
+  if(ep.traffic?.horse)raceState.laneOffsets[ep.traffic.horse]=(ep.traffic.dir||1)*1.2;
+  if(ep.outside?.horse)raceState.laneOffsets[ep.outside.horse]=(ep.outside.dir||1)*2.0;
+  if(ep.jockeyChoices)Object.entries(ep.jockeyChoices).forEach(([id,d])=>addEventClass(Number(id),d==='early'?'earlymove':'holdmove'));
+ }
+ function syncToSprint(){
+  try{speechSynthesis.cancel()}catch(e){}
+  raceState.skipRequested=false;raceState.skipConsumed=true;raceState.currentKey='sprint';raceState.phaseIndex=7;
+  $('#raceScreen').classList.remove('inGate');$('#startGate').classList.remove('on');$('#raceScreen').classList.add('sprint');
+  finalizeEventPositionsForSprint();ensureGallopStarted();
+  for(const id of eligibleIds()){
+   const v=phaseTargets.sprint[id];
+   if(Number.isFinite(v)){pos[id]=v;target[id]=v}
+  }
+  renderRacePositions();
+  $('#distance').textContent=400;$('#racePhase').textContent='最終直線';setEventCaption('SKIP同期 / 残り400m');
+  fourD();canvasImpact?.(5);crowdSwell?.(1.35);
+ }
+ async function eventForPhase(key,tg,token){
+  const ep=raceState.eventPlan||{};
+  if(key==='back'&&ep.traffic&&!ep.traffic.done){
+   const h=ep.traffic.horse;ep.traffic.done=true;addEventClass(h,'traffic');setEventCaption(`${h}番 前が詰まる`);
+   target[h]=Math.min(tg[h]??target[h],pos[h]+.018);
+   if(await raceSay(`${h}番${raceName(h)}、前が詰まった。一度スピードを落とします。騎手が進路を探しています。`,token,{cancel:false}))return true;
+   if(await raceWait(300,token))return true;
+   raceState.laneOffsets[h]=(ep.traffic.dir||1)*2.6;removeEventClass(h,'traffic');addEventClass(h,'outside');addEventClass(h,'closing');
+   target[h]=(tg[h]??target[h])+.010;setEventCaption(`${h}番 進路変更 → 再加速`);
+   if(await raceSay(`${h}番、横へ進路を切り替えた。前が開いた、ここから再加速します。`,token,{cancel:false}))return true;
+   return raceWait(360,token);
+  }
+  if(key==='corner'&&ep.outside&&!ep.outside.done){
+   const h=ep.outside.horse;ep.outside.done=true;raceState.laneOffsets[h]=(ep.outside.dir||1)*3.0;addEventClass(h,'outside');
+   target[h]=(tg[h]??target[h])-.026;setEventCaption(`${h}番 外を回す / 距離ロス`);
+   if(await raceSay(`${h}番${raceName(h)}は外へ持ち出した。進路は取れますが、外を回した分だけ距離のロスがあります。`,token,{cancel:false}))return true;
+   if(await raceWait(360,token))return true;
+  }
+  if(key==='corner'){
+   const h=raceState.winner,decision=ep.jockeyChoices?.[h];
+   if(decision){
+    addEventClass(h,decision==='early'?'earlymove':'holdmove');
+    if(decision==='early'){
+     target[h]=(tg[h]??target[h])+.020;setEventCaption(`${h}番 早仕掛け`);
+     if(await raceSay(`${h}番${raceName(h)}、騎手が早めに仕掛けました。ここで前との差を詰めに行きます。`,token,{cancel:false}))return true;
+    }else{
+     setEventCaption(`${h}番 まだ我慢`);
+     if(await raceSay(`${h}番${raceName(h)}、騎手はまだ動かない。手綱を持ったまま、追い出しを我慢しています。`,token,{cancel:false}))return true;
+    }
+   }
+  }
+  if(key==='final'&&ep.fight&&!ep.fight.done){
+   ep.fight.done=true;const h=ep.fight.horse,c=ep.fight.challenger;
+   // 挑戦馬をいったん接近させてから、勝ち馬が再加速。
+   if(Number.isFinite(tg[c])&&Number.isFinite(tg[h]))target[c]=Math.min(tg[h]-.006,tg[c]+.022);
+   addEventClass(h,'rekick');setEventCaption(`${h}番 並ばれてもう一度伸びる`);
+   if(await raceSay(`${c}番が並びかける。しかし${h}番${raceName(h)}、並ばれてからもう一度伸びた。勝負根性を見せます。`,token,{cancel:false}))return true;
+   return raceWait(320,token);
+  }
+  return false;
+ }
+ function phaseCommentary(key){
+  const o=currentOrder(),a=o[0],b=o[1],c=o[2];
+  if(key==='start')return `スタートしました。${a}番が先頭へ、${b}番が続き、${c}番も好位につけます。`;
+  if(key==='first')return `第1コーナー。先頭は${a}番${raceName(a)}。${b}番、${c}番が続きます。`;
+  if(key==='back')return `向こう正面。現在の先頭は${a}番。${b}番が直後、後続も差を詰めています。`;
+  if(key==='corner')return `最終コーナー。${a}番先頭、${b}番が迫る。各騎手が進路を選びます。`;
+  if(key==='sprint')return `残り400メートル、最終直線。先頭${a}番、${b}番、${c}番も追い出しました。`;
+  if(key==='final')return `残り200メートル。${a}番先頭、${b}番が並びかける。ここから最後の伸び比べです。`;
+  if(key==='goal')return raceState.photo?`ゴール。${raceState.order[0]}番と${raceState.order[1]}番、ほとんど並びました。写真判定です。`:`ゴール。${raceState.order[0]}番${raceName(raceState.order[0])}が先頭で駆け抜けました。`;
+  return commentaryFor(key);
+ }
+ async function runRacePhase(key,d,label,tg,token){
+  if(!running||raceState.skipRequested)return true;
+  raceState.currentKey=key;raceState.phaseIndex++;
+  clearRaceEventClasses();
+  $('#distance').textContent=d;$('#racePhase').textContent=label;$('#phaseCaption').textContent=label;
+  Object.assign(target,tg);applyRaceMotionPhase(key);
+  if(key==='sprint'){$('#raceScreen').classList.add('sprint');noise(900,.04);crowdSwell(1.35)}
+  if(key==='final'||key==='goal'){fourD();canvasImpact(key==='goal'?11:7);crowdSwell(key==='goal'?2.0:1.65)}
+  const ep=raceState.eventPlan||{};
+  const eventNarrationPending=
+   (key==='back'&&!!ep.traffic&&!ep.traffic.done)||
+   (key==='corner'&&((!!ep.outside&&!ep.outside.done)||!!ep.jockeyChoices?.[raceState.winner]))||
+   (key==='final'&&!!ep.fight&&!ep.fight.done);
+  if(await eventForPhase(key,tg,token))return true;
+  if(raceState.skipRequested)return true;
+  $('#phaseCaption')?.classList.remove('eventLive');
+  // 実イベントを実況済みなら、同じ地点の通常実況を重ねて待たない。
+  if(!eventNarrationPending&&await raceSay(phaseCommentary(key),token,{cancel:false}))return true;
+  if(key==='goal')return false;
+  return raceWait(key==='sprint'||key==='final'?650:900,token);
+ }
+ startRace=async function(){
+  if(running)return;
+  running=true;stopBettingBgm();try{speechSynthesis.cancel()}catch(e){}
+  /* 開催地はBET画面で確定済み。レース開始時には変更しない */ann=ANNOUNCERS[Math.floor(Math.random()*ANNOUNCERS.length)];
+  makeRacePlan();phaseTargets=buildPhaseTargets();setRaceTheme();$('#raceScreen').classList.add('on');startCanvasRace();buildRaceUI();markMyBetRunners();raceState.phaseIndex=0;
+  const token=raceState.timelineToken;
+  const pre=async(phase,cap,text,wait)=>{
+   raceState.currentKey=phase;$('#racePhase').textContent=phase;$('#phaseCaption').textContent=cap;
+   if(await raceSay(text,token))return true;return raceWait(wait,token);
+  };
+  let jump=false;
+  jump=await pre('BETTING CLOSED','投票締切','投票を締め切りました。これよりレース進行に入ります。投票内容をご確認ください。',900);
+  if(!jump)jump=await pre('RACE INFORMATION','レース案内',`${window.GH_FUSION_VENUE_LABEL?.()||VENUES[venueIndex]}、第${72+state.todayRaces%20}レース。距離はダート1600メートル。${weatherComment()}`,850);
+  if(!jump)jump=await pre('PADDOCK TO GATE','各馬ゲートへ',`各馬、ゲートへ向かいます。発走準備に入ります。`,900);
+  if(!jump)jump=await pre('GATE IN','ゲートイン',commentaryFor('gate'),1100);
+  if(!jump&&raceState.scratch!==null){
+   const id=raceState.scratch;const r=$('#runner'+id);if(r)r.classList.add('scratched');const stalls=$$('#gateStalls i');if(stalls[id-1])stalls[id-1].classList.add('scratched');
+   showRaceAlert(`${id}番 ${raceName(id)}　ゲート入り再試行`,'一度ゲート入りを嫌がりました。係員と騎手が再度誘導します。','START GATE',5000);
+   jump=await pre('GATE RETRY',`${id}番 ゲート入り再試行`,`${id}番${raceName(id)}、ゲート入りを嫌がっています。騎手が落ち着かせ、もう一度誘導します。`,1000);
+   if(!jump){
+    raceState.scratchAnnounced=true;showRaceAlert(`${id}番 ${raceName(id)}　競走除外`,'安全な競走続行が難しいため競走除外。オッズ再計算と返還を行います。','RACE CONTROL',6500);
+    await raceSay(`${id}番${raceName(id)}は競走除外となります。競走除外に伴い、最終オッズを再計算します。`,token,{cancel:false});
+    liveOdds=BASE_ODDS.map((o,i)=>i===id-1?null:Math.max(1.1,+(o*(.88+Math.random()*.06)).toFixed(1)));enforceOddsInvariant();
+    let refund=0;const keep=[];for(const b of (state.raceBets||[])){const hs=b.horses||[b.horse];if(hs.includes(id))refund+=b.stake;else keep.push(b)}state.raceBets=keep;if(refund>0){state.gold+=refund;state.totalBet=Math.max(0,state.totalBet-refund)}save();renderHome();renderOdds();
+    jump=await raceWait(900,token);
+   }
+  }
+  if(!jump){
+   lockFinalOdds();
+   const snap=raceState.finalOddsSnapshot;const line=HORSES.map((h,i)=>snap.win[i]===null?`${i+1}番取消`:`${i+1}番、単勝${snap.win[i].toFixed(1)}倍、複勝${snap.place[i].toFixed(1)}倍`).join('。');
+   jump=await pre('FINAL ODDS','最終オッズ確定',`最終オッズが確定しました。${line}。`,700);
+  }
+  if(!jump)jump=await pre('FINAL CHECK','発走前 最終確認',raceState.scratch!==null?`${raceState.scratch}番を除く各馬、ゲートに揃いました。発走前の最終確認が完了しました。`:'各馬、ゲートに揃いました。発走前の最終確認が完了しました。',850);
+  if(!jump){
+   raceState.currentKey='fan';$('#racePhase').textContent='FANFARE';$('#phaseCaption').textContent='FANFARE';const fanDur=fanfare();showRaceAlert(activeFanfare?.name||'GOLDEN HORSE FANFARE','発走前セレモニー演奏中','CEREMONY',fanDur);
+   jump=await raceWait(fanDur+450,token);
+  }
+  if(!jump)jump=await pre('READY','発走態勢',`第${72+state.todayRaces%20}レース、発走態勢に入りました。各馬、ゲート内で静止。スタートします。`,700);
+  const runPhases=[
+   ['start',1500,'スタート',phaseTargets.start],['first',1200,'第1コーナー',phaseTargets.first],['back',850,'向こう正面',phaseTargets.back],['corner',500,'最終コーナー',phaseTargets.corner],['sprint',400,'最終直線',phaseTargets.sprint],['final',200,'残り200',phaseTargets.final],['goal',0,'GOAL',phaseTargets.goal]
+  ];
+  let idx=0;
+  if(jump||raceState.skipRequested){syncToSprint();idx=4}
+  else{$('#startGate').classList.remove('on');$('#raceScreen').classList.remove('inGate');ensureGallopStarted()}
+  while(running&&idx<runPhases.length){
+   if(raceState.skipRequested&&idx<4){syncToSprint();idx=4;continue}
+   const [key,d,label,tg]=runPhases[idx];
+   const interrupted=await runRacePhase(key,d,label,tg,token);
+   if(!running)return;
+   if(raceState.skipRequested&&idx<4){syncToSprint();idx=4;continue}
+   if(interrupted&&raceState.skipConsumed&&idx<4){idx=4;continue}
+   idx++;
+  }
+  if(!running)return;
+  state.todayRaces++;save();await raceWait(700,token);
+  if(window.GH_SECURE_SETTLE_REFRESH)await window.GH_SECURE_SETTLE_REFRESH();
+  if(raceState.photo)await showPhotoFinish();else await showFinishResult(false);
+ };
+ const rs=$('#raceSkip');
+ if(rs)rs.onclick=()=>{
+  if(!running)return;
+  if(['sprint','final','goal'].includes(raceState.currentKey)){toast('すでに最終直線です');return}
+  raceState.skipRequested=true;raceState.timelineToken=raceState.timelineToken; // 同一レースのまま、待機だけ中断
+  try{speechSynthesis.cancel()}catch(e){}
+  $('#raceAlert')?.classList.remove('on');
+  $('#raceScreen')?.classList.remove('inGate');$('#startGate')?.classList.remove('on');
+  setEventCaption('SKIP同期中…');toast('実況・順位・残距離・演出を最終直線へ同期します');
+ };
+ // 払戻は締切時に固定したオッズだけを使う。結果確定時に複勝を再計算しない。
+ settleRaceBets=function(top3){
+  if(raceState.settled)return {total:0,wins:0};
+  raceState.settled=true;state.raceBets=state.raceBets||[];state.betHistory=state.betHistory||[];
+  if(!raceState.oddsLocked)lockFinalOdds();
+  let total=0,wins=0;const topSet=[...top3].sort((a,b)=>a-b).join('-'),top2Set=[...top3.slice(0,2)].sort((a,b)=>a-b).join('-');
+  for(const b of state.raceBets){
+   const eligible=!Object.prototype.hasOwnProperty.call(b,'status')||b.status==null||b.status==='active'||b.status==='pending';
+   if(!eligible)continue;
+   const hs=b.horses||[b.horse];let win=false;
+   if(b.betType==='単勝')win=hs[0]===top3[0];
+   else if(b.betType==='複勝')win=top3.includes(hs[0]);
+   else if(b.betType==='馬連')win=[...hs].sort((a,b)=>a-b).join('-')===top2Set;
+   else if(b.betType==='ワイド')win=hs.every(n=>top3.includes(n));
+   else if(b.betType==='3連複')win=[...hs].sort((a,b)=>a-b).join('-')===topSet;
+   else if(b.betType==='3連単')win=hs[0]===top3[0]&&hs[1]===top3[1]&&hs[2]===top3[2];
+   if(!Number.isFinite(Number(b.odds))||Number(b.odds)<1){console.error('BET_ODDS_INVALID',b);b.odds=1.0}
+   b.status=win?'win':'lose';b.payout=win?Math.round(b.stake*Number(b.odds)):0;
+   if(win){state.gold+=b.payout;total+=b.payout;wins++}
+  }
+  save();renderHome();renderBetSlips();return {total,wins};
+ };
+ // 開発時に一目で確認できる自己診断。ユーザー画面を壊さずconsoleのみ。
+ window.GH2330_SELFTEST=function(){
+  enforceOddsInvariant();
+  const odds=liveOdds.map((w,i)=>({horse:i+1,win:w,place:w===null?null:canonicalPlaceOdds(i),ok:w===null||canonicalPlaceOdds(i)<w}));
+  const okOdds=odds.every(x=>x.ok);
+  const hasEvents=!!(raceState.eventPlan?.traffic&&raceState.eventPlan?.outside&&raceState.eventPlan?.fight);
+  return {ok:okOdds&&hasEvents,odds,events:raceState.eventPlan,skipHandler:!!$('#raceSkip')?.onclick};
+ };
+})();
+/* === SERVER AUTHORITATIVE BET / RACE SYNC === */
+(function GH2330_SECURE_SERVER_SYNC(){
+ const _finishCountdownLocal=finishCountdown;
+ const _renderBetSlipsLocal=renderBetSlips;
+ const _finishAndReturnLocal=finishAndReturn;
+ const _settleRaceBetsClient=settleRaceBets;
+ const _loginClick=$('#loginBtn')?.onclick;
+ const _registerClick=$('#registerBtn')?.onclick;
+ let bootTimer=null;
+ const securePending=new Map();
+ const SENSITIVE_ACTIONS=new Set(['place_gold_bet','cancel_gold_bet','gold_event_apply','gacha','seat_reserve','begin_payment']);
+ function securityAudit(type,detail={}){
+  try{const k='gh_security_audit_v3',a=JSON.parse(localStorage.getItem(k)||'[]');a.unshift({at:new Date().toISOString(),type,...detail});localStorage.setItem(k,JSON.stringify(a.slice(0,120)))}catch(_e){}
+ }
+ function secureMode(){return !isGuestDistribution()&&!GH_DEMO&&/^https?:$/.test(location.protocol)&&!!localStorage.getItem('gh_session_token')}
+ window.GH_SECURE_MODE=secureMode;
+ async function secureCall(action,p={}){
+  const token=localStorage.getItem('gh_session_token')||'';
+  if(token.length<20)throw new Error('invalid_session');
+  const device_key=(typeof getDeviceKey==='function'?getDeviceKey():(localStorage.getItem('gh_device_key')||''));
+  const client_nonce=(crypto.randomUUID?crypto.randomUUID():('N-'+Date.now()+'-'+Math.random().toString(36).slice(2)));
+  const correlation_id='GHSEC-'+Date.now()+'-'+client_nonce.slice(-12);
+  const requestKey=SENSITIVE_ACTIONS.has(action)?String(p.request_id||p.bet_id||action):'';
+  if(requestKey&&securePending.has(requestKey)){securityAudit('duplicate_block',{action,requestKey});throw new Error('duplicate_request_local')}
+  if(requestKey)securePending.set(requestKey,Date.now());
+  try{
+   return await ghApi({action,token,device_key,client_nonce,client_ts:Date.now(),correlation_id,client_build:'GOOD0701-SECURITY0641-V3',...p});
+  }catch(e){
+   securityAudit('server_reject',{action,error:String(e.message||e)});
+   if(e.message==='security_lock'||e.message==='invalid_device'){localStorage.removeItem('gh_session_token');localStorage.setItem('gh_security_locked_at',new Date().toISOString())}
+   throw e;
+  }finally{if(requestKey)setTimeout(()=>securePending.delete(requestKey),900)}
+ }
+ function mapServerBets(arr){
+  return (Array.isArray(arr)?arr:[]).map(b=>({
+   id:String(b.id),serverBet:true,race_id:b.race_id,request_id:b.request_id,
+   betType:b.betType,horses:Array.isArray(b.horses)?b.horses.map(Number):[],
+   stake:Number(b.stake||0),odds:Number(b.odds||1),
+   status:b.status==='pending'?'active':String(b.status||'active'),payout:Number(b.payout||0),oddsFinal:true,created_at:b.created_at
+  }));
+ }
+ async function syncSecureRaceState(syncClock=false){
+  if(!secureMode())return null;
+  const d=await secureCall('gold_race_state');
+  window.__ghSecureServerState=d;
+  if(Array.isArray(d.horses)&&d.horses.length===7){liveOdds=d.horses.map(h=>Math.max(1.1,+Number(h.win).toFixed(1)));enforceOddsInvariant();renderOdds()}
+  if(Number.isFinite(Number(d.gold))){state.gold=Number(d.gold)}
+  if(Array.isArray(d.my_bets))state.raceBets=mapServerBets(d.my_bets);
+  save();renderHome();renderBetSlips();
+  if(syncClock&&d.phase==='BETTING'&&Number.isFinite(Number(d.seconds))){
+   clearInterval(countTimer);count=Math.max(0,Math.trunc(Number(d.seconds)));countLastShown=count;countDeadline=Date.now()+count*1000;countRaceStarting=false;countTriggered=new Set();
+   $('#countdown').textContent=count;startCountdown(false);
+  }
+  return d;
+ }
+ window.GH_SECURE_RACE_SYNC=syncSecureRaceState;
+ async function secureRaceBoot(){
+  clearTimeout(bootTimer);if(!secureMode())return;
+  try{
+   const d=await syncSecureRaceState(true);
+   if(d?.phase==='RACING'&&!running&&d.race_id!=null&&String(d.race_id)!==''){raceState.secureRaceId=String(d.race_id);count=0;$('#countdown').textContent='0';launchRace()}
+   else if(d?.phase==='RESULT'){bootTimer=setTimeout(secureRaceBoot,1800)}
+  }catch(e){console.warn('SECURE_RACE_BOOT',e.message)}
+ }
+ finishCountdown=async function(){
+  if(!secureMode())return _finishCountdownLocal();
+  if(countRaceStarting)return;
+  countRaceStarting=true;clearInterval(countTimer);try{speechSynthesis.cancel()}catch(e){};count=0;countDeadline=0;$('#countdown').textContent='0';document.querySelector('.count')?.classList.remove('sync10');
+  try{
+   const allowed=await ensureGameAllowed();if(!allowed){countRaceStarting=false;startCountdown(true);return}
+   const d=await syncSecureRaceState(false);
+   if(d?.phase==='BETTING'&&Number(d.seconds)>0){countRaceStarting=false;count=Math.trunc(Number(d.seconds));countDeadline=Date.now()+count*1000;startCountdown(false);toast('サーバー時刻へ再同期しました');return}
+   if(d?.phase==='RACING'&&d.race_id!=null&&String(d.race_id)!==''){raceState.secureRaceId=String(d.race_id);launchRace();return}
+   countRaceStarting=false;startCountdown(true);toast('サーバーのレース開始を待っています');
+  }catch(e){console.error('SECURE_RACE_START',e);countRaceStarting=false;startCountdown(true);toast('サーバー同期に失敗したため再同期します')}
+ };
+ const betBtn=$('#betBtn');
+ const localBetClick=betBtn?.onclick;
+ if(betBtn)betBtn.onclick=async()=>{
+  if(!secureMode())return localBetClick?.();
+  if(running||count<=0)return toast('投票は締め切られています');
+  const need=PICK_RULES[betType]||1;if(betSelections.length!==need)return toast(`${betType}は${need}頭選択してください`);
+  if(![5,10,50,100].includes(stake))return toast('投票Goldを確認してください');
+  const btn=betBtn;btn.disabled=true;const before=btn.textContent;btn.textContent='サーバー確認中…';
+  try{
+   const request_id='GH-'+Date.now()+'-'+(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2));
+   const d=await secureCall('place_gold_bet',{request_id,bet_type:betType,selection:[...betSelections],stake});
+   state.gold=Number(d.gold);state.raceBets=state.raceBets||[];
+   const slip={id:String(d.bet_id),serverBet:true,race_id:d.race_id,request_id,betType,horses:[...betSelections],stake,odds:Number(d.odds),oddsFinal:true,status:'active'};
+   state.raceBets.push(slip);state.totalBet+=stake;save();renderHome();renderBetSlips();renderHorseChoices();tone(760,.12,'triangle',.04);toast(`${betLabel(slip)} / ${stake}Gold サーバー受付完了`);betSelections=[];renderHorseChoices();
+  }catch(e){
+   if(e.message==='security_lock')toast('不正な重複送信を検知したためセッションを停止しました。再ログインしてください');
+   else if(e.message==='invalid_device')toast('端末認証が一致しないため処理を停止しました');
+   else if(e.message==='duplicate_request_local')toast('同じ操作の連続送信を遮断しました');
+   else if(e.message==='betting_closed')toast('投票は締め切られました');
+   else toast('投票を受け付けできません: '+e.message);
+   try{await syncSecureRaceState(false)}catch(_){ }
+  }finally{btn.disabled=false;btn.textContent=before}
+ };
+ renderBetSlips=function(){
+  _renderBetSlipsLocal();
+  if(!secureMode())return;
+  $$('[data-cancel-bet]').forEach(btn=>{
+   const b=(state.raceBets||[]).find(x=>String(x.id)===String(btn.dataset.cancelBet));if(!b?.serverBet)return;
+   btn.onclick=async()=>{
+    if(running||count<=0)return toast('締切後は取消できません');btn.disabled=true;
+    try{const d=await secureCall('cancel_gold_bet',{bet_id:String(b.id)});state.gold=Number(d.gold);state.raceBets=state.raceBets.filter(x=>String(x.id)!==String(b.id));state.totalBet=Math.max(0,state.totalBet-b.stake);save();renderHome();renderBetSlips();toast('サーバーで取消・Gold返還を確認しました')}
+    catch(e){toast('取消できません: '+e.message);try{await syncSecureRaceState(false)}catch(_){ }}
+   }
+  })
+ };
+ // サーバー確定払戻を表示。クライアント側でGoldを増やさない。
+ settleRaceBets=function(top3){
+  if(!secureMode())return _settleRaceBetsClient(top3);
+  const snapshot=window.__ghSecureServerState;
+  const expectedRaceId=raceState.secureRaceId;
+  if(!snapshot||snapshot.phase==='BETTING'||snapshot.phase==='RACING'||(expectedRaceId!=null&&(snapshot.phase!=='RESULT'||snapshot.race_id==null||String(snapshot.race_id)!==String(expectedRaceId)))||(Array.isArray(snapshot.my_bets)&&snapshot.my_bets.some(b=>b.status==='pending'||b.status==='active')))return {total:0,wins:0};
+  if(raceState.settled)return {total:0,wins:0};raceState.settled=true;
+  const bets=Array.isArray(window.__ghSecureServerState.my_bets)?window.__ghSecureServerState.my_bets:[];
+  const won=bets.filter(b=>b.status==='won');const total=won.reduce((a,b)=>a+Number(b.payout||0),0);
+  if(Number.isFinite(Number(window.__ghSecureServerState.gold)))state.gold=Number(window.__ghSecureServerState.gold);
+  save();renderHome();return {total:Math.round(total),wins:won.length};
+ };
+ finishAndReturn=function(){if(secureMode()&&!raceState.settled)return false;if(_finishAndReturnLocal()!==true)return false;if(secureMode())setTimeout(secureRaceBoot,450);return true};
+ if(_loginClick&&$('#loginBtn'))$('#loginBtn').onclick=async(e)=>{await _loginClick.call($('#loginBtn'),e);setTimeout(secureRaceBoot,650)};
+ if(_registerClick&&$('#registerBtn'))$('#registerBtn').onclick=async(e)=>{await _registerClick.call($('#registerBtn'),e);setTimeout(secureRaceBoot,650)};
+ // レース終了直前にサーバーで払戻を確定・再取得するためのフック。
+ window.GH_SECURE_SETTLE_REFRESH=async function(){
+  if(!secureMode())return null;
+  try{return await syncSecureRaceState(false)}catch(e){console.warn('SECURE_SETTLE_REFRESH',e.message);return null}
+ };
+ // サーバー結果が未確定なら、的中なしと誤表示して次レースへ進まない。
+ const _showFinishResultServerReady=showFinishResult;
+ showFinishResult=async function(photo=false,epoch=raceEpoch){
+  if(secureMode()){
+   const serverResultReady=()=>{
+    const snapshot=window.__ghSecureServerState,expected=raceState.secureRaceId;
+    return expected!=null&&snapshot?.phase==='RESULT'&&snapshot.race_id!=null&&
+     String(snapshot.race_id)===String(expected)&&Array.isArray(snapshot.my_bets)&&
+     snapshot.my_bets.every(b=>b.status!=='pending'&&b.status!=='active');
+   };
+   while(epoch===raceEpoch&&running&&!serverResultReady()){
+    $('#finishOverlay').classList.add('on');$('#finishPanel').classList.remove('hidden');
+    $('#finishHeadline').textContent='払戻確認中';
+    $('#finishMargin').textContent='サーバーの正式結果を確認中です。まだ次のレースへは進みません。';
+    $('#resultCountdown').textContent='確認中';
+    await window.GH_SECURE_SETTLE_REFRESH();
+    if(!serverResultReady()&&!await racePause(1500,epoch))return;
+   }
+   if(epoch!==raceEpoch||!running)return;
+  }
+  return _showFinishResultServerReady(photo,epoch);
+ };
+ if(secureMode())setTimeout(secureRaceBoot,700);
+})();
+function renderAll(){renderHome();renderHorse();renderJockey();renderCards();renderSupport();renderGate();renderPoints();renderRanking();renderHow();renderRules();renderCampaign();renderSeats();renderOdds();renderBetSlips()}
+try{if(!(state.raceBets||[]).length)nextLocalOdds();renderOdds();renderHorseChoices();renderBetSlips();buildGoldPicker();renderAll()}catch(e){console.error('initial render',e)};startCountdown(true);if(localStorage.getItem('gh_session_token'))setTimeout(()=>{cloudStateLoad({silent:true});syncSeatPanel(false)},800);else setCloudBadge('☁ 端末保存');
+showDemoBadge();
+</script>
+
+<script defer id="ghFusionSecurityV3">
+(()=>{
+ const policy=Object.freeze({serverAuthority:true,deviceBinding:true,replayGuard:true,duplicateGuard:true,clientGoldAuthoritative:false,clientResultAuthoritative:false,build:'GOOD0701-SECURITY0641-V3'});
+ window.GH_SECURITY_POLICY_V3=policy;
+ window.GH_SECURITY_DIAG_V3=()=>{let audit=[];try{audit=JSON.parse(localStorage.getItem('gh_security_audit_v3')||'[]')}catch(_e){}return {policy,lockedAt:localStorage.getItem('gh_security_locked_at')||null,deviceKeyPresent:!!localStorage.getItem('gh_device_key'),sessionPresent:!!localStorage.getItem('gh_session_token'),audit:audit.slice(0,20)}};
+})();
+</script>
+
+
+<div id="gh2351Policy" aria-hidden="true"><div class="gh2351PolicyBox"><div class="gh2351PolicyHead"><div><small style="color:#ff8f99;letter-spacing:.17em;font-weight:1000">LAWFUL OPERATION / ZERO TOLERANCE</small><h2>不正行為・反社会的勢力排除方針</h2></div><button class="gh2351PolicyClose" id="gh2351PolicyClose" type="button" aria-label="閉じる">×</button></div><div class="gh2351PolicyBody"><div class="gh2351Rule"><b>反社会的勢力の排除</b>暴力団、暴力団員、暴力団員でなくなった時から5年を経過しない者、暴力団準構成員、暴力団関係企業、総会屋等、特殊知能暴力集団等、その他これらに準ずる者、ならびにこれらを利用・支援する者の利用をお断りします。</div><div class="gh2351Rule"><b>システム不正・AI・BOT等</b>不正アクセス、認証回避、GPS・決済状態・Gold・BET・オッズ・結果・抽選・ギフトの改ざん、API不正利用、BOT・スクリプト・AI等による不正操作、リプレイ・二重処理、アカウント共有・売買・なりすまし・共謀を禁止します。</div><div class="gh2351Rule"><b>異常検知・記録保全</b>異常を検知した場合、処理保留、セッション失効、機能制限等を行い、必要なサーバー記録・監査記録を保全します。正規記録と一致しない端末表示は取引・残高・当選等の根拠にはなりません。</div><div class="gh2351Rule"><b>適法な相談・通報</b>犯罪又は不正の疑いがある場合、法令と正規手続に従い、弁護士、決済・通信・クラウド事業者、警察その他関係機関へ相談・通報し、必要な記録を保全・提出する場合があります。</div></div></div></div>
+<script defer id="gh2351SecurityVisualRestoreScript">
+(()=>{
+ const panel=document.getElementById('gh2351Policy');
+ const open=document.getElementById('gh2351PolicyOpen');
+ const close=document.getElementById('gh2351PolicyClose');
+ const setOpen=(on)=>{
+   if(!panel)return;
+   panel.classList.toggle('on',!!on);
+   panel.setAttribute('aria-hidden',on?'false':'true');
+ };
+ open?.addEventListener('click',()=>setOpen(true));
+ close?.addEventListener('click',()=>setOpen(false));
+ panel?.addEventListener('click',e=>{if(e.target===panel)setOpen(false)});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel?.classList.contains('on'))setOpen(false)});
+})();
+</script>
+
+
+<script defer id="ghFusionV5ApprovedFeatureMerge">
+(()=>{
+ 'use strict';
+ const KEY='gh_fusion_v5_state';
+ const PREFS=['北海道','青森','岩手','宮城','秋田','山形','福島','茨城','栃木','群馬','埼玉','千葉','東京','神奈川','新潟','富山','石川','福井','山梨','長野','岐阜','静岡','愛知','三重','滋賀','京都','大阪','兵庫','奈良','和歌山','鳥取','島根','岡山','広島','山口','徳島','香川','愛媛','高知','福岡','佐賀','長崎','熊本','大分','宮崎','鹿児島','沖縄'];
+ const VISUAL_ALIAS={兵庫:'姫路・姫路城前',大阪:'大阪・道頓堀前',東京:'東京・新宿未来街',京都:'京都・祇園前',福岡:'福岡・ベイフロント',沖縄:'沖縄・サンセット',愛知:'名古屋・金城前',広島:'広島・瀬戸内',岡山:'岡山・城下町',神奈川:'横浜・みなとみらい',北海道:'札幌・スノードーム'};
+ const defaults={selectedPref:'兵庫',cleared:[],qualified:false,qualifier:{active:false,races:0,hit:false},final:{unlocked:false,used:false},strategy:'AUTO',horseTickets:0,jockeyTickets:0,gacha:{horseCount:0,jockeyCount:0,dupePoints:0},history:[],ledger:{},lastRace:null,version:5};
+ function load(){try{return Object.assign({},defaults,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(_){return {...defaults}}}
+ let F=load();
+ F.cleared=Array.isArray(F.cleared)?F.cleared:[];F.history=Array.isArray(F.history)?F.history:[];F.ledger=F.ledger&&typeof F.ledger==='object'?F.ledger:{};F.gacha=Object.assign({},defaults.gacha,F.gacha||{});F.qualifier=Object.assign({},defaults.qualifier,F.qualifier||{});F.final=Object.assign({},defaults.final,F.final||{});
+ function persist(){localStorage.setItem(KEY,JSON.stringify(F))}
+ window.GH_FUSION_V5=F;
+ // GH_V98_NEXT_VENUE: for normal guest races, never keep the same location twice.
+ // Manual nationwide-tour selection and FINAL/qualifier routing remain unchanged.
+ const GH_V98_NORMAL_CIRCUIT=['兵庫','大阪','東京','京都','神奈川','北海道','福岡','沖縄','愛知'];
+ function ghV98NextVenue(){
+   const previous=[F.normalVenuePref,F.lastRace?.pref].filter(Boolean);
+   const options=GH_V98_NORMAL_CIRCUIT.filter(p=>!previous.includes(p));
+   F.normalVenuePref=options[Math.floor(Math.random()*options.length)];
+   persist();
+   return F.normalVenuePref;
+ }
+ window.GH_NEXT_VENUE=ghV98NextVenue;
+ // Every fresh guest session receives a different venue before BET starts.
+ ghV98NextVenue();
+
+ // 47-prefecture venue metadata: reuse only the existing cinema-quality scenery families.
+ // This intentionally does NOT import later cheap race visuals.
+ const PREF_VISUAL_INDEX={北海道:5,青森:5,岩手:5,宮城:6,秋田:5,山形:5,福島:2,茨城:2,栃木:2,群馬:2,埼玉:2,千葉:9,東京:2,神奈川:9,新潟:5,富山:5,石川:0,福井:0,山梨:2,長野:5,岐阜:0,静岡:2,愛知:8,三重:9,滋賀:3,京都:3,大阪:1,兵庫:0,奈良:3,和歌山:9,鳥取:5,島根:0,岡山:0,広島:9,山口:9,徳島:9,香川:9,愛媛:9,高知:9,福岡:6,佐賀:6,長崎:9,熊本:0,大分:6,宮崎:7,鹿児島:7,沖縄:7};
+ function prefLabel(p){return VISUAL_ALIAS[p]||`${p}・GOLDEN CIRCUIT`}
+ // Read the locked race venue during racing; otherwise use the next selected venue.
+ window.GH_FUSION_VENUE_LABEL=()=>prefLabel((running&&raceState?.fusionPrefecture)||(currentMode()==='NORMAL'&&!F.tourRaceArmed?F.normalVenuePref:F.selectedPref)||'兵庫');
+ // Add approved navigation without removing the morning build's existing buttons.
+ const menu=document.querySelector('#home .menu');
+ function addMenu(page,icon,label){if(!menu||menu.querySelector(`[data-page="${page}"]`))return;const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page=page;b.innerHTML=`<span class="ico">${icon}</span>${label}`;menu.appendChild(b)}
+ addMenu('japanTour','🗾','全国制覇');addMenu('raceHistory','📜','レース履歴');addMenu('backupV5','💾','バックアップ');
+ const app=document.querySelector('.app');
+ function screen(id,title,body){if(document.getElementById(id))return;const x=document.createElement('section');x.id=id;x.className='screen subpage';x.innerHTML=`<div class="header"><button class="back" data-page="home">← 戻る</button><h1>${title}</h1></div>${body}`;app.appendChild(x)}
+ screen('japanTour','全国制覇',`<div class="fusionHero"><small>JAPAN 47 CONQUEST</small><h2>全国47都道府県ツアー</h2><p>投票してレースを最後まで観戦し、的中するとその開催地を初クリア。レース映像は朝7:01基準のシネマ品質を維持し、開催地データだけ全国へ拡張します。</p><div class="fusionStats"><div class="fusionStat"><small>CLEAR</small><b id="fusionClearCount">0/47</b></div><div class="fusionStat"><small>SELECT</small><b id="fusionSelectedPref">兵庫</b></div><div class="fusionStat"><small>QUALIFIER</small><b id="fusionQualifierState">LOCK</b></div><div class="fusionStat"><small>FINAL</small><b id="fusionFinalState">LOCK</b></div></div></div><div id="fusionPrefGrid" class="fusionGrid47"></div><div class="fusionActions"><button class="gold" id="fusionQualifierBtn">予選10レース</button><button class="gold" id="fusionFinalBtn">FINAL</button></div><div id="fusionTourLog" class="fusionLog"></div>`);
+ screen('raceHistory','レース履歴',`<div class="fusionHero"><small>RACE ARCHIVE / MAX 1000</small><h2>実レース履歴</h2><p>着順・開催地・天候・BET・払戻を端末に最大1000件保存します。</p></div><div id="fusionHistoryList" class="fusionHistory"></div>`);
+ screen('backupV5','バックアップ',`<div class="fusionHero"><small>SAFE GAME DATA BACKUP</small><h2>ゲームデータ書き出し / 復元</h2><p>育成・装備・ガチャ・全国制覇・履歴・払戻台帳だけを対象にし、パスワード・セッショントークン・席支払コードは含めません。</p></div><div class="fusionBackupBox"><div class="fusionActions"><button class="gold" id="fusionExport">JSONを書き出す</button><button id="fusionCopy">JSONをコピー</button></div><textarea id="fusionBackupText" placeholder="バックアップJSON"></textarea><input id="fusionImportFile" type="file" accept="application/json,.json"><div class="fusionActions"><button id="fusionRestore">このJSONを復元</button></div><div id="fusionBackupLog" class="fusionLog">未実行</div></div>`);
+ function currentMode(){if(F.final.used)return 'NORMAL';if(F.final.active)return 'FINAL';if(F.qualifier.active)return 'QUALIFIER';return 'NORMAL'}
+ function tourLog(){const q=F.qualifier.active?`予選 ${F.qualifier.races}/10 / 的中 ${F.qualifier.hit?'あり':'なし'}`:(F.qualified?'予選突破済み':'47都道府県クリア後に予選解放');const f=F.final.used?'FINAL挑戦済み':F.final.unlocked?'FINAL権あり':'FINAL未解放';const e=document.getElementById('fusionTourLog');if(e)e.textContent=`選択開催地: ${F.selectedPref}\n${q}\n${f}\n初クリア報酬: 50G + 馬ガチャ券×2 + 騎手ガチャ券×2 / 全国制覇追加50G`}
+ function renderTour(){
+   const g=document.getElementById('fusionPrefGrid');if(g){g.innerHTML=PREFS.map(p=>`<button class="fusionPref ${F.cleared.includes(p)?'clear':''} ${F.selectedPref===p?'selected on':''}" data-fpref="${p}">${p}</button>`).join('');g.querySelectorAll('[data-fpref]').forEach(b=>b.onclick=()=>{F.selectedPref=b.dataset.fpref;F.tourRaceArmed=true;persist();renderTour()})}
+   safeText('#fusionClearCount',`${F.cleared.length}/47`);safeText('#fusionSelectedPref',F.selectedPref);safeText('#fusionQualifierState',F.qualifier.active?`${F.qualifier.races}/10`:F.qualified?'PASS':'LOCK');safeText('#fusionFinalState',F.final.used?'USED':F.final.unlocked?'READY':'LOCK');
+   const qb=document.getElementById('fusionQualifierBtn');if(qb){qb.disabled=F.cleared.length<47||F.qualified||F.qualifier.active;qb.textContent=F.qualifier.active?`予選進行中 ${F.qualifier.races}/10`:'予選10レース'}
+   const fb=document.getElementById('fusionFinalBtn');if(fb){fb.disabled=!F.final.unlocked||F.final.used;fb.textContent=F.final.used?'FINAL挑戦済み':'FINALへ'}tourLog();
+ }
+ document.addEventListener('click',e=>{const p=e.target.closest?.('[data-page]')?.dataset.page;if(p==='japanTour')setTimeout(renderTour,0);if(p==='raceHistory')setTimeout(renderHistory,0)});
+ document.getElementById('fusionQualifierBtn')?.addEventListener('click',()=>{if(F.cleared.length<47)return;F.qualifier={active:true,races:0,hit:false};F.final.active=false;persist();renderTour();toast('全国予選10レースを開始')});
+ document.getElementById('fusionFinalBtn')?.addEventListener('click',()=>{if(!F.final.unlocked||F.final.used)return;F.final.active=true;F.qualifier.active=false;persist();renderTour();toast('FINALモードを開始。最低BET 50G')});
+ // HOME live data: remove fixed dummy stats.
+ const _renderHome=renderHome;
+ renderHome=function(){_renderHome();const no=localStorage.getItem('gh_member_no')||'---';safeText('#fusionMemberNo',no);safeText('#todayRaces',String(Number(state.todayRaces||0)));safeText('#totalBet',`${Number(state.totalBet||0).toLocaleString('ja-JP')}G`);safeText('#fusionHorseCount',raceState?.scratch!==null&&running?'6':'7');safeText('#homeVenue',window.GH_FUSION_VENUE_LABEL())};
+ // Add 47-prefecture snapshot to each race while keeping original high-quality scenery family.
+ const _makeRacePlan=makeRacePlan;
+ makeRacePlan=function(){
+   _makeRacePlan();
+   const pref=(currentMode()==='NORMAL'&&!F.tourRaceArmed?F.normalVenuePref:F.selectedPref)||'兵庫';raceState.fusionPrefecture=pref;raceState.fusionTourMode=!!F.tourRaceArmed;F.tourRaceArmed=false;raceState.fusionRaceId=crypto.randomUUID?crypto.randomUUID():`race-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+   raceState.fusionHadBet=(state.raceBets||[]).some(b=>!b.status||b.status==='active');raceState.fusionWatched=true;raceState.fusionMode=currentMode();
+   const ids=[1,2,3,4,5,6,7].filter(x=>x!==raceState.scratch);const good=ids[Math.floor(Math.random()*ids.length)];let slow=ids[Math.floor(Math.random()*ids.length)];if(slow===good)slow=ids[(ids.indexOf(good)+1)%ids.length];let pull=ids[Math.floor(Math.random()*ids.length)];
+   raceState.fusionEvents={goodStart:good,slowStart:slow,pulling:pull,settling:pull,inside:raceState.order[2]||good,tired:raceState.order[raceState.order.length-1]||slow,lateKick:raceState.order[0]};
+   // Human-horse sync only when server has not supplied authoritative finish order.
+   const serverOrder=window.__ghSecureServerState?.finish_order;
+   if(!(Array.isArray(serverOrder)&&serverOrder.length===7)){
+     const strat=F.strategy||'AUTO';const ability=Number(state.speed||88)+Number(state.stamina||76)+Number(state.finish||82)+Number(state.guts||70)+Number(state.jockeyTech||84)+Number(state.jockeyStart||92);
+     const chance=Math.max(.08,Math.min(.34,(ability-360)/900 + (strat==='AUTO'?0:.025)));
+     const idx=raceState.order.indexOf(1);if(idx>0&&Math.random()<chance){raceState.order.splice(idx,1);raceState.order.splice(Math.max(0,idx-1),0,1);raceState.winner=raceState.order[0]}
+   }
+   localStorage.setItem('gh_fusion_active_race_id',raceState.fusionRaceId);F.lastRace={id:raceState.fusionRaceId,pref,mode:raceState.fusionMode,startedAt:new Date().toISOString()};persist();
+ };
+ const _setRaceTheme=setRaceTheme;
+ setRaceTheme=function(){const pref=(running?raceState.fusionPrefecture:null)||(currentMode()==='NORMAL'&&!F.tourRaceArmed?F.normalVenuePref:F.selectedPref)||'兵庫';const idx=PREF_VISUAL_INDEX[pref]??0;venueIndex=idx%VENUES.length;_setRaceTheme();safeText('#raceVenue',prefLabel(pref));const sc=document.getElementById('venueScenery');if(sc&&Array.isArray(VENUE_ART)&&VENUE_ART[idx%VENUE_ART.length])sc.innerHTML=VENUE_ART[idx%VENUE_ART.length];F.lastRace=Object.assign({},F.lastRace,{pref,weather:weatherState.label,track:weatherState.track});persist()};
+ // Event-driven commentary: predetermined race facts only.
+ const _commentaryFor=commentaryFor;
+ commentaryFor=function(key){const ev=raceState.fusionEvents||{};if(key==='start'&&ev.goodStart){return `スタート！ ${ev.goodStart}番${raceName(ev.goodStart)}が好スタート。${ev.slowStart}番${raceName(ev.slowStart)}はわずかに出遅れ。${ev.pulling}番は少し掛かり気味ですが、騎手が折り合いをつけにいきます。`}if(key==='back'&&ev.pulling){return `${ev.pulling}番、ここで折り合いました。${ev.inside}番は内の進路を探す。隊列を崩さず向こう正面です。`}if(key==='final'&&ev.lateKick){return `${_commentaryFor(key)} ${ev.lateKick}番がもう一段伸びる。${ev.tired}番は少し脚色が鈍った。`}return _commentaryFor(key)};
+ // Track race-SKIP as not eligible for nationwide clear (BET countdown SKIP is okay).
+ const raceSkip=document.getElementById('raceSkip');if(raceSkip)raceSkip.addEventListener('click',()=>{if(running)raceState.fusionWatched=false},true);
+ // Persistent exactly-once settlement + archive + conquest + qualifier/final.
+ const _settleRaceBets=settleRaceBets;
+ settleRaceBets=function(top3){
+   const id=raceState.fusionRaceId||localStorage.getItem('gh_fusion_active_race_id')||`legacy-${state.todayRaces||0}`;
+   if((window.GH_SECURE_MODE?.() ?? secureMode())){const snapshot=window.__ghSecureServerState,expectedRaceId=raceState.secureRaceId;if(!snapshot||snapshot.phase==='BETTING'||snapshot.phase==='RACING'||(expectedRaceId!=null&&(snapshot.phase!=='RESULT'||snapshot.race_id==null||String(snapshot.race_id)!==String(expectedRaceId)))||(Array.isArray(snapshot.my_bets)&&snapshot.my_bets.some(b=>b.status==='pending'||b.status==='active')))return {total:0,wins:0}}
+   if(F.ledger[id]){raceState.settled=true;return {total:Number(F.ledger[id].total||0),wins:Number(F.ledger[id].wins||0)}}
+   const base=_settleRaceBets(top3);let total=Number(base.total||0),wins=Number(base.wins||0);
+   if(!(window.GH_SECURE_MODE?.() ?? secureMode())&&raceState.fusionMode==='FINAL'&&top3[0]===1&&total>0){const bonus=total;state.gold+=bonus;total+=bonus;save();toast('FINAL マイホース優勝 / 払戻×2')}
+   F.ledger[id]={total,wins,at:new Date().toISOString()};
+   const activeBets=(state.betHistory||[]).slice(-20).filter(b=>b&&b.at);const rec={id,at:new Date().toISOString(),pref:raceState.fusionPrefecture||F.selectedPref,weather:weatherState.label,track:weatherState.track,top3:[...top3],payout:total,wins,bets:activeBets.slice(-8),mode:raceState.fusionMode||'NORMAL'};F.history.unshift(rec);F.history=F.history.slice(0,1000);
+   const eligible=raceState.fusionHadBet&&raceState.fusionWatched&&wins>0;
+   if(raceState.fusionMode==='NORMAL'&&eligible){const p=rec.pref;if(!F.cleared.includes(p)){F.cleared.push(p);if(!(window.GH_SECURE_MODE?.() ?? secureMode())){state.gold+=50;F.horseTickets+=2;F.jockeyTickets+=2;toast(`${p} 初クリア +50G / 馬券×2 / 騎手券×2`);if(F.cleared.length===47){state.gold+=50;toast('全国制覇 COMPLETE +50G');}}else toast(`${p} 初クリア / 報酬はサーバー確定後に反映`);}}
+   if(raceState.fusionMode==='QUALIFIER'){F.qualifier.races++;if(wins>0)F.qualifier.hit=true;if(F.qualifier.races>=10){F.qualifier.active=false;if(F.qualifier.hit){F.qualified=true;F.final.unlocked=true;toast('予選突破 / FINAL権獲得')}else toast('予選終了 / 的中なし')}}
+   if(raceState.fusionMode==='FINAL'){F.final.used=true;F.final.active=false;F.final.unlocked=false}
+   persist();save();renderTour();renderHistory();return {total,wins};
+ };
+ function renderHistory(){const e=document.getElementById('fusionHistoryList');if(!e)return;e.innerHTML=F.history.length?F.history.slice(0,1000).map(r=>`<div class="row"><small>${new Date(r.at).toLocaleDateString('ja-JP')}<br>${r.mode||'NORMAL'}</small><span><b>${r.pref}</b> ${r.weather||''}/${r.track||''}<br><small>1着 ${r.top3?.[0]||'-'}番 / 2着 ${r.top3?.[1]||'-'}番 / 3着 ${r.top3?.[2]||'-'}番</small></span><strong>${Number(r.payout||0).toLocaleString('ja-JP')}G</strong></div>`).join(''):'<div class="fusionLog">まだレース履歴はありません。</div>'}
+ // Jockey strategy, reflected in human-horse sync.
+ const _renderJockey=renderJockey;
+ renderJockey=function(){_renderJockey();const host=document.getElementById('jockeyContent');if(host&&!host.querySelector('.fusionStrategy')){const d=document.createElement('div');d.className='fusionStrategy';d.innerHTML=`<b>騎手作戦</b><div class="fusionStrategyBtns">${['AUTO','逃げ','先行','差し','追込'].map(x=>`<button data-fstrategy="${x}" class="${F.strategy===x?'on':''}">${x}</button>`).join('')}</div><small>作戦は1番マイホースのレース計算へ少し反映。サーバー確定着順がある場合はサーバー結果を優先。</small>`;host.appendChild(d);d.querySelectorAll('[data-fstrategy]').forEach(b=>b.onclick=()=>{F.strategy=b.dataset.fstrategy;persist();renderJockey();toast(`作戦 ${F.strategy}`)})}};
+ // Horse evolution display: keep existing artwork, only add progression status.
+ const _renderHorse=renderHorse;
+ renderHorse=function(){_renderHorse();const host=document.getElementById('horseContent');if(host&&!host.querySelector('.fusionEvolution')){const lv=Number(state.horseLv||1);const stage=lv>=999?'LEGEND AURA':lv>=300?'星雲毛':lv>=100?'金耀毛':'栗毛';const d=document.createElement('div');d.className='fusionEvolution';d.innerHTML=`<b>毛色進化</b><span class="fusionAura">${stage}</span><p>栗毛 → 金耀毛 → 星雲毛 → LEGEND AURA　/　現在 Lv.${lv}</p>`;host.appendChild(d)}};
+ // Equipment bonuses are additive, no visual replacement.
+ function equipmentBonus(){const g=state.equippedGear||{};let b=0;if(g.helmet)b+=2;if(g.whip)b+=2;if(g.boots)b+=2;if(g.goggles)b+=1;if(g.cloth)b+=1;return b}window.GH_EQUIPMENT_BONUS=equipmentBonus;
+ // 100 horse + 100 jockey catalog without importing later low-quality race horse visuals.
+ function extendPool(pool,type){const seed=pool.slice();const prefixes=type==='horse'?['ゴールデン','スター','ネビュラ','サクラ','ミライ','キング','シルバー','アーク','ルミナス','ブレイブ','クリスタル','ノーブル']:['神崎','天城','早川','桐生','七海','黒川','白石','龍堂','水無月','如月','鳳城','星野'];const suffixes=type==='horse'?['レガリア','ファントム','ストライド','クラウン','ノヴァ','スピリット','セイバー','グローリー','テンペスト','ミラージュ']:['レン','カイト','トワ','レイ','ハヤテ','ソラ','シュウ','アキラ','ユウト','ミライ'];let n=1;while(pool.length<100){const base=seed[(pool.length-seed.length)%seed.length];const name=`${prefixes[(n-1)%prefixes.length]}${suffixes[Math.floor((n-1)/prefixes.length)%suffixes.length]}-${String(n).padStart(2,'0')}`;if(!pool.some(x=>x[0]===name))pool.push([name,base[1],base[2],base[3],base[4],base[5]]);n++}}
+ extendPool(HORSE_GACHA_POOL,'horse');extendPool(JOCKEY_GACHA_POOL,'jockey');
+ const _weightedGacha=weightedGacha;let lastGacha=null;
+ weightedGacha=function(pool){const type=pool===HORSE_GACHA_POOL?'horse':'jockey';F.gacha[type+'Count']=Number(F.gacha[type+'Count']||0)+1;const c=F.gacha[type+'Count'];let eligible=pool;if(c%100===0)eligible=pool.filter(x=>String(x[1]).includes('SPECIAL'));else if(c%30===0)eligible=pool.filter(x=>['UR','SPECIAL RARE','SPECIAL ART'].includes(x[1]));if(!eligible.length)eligible=pool;const d=_weightedGacha(eligible);const owned=(state.gachaOwned?.[type]||[]).includes(d[0]);lastGacha={type,name:d[0],rare:d[1],owned};if(owned)F.gacha.dupePoints=Number(F.gacha.dupePoints||0)+10;persist();return d};
+ const _renderGachaCollection=renderGachaCollection;
+ renderGachaCollection=function(){_renderGachaCollection();const stage=document.querySelector('.gachaStage');let info=document.getElementById('fusionGachaInfo');if(stage&&!info){info=document.createElement('div');info.id='fusionGachaInfo';info.className='fusionGachaInfo';stage.appendChild(info)}if(info){const type=gachaType;const count=Number(F.gacha[type+'Count']||0);info.innerHTML=`<b>${type==='horse'?'馬':'騎手'}100種図鑑</b> / 30回UR以上保証 / 100回SPECIAL保証 / 重複救済 ${F.gacha.dupePoints||0}pt / 次UR天井 ${30-(count%30)||30}回 / 次SPECIAL天井 ${100-(count%100)||100}回`}};
+ const reveal=document.getElementById('reveal');if(reveal)new MutationObserver(()=>{if(!lastGacha||!reveal.classList.contains('on'))return;const h=reveal.querySelector('h2');if(h&&!reveal.querySelector('.fusionNewFlag')){const x=document.createElement('div');x.className='fusionNewFlag';x.style.cssText='margin-top:6px;font-weight:1000;color:#ffe17d';x.textContent=lastGacha.owned?'重複 / 救済 +10pt':'NEW';h.after(x);lastGacha=null}}).observe(reveal,{childList:true,subtree:true,attributes:true});
+ // Seat definitions: 1-5 / A-E, 50 minutes + 10 minute overrun grace note.
+ try{if(Array.isArray(seatDefs)){seatDefs.splice(0,seatDefs.length,...['1','2','3','4','5','A','B','C','D','E'].map(x=>[x,'空席']))}}
+ catch(_){ }
+ const _ensureSeatTimes=ensureSeatTimes;
+ ensureSeatTimes=function(){const s=document.getElementById('seatStart'),e=document.getElementById('seatEnd');if(!s||!e)return;if(!s.value){const a=new Date(Date.now()+10*60000);a.setSeconds(0,0);s.value=localDateTimeValue(a)}if(!e.value){const a=new Date(new Date(s.value).getTime()+50*60000);e.value=localDateTimeValue(a)}};
+ const seatGrid=document.getElementById('seatGrid');if(seatGrid){const note=document.createElement('div');note.className='fusionSeatNote';note.textContent='1〜5 / A〜E　基本50分。10分超過時は自動延長扱い。複数席運用は管理側の確定状態を正とします。';seatGrid.insertAdjacentElement('afterend',note)}
+ // Final/qualifier bet minimum guard; normal race remains BET120 seconds.
+ const betBtn=document.getElementById('betBtn');if(betBtn)betBtn.addEventListener('click',e=>{const mode=currentMode();const min=mode==='FINAL'?50:mode==='QUALIFIER'?15:5;if(Number(stake)<min){e.stopImmediatePropagation();e.preventDefault();toast(`${mode==='FINAL'?'FINAL':'予選'}は最低BET ${min}G`)}},true);
+ // Safe backup excludes credentials, session, GPS session and seat payment data.
+ function exportObj(){return {schema:'GOLDEN_HORSE_SAFE_BACKUP_V5',exportedAt:new Date().toISOString(),game:{horseLv:state.horseLv,horseExp:state.horseExp,speed:state.speed,stamina:state.stamina,finish:state.finish,guts:state.guts,jockeyLv:state.jockeyLv,jockeyTech:state.jockeyTech,jockeyStart:state.jockeyStart,equippedSupport:state.equippedSupport,equippedGear:state.equippedGear,gachaOwned:state.gachaOwned,cards:state.cards},fusion:F}}
+ function setBackupText(o){const e=document.getElementById('fusionBackupText');if(e)e.value=JSON.stringify(o,null,2)}
+ document.getElementById('fusionExport')?.addEventListener('click',()=>{const o=exportObj();setBackupText(o);const blob=new Blob([JSON.stringify(o,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='golden-horse-safe-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);safeText('#fusionBackupLog','安全バックアップを書き出しました。認証情報・席支払情報は含みません。')});
+ document.getElementById('fusionCopy')?.addEventListener('click',async()=>{const t=document.getElementById('fusionBackupText')?.value||JSON.stringify(exportObj(),null,2);try{await navigator.clipboard.writeText(t);safeText('#fusionBackupLog','JSONをコピーしました。')}catch(_){setBackupText(exportObj());safeText('#fusionBackupLog','クリップボード不可のため欄へ表示しました。')}});
+ document.getElementById('fusionImportFile')?.addEventListener('change',async e=>{const f=e.target.files?.[0];if(f)document.getElementById('fusionBackupText').value=await f.text()});
+ document.getElementById('fusionRestore')?.addEventListener('click',()=>{try{const o=JSON.parse(document.getElementById('fusionBackupText').value);if(o.schema!=='GOLDEN_HORSE_SAFE_BACKUP_V5')throw new Error('形式が違います');const g=o.game||{};for(const k of ['horseLv','horseExp','speed','stamina','finish','guts','jockeyLv','jockeyTech','jockeyStart','equippedSupport','equippedGear','gachaOwned','cards'])if(g[k]!==undefined)state[k]=g[k];if(o.fusion){F=Object.assign(F,o.fusion);window.GH_FUSION_V5=F}persist();save();renderAll();renderTour();renderHistory();safeText('#fusionBackupLog','復元しました。ログイン情報・席支払情報は変更していません。')}catch(e){safeText('#fusionBackupLog','復元できません: '+e.message)}});
+ // GPS 50m policy remains server-authoritative in production; expose the protected config for admin compatibility only.
+ const DEFAULT_GEOFENCE={label:'ファミリーマート姫路塩町店',lat:34.83153168,lon:134.68661528,radius:50,enabled:true};
+ if(!localStorage.getItem('GH_SHARED_GEOFENCE_V1'))localStorage.setItem('GH_SHARED_GEOFENCE_V1',JSON.stringify(DEFAULT_GEOFENCE));
+ window.GH_FUSION_GEOFENCE_V5=DEFAULT_GEOFENCE;
+ // Persistent security + no client result authority; preserve V3's nonce/device/correlation guard.
+ window.GH_SECURITY_POLICY_V5=Object.freeze({serverAuthority:true,deviceBinding:true,nonce:true,correlationId:true,duplicateGuard:true,replayGuard:true,clientGoldAuthoritative:false,clientResultAuthoritative:false,visualSecurityPanel:true});
+ renderTour();renderHistory();renderHome();renderJockey();renderHorse();renderGachaCollection();renderSeats();persist();
+})();
+</script>
+
+<style id="gh-v6-master-polish-style">#raceScreen .nameTag{opacity:.38;transform:translateY(2px);transition:opacity .25s ease,transform .25s ease;max-width:118px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#raceScreen.sprint .nameTag,#raceScreen.photo .nameTag,#raceScreen.photoApproach .nameTag{opacity:.86;transform:translateY(0)}#runners .runner:nth-child(1),#runners .runner:nth-child(2){filter:drop-shadow(0 15px 10px #000d) saturate(.96) contrast(1.08)}#runners .runner:nth-child(6),#runners .runner:nth-child(7){filter:drop-shadow(0 10px 7px #000b) saturate(.84) contrast(1.03)}.trackGoalLine:after{height:1px!important;box-shadow:0 0 2px #fff8!important;opacity:.78!important}.trackGoalLine:before{width:5px!important;box-shadow:2px 4px 8px #000b!important}.raceHud{background:linear-gradient(180deg,rgba(2,8,14,.68),rgba(2,8,14,.18))!important;border-color:rgba(255,230,160,.14)!important;backdrop-filter:blur(7px)}.raceCommentary{max-width:min(92vw,820px);line-height:1.55}@media(max-width:560px){#raceScreen .nameTag{font-size:7px!important;max-width:86px}.trackGoalLine span{opacity:.82}.raceCommentary{font-size:10px!important}}</style>
+<script defer id="gh-v6-master-polish-script">
+(()=>{'use strict';
+ document.documentElement.dataset.ghMaster='v6';
+ // Keep development/build labels out of the player-facing UI while preserving internal metadata.
+ document.querySelectorAll('#gh50Badge,#gh2357Mark').forEach(el=>{if(el)el.style.display='none'});
+ // Add a safe restore hint only to the backup screen, not the race HUD.
+ const addHint=()=>{const host=document.querySelector('#backupV5 .fusionHero,#backupV5 .fusionBackupBox');if(host&&!document.getElementById('ghV6RecoveryHint')){const n=document.createElement('div');n.id='ghV6RecoveryHint';n.className='fusionLog';const count=(window.GH_MASTER_RECOVERY_V6?.()||[]).length;n.textContent=`自動復元ポイント ${count}件を端末内に保護。ゲーム本体・全国制覇データの直前状態を最大12件保持します。`;host.insertAdjacentElement('afterend',n)}};
+ document.addEventListener('click',e=>{if(e.target.closest('[data-page="backupV5"],button[data-page="backupV5"]'))setTimeout(addHint,60)},true);
+ setTimeout(addHint,500);
+})();
+</script>
+
+<style id="gh-v7-cinema-safe-style">#raceScreen{isolation:isolate}#raceScreen .runner:after{content:"";position:absolute;left:23%;right:8%;bottom:5%;height:10%;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.58),rgba(0,0,0,.18) 56%,transparent 74%);filter:blur(2.5px);transform:skewX(-12deg);opacity:.72;z-index:-1;pointer-events:none}#raceScreen.inGate .runner:after{opacity:.42;filter:blur(1.5px)}#raceScreen .runner svg{transition:filter .28s ease,opacity .28s ease}#raceScreen .runner[data-depth="far"] svg{filter:brightness(.91) saturate(.82) contrast(1.03)}#raceScreen .runner[data-depth="mid"] svg{filter:brightness(.97) saturate(.91) contrast(1.05)}#raceScreen .runner[data-depth="near"] svg{filter:brightness(1.02) saturate(.98) contrast(1.08)}#raceScreen .venueScenery svg{transition:transform 1.15s cubic-bezier(.22,.72,.18,1),filter .65s ease;transform-origin:center 58%;will-change:transform}#raceScreen[data-cinecam="gate"] .venueScenery svg{transform:scale(1.015) translateX(0)}#raceScreen[data-cinecam="corner"] .venueScenery svg{transform:scale(1.055) translateX(-1.2%)}#raceScreen[data-cinecam="back"] .venueScenery svg{transform:scale(1.035) translateX(.8%)}#raceScreen[data-cinecam="stretch"] .venueScenery svg{transform:scale(1.075) translateX(-2%)}#raceScreen[data-cinecam="finish"] .venueScenery svg{transform:scale(1.095) translateX(-2.8%);filter:brightness(.94) contrast(1.06)}#raceScreen .raceHud>div{box-shadow:0 8px 20px rgba(0,0,0,.28);border-color:rgba(91,215,255,.27)!important}#raceScreen.sprint .raceHud>div{background:rgba(2,10,17,.78)!important}#raceScreen .raceCommentary{border-color:rgba(255,219,111,.26)!important;background:linear-gradient(90deg,rgba(1,7,12,.87),rgba(7,20,30,.85))!important;box-shadow:0 12px 32px rgba(0,0,0,.35)!important}#finishOverlay .finishPanel{backdrop-filter:blur(12px);border-color:rgba(255,219,115,.48)!important}#finishOverlay .finishPlace.first{box-shadow:inset 0 0 0 1px rgba(255,228,139,.18),0 8px 22px rgba(0,0,0,.20)}#photoReview{backdrop-filter:blur(5px)}#raceScreen.photoFreeze:after{content:"FRAME LOCK";position:absolute;z-index:45;right:12px;bottom:78px;padding:4px 7px;border-radius:999px;border:1px solid rgba(255,231,159,.36);background:rgba(4,10,15,.68);color:#ffe7a5;font:900 7px/1.2 system-ui;letter-spacing:.18em}#raceScreen .trackGoalLine span{letter-spacing:.12em}@media(max-width:560px){#raceScreen .runner:after{bottom:7%;height:8%}#raceScreen.photoFreeze:after{right:8px;bottom:72px}.raceHud{left:7px!important;right:7px!important}.raceHud>div{padding:7px 8px!important}.dist b{font-size:23px!important}}</style>
+<script defer id="gh-v7-cinema-safe-script">
+(()=>{'use strict';
+ document.documentElement.dataset.ghMaster='v7';
+ const race=document.getElementById('raceScreen');
+ const phase=document.getElementById('racePhase');
+ // Keep the original detailed horse+jockey art. Only add lane depth metadata for lighting/shadow.
+ const oldBuild=window.buildRaceUI;
+ if(typeof oldBuild==='function') window.buildRaceUI=function(){
+   const r=oldBuild.apply(this,arguments);
+   for(let i=1;i<=7;i++){
+     const el=document.getElementById('runner'+i);if(!el)continue;
+     el.dataset.depth=i<=2?'far':i<=5?'mid':'near';
+     el.setAttribute('aria-label',`${i}番 ${window.HORSES?.[i-1]?.[0]||''}`.trim());
+   }
+   return r;
+ };
+ // Photo finish is reserved for a genuinely planned close contest between the top two.
+ const oldPlan=window.makeRacePlan;
+ if(typeof oldPlan==='function') window.makeRacePlan=function(){
+   oldPlan.apply(this,arguments);
+   try{
+     const a=raceState.order?.[0],b=raceState.order?.[1];
+     const ma=HORSE_META[a-1],mb=HORSE_META[b-1];
+     const sa=Number(ma?.ability||80)+Number(ma?.stamina||80)+Number(ma?.harmony||80)+Number(ma?.jp||80);
+     const sb=Number(mb?.ability||80)+Number(mb?.stamina||80)+Number(mb?.harmony||80)+Number(mb?.jp||80);
+     const diff=Math.abs(sa-sb);
