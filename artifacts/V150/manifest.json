@@ -1,0 +1,32 @@
+{
+  "artifact": "GoldenHorse_V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01.zip",
+  "encoding": "base64 concatenated in part number order",
+  "decoded_sha256": "bdf81f33c739272765fafe4f710d5234e5b64dede2b2592e4271825e4eabf270",
+  "decoded_size_bytes": 918353,
+  "base64_chars": 1224472,
+  "chunk_size_chars": 350000,
+  "parts": [
+    {
+      "file": "part-00.b64",
+      "chars": 350000,
+      "sha256": "4c81d6a8b45453e018093c729945a9f8d016e23618c0a62dee030c0279a46f62"
+    },
+    {
+      "file": "part-01.b64",
+      "chars": 350000,
+      "sha256": "c400fe8d75040ec61f5d50964c31a9fbce1b2f5a1507fdc37351b9b8bc551cf1"
+    },
+    {
+      "file": "part-02.b64",
+      "chars": 350000,
+      "sha256": "968569889f763d00817e984ce3e9d609c6e5d9e87eb79991b73ad9f37df9131e"
+    },
+    {
+      "file": "part-03.b64",
+      "chars": 174472,
+      "sha256": "8b60d96956f90a0d520c3e8fdb6509f1611c9091d231c65e59b049a111ab1454"
+    }
+  ],
+  "reconstruct_unix": "cat part-*.b64 | base64 -d > GoldenHorse_V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01.zip",
+  "branch": "v150-working"
+}
