@@ -1,0 +1,36 @@
+{
+  "checkpoint": "V148_CHECKPOINT01_FINAL",
+  "created_jst": "2026-09-30",
+  "source": {
+    "index_file": "GoldenHorse_V148_CHECKPOINT01_FINAL_index.html",
+    "archive_file": "GoldenHorse_Friend_V148_20260930_CHECKPOINT01_FINAL.zip",
+    "index_size_bytes": 1815459,
+    "index_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+    "archive_sha256": "efbe0a77f2a53a9920af828228fea64bffcf2c49ebd940520de20a3e28d657fb"
+  },
+  "rollback": {
+    "version": "V147",
+    "index_sha256": "872d8a895377fdd7b958150d00077d48d715b49af994f2f51d8f1b4b2d81b272",
+    "archive_sha256": "10e2a04f9d281c77e9ecbad212fa970a2879b57db6e0a064d2a8d008a016aca5"
+  },
+  "policy": {
+    "preserve_existing_features": true,
+    "additive_changes_only": true,
+    "do_not_replace_with_simplified_landing_page": true,
+    "do_not_modify_production_before_isolated_test": true
+  },
+  "fixed_invariants": {
+    "horses": 7,
+    "bet_seconds": 120,
+    "bet_skip": true,
+    "fixed_odds": true,
+    "race_seconds_target": "30-40",
+    "result_seconds_target": 7,
+    "photo_finish": true,
+    "final_countdown_seconds": 10,
+    "fanfare_complete_then_silence_ms": 700,
+    "commentary_event_sync": true
+  },
+  "next_working_rule": "V148 is the current additive baseline. Any next version must be V149+ and preserve V148 completely before enhancement.",
+  "production_modified": false
+}
