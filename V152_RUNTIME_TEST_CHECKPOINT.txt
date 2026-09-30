@@ -1,0 +1,5 @@
+GOLDEN HORSE V152 runtime test checkpoint
+Base: V152_SEVEN_HORSE_FANFARE_600_SYNC_DEV
+Expected size: 2032334 bytes
+Expected SHA-256: cdc7d414a432ac31567695754690e75a79c2510424f0f754e4187aa113fc028c
+Purpose: isolated HTTPS runtime validation only. Production/main and Supabase must remain unchanged.
