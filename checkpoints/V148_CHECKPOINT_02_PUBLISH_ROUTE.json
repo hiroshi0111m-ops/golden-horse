@@ -1,0 +1,36 @@
+{
+  "checkpoint": "V148_CHECKPOINT_02_PUBLISH_ROUTE",
+  "date_jst": "2026-09-30",
+  "branch": "work/v148",
+  "status": "SOURCE_VERIFIED_PUBLISH_ROUTE_SWITCH",
+  "canonical_source": {
+    "version": "V148_CHECKPOINT_01_FINAL",
+    "index_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+    "zip_sha256": "efbe0a77f2a53a9920af828228fea64bffcf2c49ebd940520de20a3e28d657fb",
+    "library_zip_id": "libfile_0339b429851881918a054d63176a669a",
+    "library_index_id": "libfile_76e4e9cb4adc819181409a6f4aea51af"
+  },
+  "verification": {
+    "regression_tests": "8/8 PASS",
+    "guest_contract": "11/11 PASS",
+    "javascript_syntax_failures": 0,
+    "duplicate_dom_ids": 0,
+    "browser_e2e": "PENDING_PUBLIC_V148_URL"
+  },
+  "publish_attempts": [
+    {
+      "route": "ShipStatic MCP direct full HTML transfer",
+      "result": "BLOCKED_BY_PLATFORM_SAFETY_CHECK",
+      "retry_same_route": false
+    },
+    {
+      "route": "PageShare MCP direct full HTML transfer",
+      "result": "BLOCKED_BY_PLATFORM_SAFETY_CHECK",
+      "retry_same_route": false
+    }
+  ],
+  "production": "UNCHANGED",
+  "current_public_test": "https://golden-horse-integrated56-test.netlify.app",
+  "current_public_test_is_v148": false,
+  "next": "Use a different non-destructive publication route; keep V147 stable and V148 isolated."
+}
