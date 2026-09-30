@@ -1,0 +1,94 @@
+--- GoldenHorse_V149_CINEMA_GOLD_CHECKPOINT01_index.html
++++ GoldenHorse_V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01_index.html
+@@ -9840,8 +9840,9 @@
+ @media(max-width:430px){#gh-v141-betbar{position:sticky;bottom:8px;z-index:40}#gh-v141-betbar b{font-size:12px}#gh-v141-betbar strong{font-size:14px}}
+ </style>
+ <script id="gh-v141-script">(()=>{'use strict';const BUILD='V141-BET-COMMANDER';function init(){const panel=document.querySelector('#home .betPanel'),btn=document.getElementById('betBtn');if(!panel||!btn||document.getElementById('gh-v141-betbar'))return;const bar=document.createElement('div');bar.id='gh-v141-betbar';bar.innerHTML='<div><small>BET COMMAND / 選択内容</small><b id="gh-v141-choice">未選択</b></div><strong id="gh-v141-total">MY BET 0G</strong>';panel.insertAdjacentElement('afterend',bar);const modal=document.createElement('div');modal.id='gh-v141-confirm';modal.innerHTML='<div class="card" role="dialog" aria-modal="true" aria-labelledby="gh-v141-title"><h3 id="gh-v141-title">投票内容を確認</h3><p>確定前に、券種・馬・購入Goldを確認してください。</p><div class="sum" id="gh-v141-confirm-sum"></div><div class="actions"><button type="button" id="gh-v141-back">戻る</button><button type="button" class="ok" id="gh-v141-ok">この内容で追加</button></div></div>';document.body.appendChild(modal);let armed=false;function active(){try{return (state.raceBets||[]).filter(x=>!x.status||x.status==='active')}catch(_){return[]}}function update(){let type='';try{type=String(betType||'')}catch(_){}let sel=[];try{sel=[...(betSelections||[])]}catch(_){}let st=0;try{st=Number(stake||0)}catch(_){}const need=(typeof PICK_RULES==='object'&&PICK_RULES[type])||1,ready=sel.length===need;const label=sel.length?(type==='3連単'?sel.map((n,i)=>(i+1)+'着'+n+'番').join(' → '):sel.join('-')+'番'):'馬を選択';document.getElementById('gh-v141-choice').textContent=(type||'券種')+'｜'+label+'｜'+st+'G';const bs=active(),total=bs.reduce((a,b)=>a+Number(b.stake||0),0);document.getElementById('gh-v141-total').textContent='MY BET '+total.toLocaleString('ja-JP')+'G';btn.classList.toggle('gh-v141-ready',ready);btn.classList.toggle('gh-v141-notready',!ready);btn.setAttribute('aria-label',ready?`${type} ${label} ${st}Gold を投票に追加`:`${type}の馬を${need}頭選択してください`)}
+-const observer=new MutationObserver(update);observer.observe(document.getElementById('home'),{subtree:true,childList:true,attributes:true});document.addEventListener('click',e=>{if(e.target.closest('#gh-v141-back')){modal.classList.remove('on');return}if(e.target.closest('#gh-v141-ok')){modal.classList.remove('on');armed=true;btn.click();queueMicrotask(()=>armed=false);return}if(!e.target.closest('#betBtn')||armed)return;let type='';try{type=String(betType||'')}catch(_){}let sel=[];try{sel=[...(betSelections||[])]}catch(_){}let st=0;try{st=Number(stake||0)}catch(_){}const need=(typeof PICK_RULES==='object'&&PICK_RULES[type])||1;if(sel.length!==need)return;const label=type==='3連単'?sel.map((n,i)=>(i+1)+'着'+n+'番').join(' → '):sel.join('-')+'番';document.getElementById('gh-v141-confirm-sum').textContent=`${type}｜${label}｜${st}G`;modal.classList.add('on');e.preventDefault();e.stopImmediatePropagation()},true);update();window.GH_V141=Object.freeze({version:BUILD,get report(){return{activeBets:active().length,totalStake:active().reduce((a,b)=>a+Number(b.stake||0),0),confirmationGuard:true,settlementUntouched:true,rollback:'index.V140-ROLLBACK.html'}}});document.documentElement.dataset.ghVersion='V141'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init()})();</script>
++const observer=new MutationObserver(()=>queueMicrotask(update));const gh141Selection=document.getElementById('selectionSummary'),gh141Slips=document.getElementById('betSlips');if(gh141Selection)observer.observe(gh141Selection,{subtree:true,childList:true,characterData:true});if(gh141Slips)observer.observe(gh141Slips,{subtree:true,childList:true,characterData:true});document.addEventListener('click',e=>{setTimeout(update,0);if(e.target.closest('#gh-v141-back')){modal.classList.remove('on');return}if(e.target.closest('#gh-v141-ok')){modal.classList.remove('on');armed=true;btn.click();queueMicrotask(()=>armed=false);return}if(!e.target.closest('#betBtn')||armed)return;let type='';try{type=String(betType||'')}catch(_){}let sel=[];try{sel=[...(betSelections||[])]}catch(_){}let st=0;try{st=Number(stake||0)}catch(_){}const need=(typeof PICK_RULES==='object'&&PICK_RULES[type])||1;if(sel.length!==need)return;const label=type==='3連単'?sel.map((n,i)=>(i+1)+'着'+n+'番').join(' → '):sel.join('-')+'番';document.getElementById('gh-v141-confirm-sum').textContent=`${type}｜${label}｜${st}G`;modal.classList.add('on');e.preventDefault();e.stopImmediatePropagation()},true);update();window.GH_V141=Object.freeze({version:BUILD,get report(){return{activeBets:active().length,totalStake:active().reduce((a,b)=>a+Number(b.stake||0),0),confirmationGuard:true,settlementUntouched:true,rollback:'index.V140-ROLLBACK.html'}}});document.documentElement.dataset.ghVersion='V141'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init()})();</script>
+ <!-- GH_V141_END -->
++<!-- GH_V150_FIX7_MOBILE_FREEZE_PORT: V141 observer narrowed to selectionSummary/betSlips; no race/BET settlement logic changed. -->
+ <!-- GH_V143_LINE_FIRST_QUALITY: LINE/webview lifecycle + safe viewport + friend-share + silent QA; settlement untouched -->
+ <style id="gh-v143-style">
+ :root{--gh143-vh:1vh}
+@@ -10499,6 +10500,72 @@
+ window.GH_V148=Object.freeze({version:'V148',scope:'source-level duplicate DOM id integrity',duplicateIdsAtBoot:duplicateIds,v147Preserved:!!window.GH_V147,productionUntouched:true,goldUntouched:true,memberDataUntouched:true,rollback:'index.V147-ROLLBACK.html'});
+ document.documentElement.dataset.ghVersion='V148';
+ })();</script>
++
++<!-- GH_V150_FIX9_GUEST_RACE_ENTRY_PORT_BEGIN -->
++<!-- Ported from validated FIX9. Guest/demo only; member auth path remains untouched. -->
++<style id="gh-fix9-race-entry-style">
++#ghFix9Entry{position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.78);backdrop-filter:blur(6px)}
++#ghFix9Entry.on{display:flex}
++#ghFix9EntryCard{width:min(420px,94vw);border:1px solid #d4a94d;border-radius:20px;background:linear-gradient(180deg,#1b1206,#090806 68%,#05080b);box-shadow:0 24px 70px #000;padding:18px;color:#fff4d2;text-align:center}
++#ghFix9EntryCard small{display:block;color:#d7ad55;font-weight:900;letter-spacing:.12em;margin-bottom:8px}
++#ghFix9EntryCard h2{margin:0 0 8px;font:900 26px/1.25 "Noto Serif JP",serif;color:#ffe39a}
++#ghFix9EntryCard p{margin:0 0 14px;color:#e8dcc2;font-size:13px;line-height:1.7}
++#ghFix9EntryCard .ghFix9Actions{display:grid;gap:9px}
++#ghFix9EntryCard button{min-height:52px;border-radius:13px;font-weight:1000}
++#ghFix9Go{border:1px solid #ffe094;background:linear-gradient(#ffec9c,#d99b2d);color:#2a1700}
++#ghFix9Cancel{border:1px solid #705b34;background:#17130c;color:#f3dfb0}
++</style>
++<div id="ghFix9Entry" role="dialog" aria-modal="true" aria-labelledby="ghFix9Title" hidden>
++  <div id="ghFix9EntryCard">
++    <small>GUEST RACE ENTRY</small>
++    <h2 id="ghFix9Title">ゲストでレースへ</h2>
++    <p>会員登録なし。1,000GからBET画面へ進みます。</p>
++    <div class="ghFix9Actions">
++      <button id="ghFix9Go" type="button">ゲストでレースへ進む</button>
++      <button id="ghFix9Cancel" type="button">閉じる</button>
++    </div>
++  </div>
++</div>
++<script id="gh-fix9-race-entry-script">
++(()=>{'use strict';
++ const modal=document.getElementById('ghFix9Entry');
++ const go=document.getElementById('ghFix9Go');
++ const cancel=document.getElementById('ghFix9Cancel');
++ if(!modal||!go||!cancel)return;
++ const show=()=>{modal.hidden=false;modal.classList.add('on');};
++ const hide=()=>{modal.classList.remove('on');modal.hidden=true;};
++ document.addEventListener('click',e=>{
++   const b=e.target?.closest?.('[data-page="startPage"]');
++   if(!b)return;
++   let demo=false;try{demo=!!GH_DEMO}catch(_){}
++   if(!demo)return;
++   const home=document.getElementById('home');
++   if(!home?.classList.contains('active'))return;
++   e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();show();
++ },true);
++ cancel.addEventListener('click',e=>{e.preventDefault();hide()});
++ go.addEventListener('click',e=>{
++   e.preventDefault();e.stopPropagation();
++   try{
++     state.gold=1000;
++     save();
++     renderHome();
++     ensureAudio();
++     startCountdown(true);
++     hide();
++     document.querySelector('#home .raceCard')?.scrollIntoView({block:'start',behavior:'auto'});
++     toast('ゲスト体験 1,000G（端末内のみ）');
++     document.documentElement.dataset.ghFix9Entry='bet-ready';
++   }catch(err){
++     console.error('GH_FIX9_ENTRY',err);
++     hide();
++     try{toast('レース入口を再読み込みしてください')}catch(_){}
++   }
++ });
++ document.documentElement.dataset.ghFix9='android-entry-lite';
++})();
++</script>
++<!-- GH_V150_FIX9_GUEST_RACE_ENTRY_PORT_END -->
+ 
+ <!-- GH_V149_CINEMA_GOLD_VISUAL_UPGRADE_START
+ BASELINE_SHA256=a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711
+@@ -10590,3 +10657,7 @@
+ })();
+ </script>
+ <!-- GH_V149_CINEMA_GOLD_VISUAL_UPGRADE_END -->
++
++<!-- GH_V150_CHECKPOINT_MARKER_BEGIN -->
++<script id="gh-v150-checkpoint-marker">(()=>{'use strict';const mark=()=>{document.documentElement.dataset.ghBuild='V150-MOBILE-STABILITY-CINEMA-GOLD';window.GH_V150_CHECKPOINT=Object.freeze({build:'V150-MOBILE-STABILITY-CINEMA-GOLD-CHECKPOINT01',baseline:'V149-CINEMA-GOLD-CHECKPOINT01',fix7ObserverPort:true,fix9GuestEntryPort:true,sevenHorses:true,betSeconds:120,skip:true,fixedOdds:true,coreRulesUntouched:true,productionModified:false})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mark,{once:true});else mark()})();</script>
++<!-- GH_V150_CHECKPOINT_MARKER_END -->
