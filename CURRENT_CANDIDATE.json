@@ -1,0 +1,18 @@
+{
+  "name": "GOLDEN_HORSE_CURRENT_CANDIDATE",
+  "candidate": "V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01",
+  "candidate_library": "/ゴールデンホースゲーム本体/GOLDEN_HORSE_V150_CHECKPOINT_01/index.html",
+  "candidate_zip": "/ゴールデンホースゲーム本体/GOLDEN_HORSE_V150_CHECKPOINT_01/GoldenHorse_V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01.zip",
+  "candidate_sha256": "5c6ba2099b92825f8f7f3e3d7cb2d91417ebbe13de389ccc329853b9ba211763",
+  "zip_sha256": "bdf81f33c739272765fafe4f710d5234e5b64dede2b2592e4271825e4eabf270",
+  "rollback": "V149_CINEMA_GOLD_CHECKPOINT01",
+  "github_branch": "v150-working",
+  "github_checkpoint_commit": "d97e5353a5932b517b9af786d80ce1fda793f4dd",
+  "github_patch_commit": "ba5436d30f7244dce1daf536632ade5ca2533c64",
+  "test_url": null,
+  "browser_runtime": "PENDING_ISOLATED_DEPLOY",
+  "static_js_syntax": "185/185 PASS",
+  "production_modified": false,
+  "supabase_modified": false,
+  "notes": "V149 luxury visuals preserved. FIX7 mobile MutationObserver freeze fix and FIX9 guest race-entry path restored additively. Production remains unchanged."
+}
