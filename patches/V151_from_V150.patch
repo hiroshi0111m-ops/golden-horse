@@ -1,0 +1,41 @@
+--- GoldenHorse_V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01_index.html
++++ GoldenHorse_V151_MOBILE_NAV_STABILITY_CINEMA_GOLD_CHECKPOINT01_index.html
+@@ -581,7 +581,9 @@
+   function rescuePage(id){
+     const target=document.getElementById(id);
+     if(!target)return false;
+-    document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
++    // FIX8 / Android: only touch screens that are currently active.
++    // Avoid mass class churn while preserving real page navigation.
++    document.querySelectorAll('.screen.active').forEach(el=>{if(el!==target)el.classList.remove('active')});
+     target.classList.add('active');
+     try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(_){try{window.scrollTo(0,0)}catch(__){}}
+     return true;
+@@ -591,7 +593,10 @@
+     if(!el)return;
+     const id=el.getAttribute('data-page');
+     if(!id||!document.getElementById(id))return;
+-    // Rescue navigation runs before the large game script. The normal handler may still render content afterwards.
++    // FIX8: do NOT hijack the HOME "レースへ" button.
++    // The normal game handler performs ensureGameAllowed() and then page('startPage').
++    if(id==='startPage')return;
++    // Other pages retain early rescue navigation, but only active screens are changed.
+     rescuePage(id);
+   },true);
+   window.__gh2330RescuePage=rescuePage;
+@@ -9842,6 +9847,7 @@
+ <script id="gh-v141-script">(()=>{'use strict';const BUILD='V141-BET-COMMANDER';function init(){const panel=document.querySelector('#home .betPanel'),btn=document.getElementById('betBtn');if(!panel||!btn||document.getElementById('gh-v141-betbar'))return;const bar=document.createElement('div');bar.id='gh-v141-betbar';bar.innerHTML='<div><small>BET COMMAND / 選択内容</small><b id="gh-v141-choice">未選択</b></div><strong id="gh-v141-total">MY BET 0G</strong>';panel.insertAdjacentElement('afterend',bar);const modal=document.createElement('div');modal.id='gh-v141-confirm';modal.innerHTML='<div class="card" role="dialog" aria-modal="true" aria-labelledby="gh-v141-title"><h3 id="gh-v141-title">投票内容を確認</h3><p>確定前に、券種・馬・購入Goldを確認してください。</p><div class="sum" id="gh-v141-confirm-sum"></div><div class="actions"><button type="button" id="gh-v141-back">戻る</button><button type="button" class="ok" id="gh-v141-ok">この内容で追加</button></div></div>';document.body.appendChild(modal);let armed=false;function active(){try{return (state.raceBets||[]).filter(x=>!x.status||x.status==='active')}catch(_){return[]}}function update(){let type='';try{type=String(betType||'')}catch(_){}let sel=[];try{sel=[...(betSelections||[])]}catch(_){}let st=0;try{st=Number(stake||0)}catch(_){}const need=(typeof PICK_RULES==='object'&&PICK_RULES[type])||1,ready=sel.length===need;const label=sel.length?(type==='3連単'?sel.map((n,i)=>(i+1)+'着'+n+'番').join(' → '):sel.join('-')+'番'):'馬を選択';document.getElementById('gh-v141-choice').textContent=(type||'券種')+'｜'+label+'｜'+st+'G';const bs=active(),total=bs.reduce((a,b)=>a+Number(b.stake||0),0);document.getElementById('gh-v141-total').textContent='MY BET '+total.toLocaleString('ja-JP')+'G';btn.classList.toggle('gh-v141-ready',ready);btn.classList.toggle('gh-v141-notready',!ready);btn.setAttribute('aria-label',ready?`${type} ${label} ${st}Gold を投票に追加`:`${type}の馬を${need}頭選択してください`)}
+ const observer=new MutationObserver(()=>queueMicrotask(update));const gh141Selection=document.getElementById('selectionSummary'),gh141Slips=document.getElementById('betSlips');if(gh141Selection)observer.observe(gh141Selection,{subtree:true,childList:true,characterData:true});if(gh141Slips)observer.observe(gh141Slips,{subtree:true,childList:true,characterData:true});document.addEventListener('click',e=>{setTimeout(update,0);if(e.target.closest('#gh-v141-back')){modal.classList.remove('on');return}if(e.target.closest('#gh-v141-ok')){modal.classList.remove('on');armed=true;btn.click();queueMicrotask(()=>armed=false);return}if(!e.target.closest('#betBtn')||armed)return;let type='';try{type=String(betType||'')}catch(_){}let sel=[];try{sel=[...(betSelections||[])]}catch(_){}let st=0;try{st=Number(stake||0)}catch(_){}const need=(typeof PICK_RULES==='object'&&PICK_RULES[type])||1;if(sel.length!==need)return;const label=type==='3連単'?sel.map((n,i)=>(i+1)+'着'+n+'番').join(' → '):sel.join('-')+'番';document.getElementById('gh-v141-confirm-sum').textContent=`${type}｜${label}｜${st}G`;modal.classList.add('on');e.preventDefault();e.stopImmediatePropagation()},true);update();window.GH_V141=Object.freeze({version:BUILD,get report(){return{activeBets:active().length,totalStake:active().reduce((a,b)=>a+Number(b.stake||0),0),confirmationGuard:true,settlementUntouched:true,rollback:'index.V140-ROLLBACK.html'}}});document.documentElement.dataset.ghVersion='V141'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init()})();</script>
+ <!-- GH_V141_END -->
++<!-- GH_V151_FIX8_NAV_RESCUE_PORT: Only active screens are changed; HOME startPage remains under the normal/guest race-entry path. -->
+ <!-- GH_V150_FIX7_MOBILE_FREEZE_PORT: V141 observer narrowed to selectionSummary/betSlips; no race/BET settlement logic changed. -->
+ <!-- GH_V143_LINE_FIRST_QUALITY: LINE/webview lifecycle + safe viewport + friend-share + silent QA; settlement untouched -->
+ <style id="gh-v143-style">
+@@ -10661,3 +10667,7 @@
+ <!-- GH_V150_CHECKPOINT_MARKER_BEGIN -->
+ <script id="gh-v150-checkpoint-marker">(()=>{'use strict';const mark=()=>{document.documentElement.dataset.ghBuild='V150-MOBILE-STABILITY-CINEMA-GOLD';window.GH_V150_CHECKPOINT=Object.freeze({build:'V150-MOBILE-STABILITY-CINEMA-GOLD-CHECKPOINT01',baseline:'V149-CINEMA-GOLD-CHECKPOINT01',fix7ObserverPort:true,fix9GuestEntryPort:true,sevenHorses:true,betSeconds:120,skip:true,fixedOdds:true,coreRulesUntouched:true,productionModified:false})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mark,{once:true});else mark()})();</script>
+ <!-- GH_V150_CHECKPOINT_MARKER_END -->
++
++<!-- GH_V151_CHECKPOINT_MARKER_BEGIN -->
++<script id="gh-v151-checkpoint-marker">(()=>{'use strict';const mark=()=>{document.documentElement.dataset.ghBuild='V151-MOBILE-NAV-STABILITY-CINEMA-GOLD';window.GH_V151_CHECKPOINT=Object.freeze({build:'V151-MOBILE-NAV-STABILITY-CINEMA-GOLD-CHECKPOINT01',baseline:'V150',fix8NavPort:true,fix7ObserverPort:true,fix9GuestEntryPort:true,coreRulesUntouched:true,productionModified:false})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mark,{once:true});else mark()})();</script>
++<!-- GH_V151_CHECKPOINT_MARKER_END -->
