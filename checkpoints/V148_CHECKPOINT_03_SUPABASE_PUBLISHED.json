@@ -1,0 +1,57 @@
+{
+  "checkpoint": "V148_CHECKPOINT_03_SUPABASE_PUBLISHED",
+  "date_jst": "2026-09-30",
+  "branch": "work/v148",
+  "status": "PUBLIC_TEST_URL_ACTIVE",
+  "source": {
+    "version": "V148_CHECKPOINT_01_FINAL",
+    "index_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+    "index_size_bytes": 1815459,
+    "gzip_sha256": "650bbe0278dda1545260aefcde60d538798caac0d5fbcd43b8bfc787447565be",
+    "gzip_size_bytes": 756865,
+    "github_payload_branch": "test/v148-replit",
+    "github_payload_commit": "27347ea4781bd136ca87f482c15a3f107d053344"
+  },
+  "public_test": {
+    "provider": "Supabase Edge Functions",
+    "project_id": "gjervciimdspllsxkvow",
+    "function_slug": "golden-horse-v148-test",
+    "function_id": "b409affc-6ac4-49f6-9b5b-80a296308e41",
+    "function_version": 1,
+    "url": "https://gjervciimdspllsxkvow.supabase.co/functions/v1/golden-horse-v148-test",
+    "verify_jwt": false,
+    "production_site_modified": false
+  },
+  "runtime_verification": {
+    "external_fetch": "PASS",
+    "returned_game_content": true,
+    "visible_contracts": [
+      "7 horses",
+      "BET countdown 120 seconds",
+      "guest 1000G messaging",
+      "PHOTO / RESULT UI",
+      "mobile Safari / Android Chrome guidance",
+      "race screen and mini map content"
+    ],
+    "integrity_gate": "function serves game only after gzip SHA-256, HTML SHA-256 and HTML size match",
+    "full_mobile_interaction_e2e": "PENDING_REAL_DEVICE_OR_BROWSER_AUTOMATION"
+  },
+  "failed_routes_recorded": [
+    "ShipStatic client-side loader not accepted as final route",
+    "PageShare free active-page limit",
+    "Vercel deployment connector unavailable",
+    "Replit requires active subscription",
+    "Lovable workspace has no credits",
+    "Netlify CLI timed out twice and deploy ID stayed unchanged",
+    "raw.githack/rawcdn interstitial warning",
+    "jsDelivr served HTML as code/text",
+    "GitHub HTML Preview did not directly execute target"
+  ],
+  "production": "UNCHANGED",
+  "next": [
+    "Run mobile interaction verification against Supabase V148 URL",
+    "Verify BET -> SKIP -> race -> PHOTO -> RESULT -> next race",
+    "Check audio unlock, orientation, repeated taps, reconnect and minimap synchronization",
+    "Save next checkpoint after runtime verification"
+  ]
+}
