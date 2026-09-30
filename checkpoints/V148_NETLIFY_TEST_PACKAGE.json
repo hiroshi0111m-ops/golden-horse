@@ -1,0 +1,15 @@
+{
+  "checkpoint": "V148_NETLIFY_TEST_PACKAGE",
+  "date_jst": "2026-09-30",
+  "source": "V148_CHECKPOINT_01_FINAL",
+  "package_name": "GOLDEN_HORSE_V148_NETLIFY_TEST.zip",
+  "package_sha256": "c37ab9b54fedb6f8d93d5ad0aa91718d120c5de023dac160f2217ee1956357fb",
+  "package_size_bytes": 756965,
+  "index_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+  "index_size_bytes": 1815459,
+  "zip_root_files": ["index.html"],
+  "library_path": "/ゴールデンホースゲーム本体/GOLDEN_HORSE_V148_NETLIFY_TEST.zip",
+  "library_file_id": "libfile_dacb152526c4819190a49554f8b02323",
+  "production": "UNCHANGED",
+  "purpose": "isolated V148 public mobile test"
+}
