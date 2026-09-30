@@ -1,0 +1,21 @@
+{
+  "checkpoint":"V148_CHECKPOINT_04_PAGESHARE_PREUPDATE",
+  "date_jst":"2026-09-30",
+  "target_site":{
+    "provider":"PageShare",
+    "site_id":"site_b068e4d0318441a5922b4d77d910a7a3",
+    "name":"GOLDEN HORSE RECOVERY DEV",
+    "url":"https://misty-horizon-1435.hosted.pageshare.ai",
+    "previous_version_id":"ver_8d99c12696914da48ff761dabdcadfc6",
+    "previous_version_number":1,
+    "previous_file_count":1,
+    "previous_total_bytes":953067
+  },
+  "source":{
+    "version":"V148_CHECKPOINT_01_FINAL",
+    "index_sha256":"a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+    "gzip_sha256":"650bbe0278dda1545260aefcde60d538798caac0d5fbcd43b8bfc787447565be"
+  },
+  "rollback":"Use PageShare version ver_8d99c12696914da48ff761dabdcadfc6 if V148 publish fails.",
+  "production":"UNCHANGED"
+}
