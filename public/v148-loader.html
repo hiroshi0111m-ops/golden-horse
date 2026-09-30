@@ -1,0 +1,23 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>GOLDEN HORSE V148 TEST</title>
+<style>html,body{margin:0;background:#050505;color:#d9b85b;font-family:system-ui,sans-serif;height:100%}#s{min-height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;box-sizing:border-box}.box{max-width:560px}.t{font-size:24px;font-weight:800}.p{margin-top:14px;color:#ddd;font-size:14px;line-height:1.7}.bar{height:4px;background:#252525;margin-top:20px;overflow:hidden}.bar i{display:block;height:100%;width:20%;background:#d9b85b;animation:a .8s infinite}@keyframes a{0%{transform:translateX(-100%)}100%{transform:translateX(520%)}}</style></head><body><div id="s"><div class="box"><div class="t">GOLDEN HORSE V148</div><div class="p" id="m">検証済みV148を読み込み中…</div><div class="bar"><i></i></div></div></div>
+<script>
+(async()=>{
+const m=document.getElementById('m');
+try{
+if(typeof DecompressionStream!=='function')throw new Error('このブラウザは圧縮展開に未対応です');
+const base='https://raw.githubusercontent.com/hiroshi0111m-ops/golden-horse/test/v148-replit/payload/v148/';
+const names=["part-00.b64","part-01.b64","part-02.b64","part-03.b64","part-04.b64","part-05.b64","part-06.b64","part-07.b64","part-08.b64","part-09.b64","part-10.b64","part-11.b64"];
+const texts=await Promise.all(names.map(async n=>{const r=await fetch(base+n,{cache:'no-store'});if(!r.ok)throw new Error(n+' '+r.status);return (await r.text()).trim()}));
+const bins=texts.map(s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)));
+let total=bins.reduce((a,b)=>a+b.length,0),gz=new Uint8Array(total),off=0;for(const b of bins){gz.set(b,off);off+=b.length}
+const gh=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',gz))).map(b=>b.toString(16).padStart(2,'0')).join('');
+if(gh!=='650bbe0278dda1545260aefcde60d538798caac0d5fbcd43b8bfc787447565be')throw new Error('gzip整合性エラー '+gh);
+const raw=new Uint8Array(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
+const hh=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw))).map(b=>b.toString(16).padStart(2,'0')).join('');
+if(hh!=='a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711')throw new Error('V148整合性エラー '+hh);
+if(raw.length!==1815459)throw new Error('V148サイズ不一致 '+raw.length);
+const html=new TextDecoder('utf-8',{fatal:true}).decode(raw);
+document.open();document.write(html);document.close();
+}catch(e){m.textContent='V148 起動失敗: '+(e&&e.message?e.message:String(e));document.querySelector('.bar')?.remove();console.error(e)}
+})();
+</script></body></html>
