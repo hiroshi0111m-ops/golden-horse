@@ -1,0 +1,36 @@
+{
+  "version": "V149_CINEMA_GOLD_CHECKPOINT01",
+  "created_jst": "2026-09-30",
+  "baseline_file": "GoldenHorse_V148_CHECKPOINT01_FINAL_index.html",
+  "baseline_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+  "output_file": "GoldenHorse_V149_CINEMA_GOLD_CHECKPOINT01_index.html",
+  "output_sha256": "a5d2233c16819299256de90dbc160b8b28db8a507436feb50a7a7174ebc87478",
+  "output_size_bytes": 2025779,
+  "change_type": "additive visual enhancement only",
+  "target_reference": "three user-provided GOLDEN HORSE black/gold cinematic UI concept images",
+  "preserved_invariants": [
+    "7 horses",
+    "BET 120 seconds",
+    "BET skip",
+    "fixed odds",
+    "race core timing",
+    "result timing",
+    "photo finish",
+    "10 second final countdown",
+    "fanfare then ~0.7s silence",
+    "event-synced commentary",
+    "security/demo API isolation"
+  ],
+  "enhancements": [
+    "black×gold cinema styling",
+    "reference-derived cinematic hero",
+    "premium gold panel frames",
+    "home menu luxury treatment",
+    "BET panel luxury treatment",
+    "race HUD/minimap/commentary gold treatment",
+    "photo-finish/result luxury treatment",
+    "mobile responsive refinements"
+  ],
+  "production_modified": false,
+  "baseline_overwritten": false
+}
