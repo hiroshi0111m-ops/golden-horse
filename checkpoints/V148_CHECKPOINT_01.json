@@ -1,0 +1,81 @@
+{
+  "checkpoint": "V148_CHECKPOINT_01",
+  "date_jst": "2026-09-30",
+  "branch": "work/v148",
+  "status": "VERIFIED_STATIC_AND_CONTRACT_BROWSER_E2E_PENDING",
+  "baseline": {
+    "version": "V147",
+    "archive_name": "GoldenHorse_Friend_V147_20260930-0556JST.zip",
+    "library_file_id": "libfile_a3a327563a3c81918e2c7a1508e12459",
+    "file_id": "file_00000000a7d081faaf7544da283c348e",
+    "index_sha256": "872d8a895377fdd7b958150d00077d48d715b49af994f2f51d8f1b4b2d81b272",
+    "zip_sha256": "10e2a04f9d281c77e9ecbad212fa970a2879b57db6e0a064d2a8d008a016aca5"
+  },
+  "v148": {
+    "index_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+    "zip_sha256": "34003703be60c597d085f709e0cf226c27613b87af6cc485a2e7f9b9838c3a77",
+    "zip_size_bytes": 17184072,
+    "changes": [
+      "source style id gh-v116-cinema-audio -> gh-v116-cinema-audio-style",
+      "source script id gh-v116-cinema-audio -> gh-v116-cinema-audio-script",
+      "V148 authority appended after V147 authority"
+    ]
+  },
+  "verification": {
+    "regression_tests": "8/8 PASS",
+    "v147_guest_distribution": "11/11 PASS",
+    "inline_scripts": 182,
+    "javascript_syntax_failures": 0,
+    "parsed_dom_ids": 535,
+    "duplicate_dom_ids": 0,
+    "v147_rollback_hash_match": true,
+    "secret_scan": {
+      "openai_keys": 0,
+      "github_tokens": 0,
+      "aws_access_keys": 0,
+      "private_keys": 0,
+      "bearer_tokens": 0,
+      "jwt_like": 0,
+      "supabase_urls": 0,
+      "api_key_assignments": 0
+    },
+    "browser_e2e": "UNVERIFIED_ENVIRONMENT",
+    "browser_environment_failures": [
+      "localhost route blocked by ERR_BLOCKED_BY_ADMINISTRATOR",
+      "direct Chromium set_content route ended with Playwright pipe EPIPE/time-out"
+    ]
+  },
+  "invariants": {
+    "horses": 7,
+    "bet_seconds": 120,
+    "bet_skip_preserved": true,
+    "fixed_odds_preserved": true,
+    "race_seconds": "30-40",
+    "result_seconds": 7,
+    "photo_finish_preserved": true,
+    "fanfare_then_silence_ms": 700,
+    "commentary_sync_preserved": true,
+    "guest_isolated_distribution": true,
+    "production_modified": false
+  },
+  "persistence": {
+    "github_patch": "patches/build_v148_from_v147.py",
+    "github_full_source": false,
+    "full_source_reason": "Connector text-read normalization prevented byte-exact 1.8 MB source upload; incomplete upload was deleted.",
+    "v147_library_baseline": true,
+    "drive": "BLOCKED_403",
+    "production": "UNCHANGED"
+  },
+  "current_public_test": {
+    "url": "https://golden-horse-integrated56-test.netlify.app",
+    "fixed_url": "https://6abbf079c1a8d85dcc0d08e4--golden-horse-integrated56-test.netlify.app",
+    "verified_build": "FRIEND-V107-RACE-FIRST-STABILITY",
+    "is_v148": false
+  },
+  "next": [
+    "Publish V148 only to a new isolated test URL",
+    "Run Android/iPhone mobile E2E on V148",
+    "Save next checkpoint only after public runtime verification",
+    "Do not overwrite production"
+  ]
+}
