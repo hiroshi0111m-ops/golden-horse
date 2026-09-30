@@ -1,0 +1,14 @@
+{
+  "project": "GOLDEN HORSE",
+  "current_stable": "V147",
+  "current_working": "V148_CHECKPOINT_01",
+  "working_branch": "work/v148",
+  "checkpoint_file": "checkpoints/V148_CHECKPOINT_01.json",
+  "reconstruction_patch": "patches/build_v148_from_v147.py",
+  "v148_index_sha256": "a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+  "v148_zip_sha256": "34003703be60c597d085f709e0cf226c27613b87af6cc485a2e7f9b9838c3a77",
+  "validation": "8/8 regression PASS; 11/11 guest contract PASS; duplicate DOM IDs 0; browser E2E pending",
+  "production": "UNCHANGED",
+  "public_test_build": "V107",
+  "resume_from": "Publish V148 to a new isolated test URL, then mobile E2E; do not overwrite production."
+}
