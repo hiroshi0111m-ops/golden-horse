@@ -1,0 +1,49 @@
+{
+  "checkpoint": "V151_MOBILE_NAV_STABILITY_CINEMA_GOLD_CHECKPOINT01",
+  "created_jst": "2026-09-30",
+  "baseline": {
+    "file": "GoldenHorse_V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01_index.html",
+    "sha256": "5c6ba2099b92825f8f7f3e3d7cb2d91417ebbe13de389ccc329853b9ba211763",
+    "size_bytes": 2030013
+  },
+  "output": {
+    "file": "GoldenHorse_V151_MOBILE_NAV_STABILITY_CINEMA_GOLD_CHECKPOINT01_index.html",
+    "sha256": "7523c9caecd5026392b710deef4888b3f02bf14f52708beb55800cecda18a6af",
+    "size_bytes": 2031052
+  },
+  "changes": [
+    "Port validated FIX8 navigation rescue: only active screens change",
+    "Do not pre-activate startPage from early rescue; normal/FIX9 race-entry path owns HOME race entry",
+    "Preserve V150 FIX7+FIX9 and V149 CINEMA GOLD visuals"
+  ],
+  "syntax": {
+    "inline_scripts_found": 186,
+    "node_checked": 186,
+    "failures": []
+  },
+  "static_invariant_checks": {
+    "seven_horses": true,
+    "bet_120": true,
+    "skip_10": true,
+    "photo_finish": true,
+    "result_7": true,
+    "fanfare_700": true,
+    "minimap": true,
+    "commentary": true,
+    "six_bets": true,
+    "stakes": true,
+    "fix7": true,
+    "fix8": true,
+    "fix9": true,
+    "v149_visual": true,
+    "v151_marker": true
+  },
+  "verification_scope": {
+    "static_and_js_syntax": "PASS",
+    "hosted_runtime": "PENDING_DEPLOY_ROUTE",
+    "smartphone_real_device": "PENDING"
+  },
+  "production_modified": false,
+  "supabase_modified": false,
+  "rollback": "V150_MOBILE_STABILITY_CINEMA_GOLD_CHECKPOINT01"
+}
