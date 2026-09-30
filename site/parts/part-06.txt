@@ -1,0 +1,1000 @@
+    &&whole.includes('FIXED_BET_SECONDS=120')
+    &&!!document.getElementById('skipBtn')
+    &&whole.includes('finalOddsSnapshot'),
+  version:VERSION,
+  bettingBgmMainGain:.038,
+  countdownPeakGain:.055,
+  bgmBelowCountdown:true,
+  activeRarityTiers:Object.keys(RANK),
+  legacyDisplayOnly:['SSR'],
+  dynamicServerRates:true,
+  oddsMutation:false,
+  resultMutation:false,
+  forbiddenMutationMarkers:bad
+ };
+}
+window.GH_V24_AUDIO_RARITY={version:VERSION,syncRarity,ensureGuide,annotateRarity,selfTest,get state(){return rarityState}};
+document.documentElement.dataset.ghV24='safe-audio-rarity-r1';
+})();
+</script>
+
+
+<style id="gh-v25-rarity-dex-style">#rarityDexSafe{background:radial-gradient(circle at 50% 0,#172438 0,#061019 40%,#020609 100%)}#ghV25RarityBody{padding:10px 12px 22px}.ghV25Hero{padding:15px;border-radius:18px;border:1px solid #8c7028;background:linear-gradient(180deg,#171205,#061019);box-shadow:0 18px 44px #0007}.ghV25Hero h2{margin:4px 0;color:#ffe7a0}.ghV25Hero p{margin:0;color:#8aaebe;font-size:9px;line-height:1.65}.ghV25RateTabs{display:flex;gap:6px;overflow:auto;margin-top:10px}.ghV25RateTabs button{min-height:38px;padding:0 11px;border-radius:999px;border:1px solid #315d73;background:#071b27;color:#c8efff;font-weight:1000;white-space:nowrap}.ghV25RateTabs button.on{border-color:#b68d31;background:#2a1f07;color:#ffe5a0}.ghV25Dex{display:grid;gap:8px;margin-top:10px}.ghV25DexRow{display:grid;grid-template-columns:82px 1fr 86px;gap:8px;align-items:center;padding:11px;border-radius:12px;background:#04121b;border:1px solid var(--rc,#ffffff12);box-shadow:inset 0 1px 0 #ffffff0b}.ghV25DexRow .rank{font-size:14px;font-weight:1000;color:var(--rc,#fff)}.ghV25DexRow b{font-size:10px;color:#edfaff}.ghV25DexRow small{display:block;color:#789cab;font-size:7px;line-height:1.5}.ghV25DexRow strong{text-align:right;color:#ffe7a3;font-size:11px}.ghV25LegacyBox{margin-top:9px;padding:10px;border-radius:11px;border:1px solid #555e6a;background:#11151a;color:#adb9c2;font-size:8px;line-height:1.6}.ghV25ServerBadge{display:inline-block;padding:3px 6px;border-radius:999px;border:1px solid #47d2a066;background:#06291d;color:#a3ffd0;font-size:7px;font-weight:1000}.ghV25RankInline{display:inline-block;margin-left:5px;padding:2px 5px;border-radius:999px;border:1px solid currentColor;font-size:7px;font-weight:1000;vertical-align:middle}@media(max-width:520px){.ghV25DexRow{grid-template-columns:68px 1fr}.ghV25DexRow strong{grid-column:2;text-align:left}}</style>
+<script defer id="gh-v25-safe-rarity-dex-r1">
+(()=>{'use strict';
+if(window.GH_V25_RARITY_DEX)return;
+const VERSION='V25-SAFE-RARITY-DEX-R1';
+const META={
+ 'N':{n:1,label:'基本',desc:'最も出やすい通常ランク。',color:'#98a6af'},
+ 'R':{n:2,label:'レア',desc:'Nより希少。序盤の主力候補。',color:'#62adff'},
+ 'SR':{n:3,label:'上級',desc:'中上位。演出・能力の強化が目立ち始める。',color:'#58d9ff'},
+ 'UR':{n:4,label:'上位',desc:'高レア。30回天井の保証対象。',color:'#ffd15c'},
+ 'SPECIAL RARE':{n:5,label:'超希少',desc:'SPECIAL帯。高レア専用演出・スキル枠候補。',color:'#8ef3ff'},
+ 'SPECIAL ART':{n:6,label:'最高',desc:'現行本番サーバーの最高レア段階。',color:'#fff0a1'}
+};
+let selected='horse';
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const pct=v=>(Number(v||0)/100).toFixed(Number(v||0)%100===0?0:2)+'%';
+function ensurePage(){
+ const app=document.querySelector('.app');if(!app)return null;
+ let p=document.getElementById('rarityDexSafe');
+ if(!p){p=document.createElement('section');p.id='rarityDexSafe';p.className='screen subpage';p.innerHTML='<div class="header"><button class="back" data-page="home">← 戻る</button><h1>レアリティ図鑑</h1></div><div id="ghV25RarityBody"></div>';app.appendChild(p)}
+ const menu=document.querySelector('#home .menu');
+ if(menu&&!menu.querySelector('[data-page="rarityDexSafe"]')){const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page='rarityDexSafe';b.innerHTML='<span class="ico">◇</span>レアリティ図鑑';menu.appendChild(b)}
+ return p;
+}
+function currentState(){return window.GH_V24_AUDIO_RARITY?.state||null}
+function render(){
+ ensurePage();const body=document.getElementById('ghV25RarityBody');if(!body)return;
+ const d=currentState(),rates=d?.rates_per_10000?.[selected]||null,g=d?.guarantees||{ur_or_higher_every:30,special_or_higher_every:100};
+ body.innerHTML=`<div class="ghV25Hero"><small style="color:#68e8ff;font-weight:1000;letter-spacing:.12em">RARITY DEX / LIVE SERVER GUIDE</small><h2>どれが一番レアか一目で分かる</h2><p>現行本番は <b>N → R → SR → UR → SPECIAL RARE → SPECIAL ART</b> の6段階。数字が大きいほど希少です。ログイン中は現在のサーバー抽選設定を表示します。</p><div class="ghV25RateTabs">${[['horse','馬'],['jockey','騎手'],['custom','装備'],['support','サポート']].map(([k,n])=>`<button class="${selected===k?'on':''}" data-ghv25-rate="${k}">${n}</button>`).join('')}</div></div>
+ <div class="ghV25Dex">${Object.entries(META).map(([r,m])=>`<div class="ghV25DexRow" style="--rc:${m.color}"><span class="rank">${esc(r)}<br><small>${m.n}/6 ${esc(m.label)}</small></span><span><b>${esc(m.desc)}</b><small>${m.n>=5?'SPECIAL帯':m.n===4?'UR以上保証の基準':'通常〜上位帯'}</small></span><strong>${rates?pct(rates[r]):'--'}</strong></div>`).join('')}</div>
+ <div class="ghV25LegacyBox"><b style="color:#c98aff">SSR</b>：旧版・既存コレクション用の表示。現在の本番サーバー抽選率テーブルには直接排出ランクとして含まれていません。<br><br><span class="ghV25ServerBadge">${Number(g.ur_or_higher_every||30)}回でUR以上保証</span>　<span class="ghV25ServerBadge">${Number(g.special_or_higher_every||100)}回でSPECIAL以上保証</span></div>`;
+ body.querySelectorAll('[data-ghv25-rate]').forEach(b=>b.onclick=()=>{selected=b.dataset.ghv25Rate;render()});
+}
+function rankInfo(r){
+ r=String(r||'').trim().toUpperCase();
+ if(META[r])return {text:`${META[r].n}/6 ${META[r].label}`,color:META[r].color};
+ if(r==='SSR')return {text:'旧表示',color:'#c98aff'};
+ return null;
+}
+function annotateEverywhere(root=document){
+ root.querySelectorAll?.('.ghV23LBHead b').forEach(el=>{
+   if(el.querySelector('.ghV25RankInline'))return;
+   const text=el.textContent||'',r=['SPECIAL ART','SPECIAL RARE','UR','SR','R','N','SSR'].find(x=>text.includes('/ '+x)||text.endsWith(x));
+   const m=rankInfo(r);if(!m)return;
+   const s=document.createElement('span');s.className='ghV25RankInline';s.textContent=m.text;s.style.color=m.color;el.appendChild(s);
+ });
+ root.querySelectorAll?.('.gameCard .rare,.supportCard .rare').forEach(el=>{
+   if(el.querySelector('.ghV25RankInline'))return;
+   const raw=String(el.childNodes?.[0]?.textContent||el.textContent||'').trim().toUpperCase();
+   const r=['SPECIAL ART','SPECIAL RARE','UR','SR','R','N','SSR'].find(x=>raw===x||raw.startsWith(x+' '));
+   const m=rankInfo(r);if(!m)return;
+   const s=document.createElement('span');s.className='ghV25RankInline';s.textContent=m.text;s.style.color=m.color;el.appendChild(s);
+ });
+}
+const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)annotateEverywhere(n)});
+{const targets=['gacha','cards','support','limitBreakCenterSafe','rarityDexSafe'].map(id=>document.getElementById(id)).filter(Boolean);targets.forEach(t=>obs.observe(t,{childList:true,subtree:true}));}
+document.addEventListener('click',e=>{
+ const pg=e.target.closest?.('[data-page]')?.dataset.page;
+ if(pg==='rarityDexSafe')setTimeout(async()=>{if(serverMode())await window.GH_V24_AUDIO_RARITY?.syncRarity?.(true);render()},80);
+ if(['gacha','cards','support','limitBreakCenterSafe'].includes(pg))setTimeout(()=>annotateEverywhere(),100);
+},true);
+ensurePage();render();annotateEverywhere();
+if(serverMode())setTimeout(async()=>{await window.GH_V24_AUDIO_RARITY?.syncRarity?.(true);render();annotateEverywhere()},1600);
+function selfTest(){
+ const src=document.getElementById('gh-v25-safe-rarity-dex-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const forbidden=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0&&Object.keys(META).length===6&&!!document.getElementById('rarityDexSafe')
+    &&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&whole.includes('finalOddsSnapshot'),
+  version:VERSION,
+  tiers:6,
+  legacySSR:true,
+  dedicatedChildPage:true,
+  inlineRankLabels:true,
+  serverRateDisplay:true,
+  protectedMutationMarkers:bad
+ };
+}
+window.GH_V25_RARITY_DEX={version:VERSION,render,annotateEverywhere,selfTest};
+document.documentElement.dataset.ghV25='safe-rarity-dex-r1';
+})();
+</script>
+
+
+<style id="gh-v26-rarity-frame-release-style">.gameCard[data-gh-rarity-tier="1"]{border-color:#83929a55!important}.gameCard[data-gh-rarity-tier="2"]{border-color:#5aaeff66!important;box-shadow:0 0 14px #5aaeff18}.gameCard[data-gh-rarity-tier="3"]{border-color:#59d6ff88!important;box-shadow:0 0 16px #59d6ff22}.gameCard[data-gh-rarity-tier="4"]{border-color:#ffd15899!important;box-shadow:0 0 18px #ffd1582d}.gameCard[data-gh-rarity-tier="5"]{border-color:#8cf3ffbb!important;box-shadow:0 0 22px #8cf3ff38}.gameCard[data-gh-rarity-tier="6"]{border-color:#fff1a3!important;box-shadow:0 0 26px #ffd96b50,inset 0 0 16px #fff5bd12}.gameCard[data-gh-rarity-tier="legacy"]{border-color:#c886ff77!important;box-shadow:0 0 16px #c886ff22}.ghV26TierCorner{position:absolute;right:6px;top:6px;z-index:4;padding:3px 5px;border-radius:999px;background:#02070ddd;border:1px solid currentColor;font-size:7px;font-weight:1000;backdrop-filter:blur(5px)}.ghV23LBRow[data-gh-rarity-tier="4"],.ghV23LBRow[data-gh-rarity-tier="5"],.ghV23LBRow[data-gh-rarity-tier="6"]{box-shadow:inset 3px 0 0 var(--ghRareColor,#ffd158)}</style>
+<script defer id="gh-v26-safe-audio-rarity-lb-release-r1">
+(()=>{'use strict';
+if(window.GH_V26_RELEASE_AUDIT)return;
+const VERSION='V26-SAFE-AUDIO-RARITY-LB-RELEASE-R1';
+const R={
+ N:{n:1,c:'#98a6af'},R:{n:2,c:'#62adff'},SR:{n:3,c:'#58d9ff'},UR:{n:4,c:'#ffd15c'},
+ 'SPECIAL RARE':{n:5,c:'#8ef3ff'},'SPECIAL ART':{n:6,c:'#fff0a1'},SSR:{n:'legacy',c:'#c98aff'}
+};
+window.__GH_V26_ERRORS=window.__GH_V26_ERRORS||[];
+addEventListener('error',e=>window.__GH_V26_ERRORS.push(String(e.message||e.error||'error')));
+addEventListener('unhandledrejection',e=>window.__GH_V26_ERRORS.push(String(e.reason||'unhandledrejection')));
+function rarityFromText(t){
+ t=String(t||'').toUpperCase();
+ return ['SPECIAL ART','SPECIAL RARE','SSR','UR','SR','R','N'].find(x=>t.includes(x))||null;
+}
+function decorate(){
+ document.querySelectorAll('.gameCard').forEach(card=>{
+   const rare=rarityFromText(card.querySelector('.rare')?.textContent);if(!rare||!R[rare])return;
+   card.dataset.ghRarityTier=String(R[rare].n);card.style.setProperty('--ghRareColor',R[rare].c);
+   let b=card.querySelector('.ghV26TierCorner');
+   if(!b){b=document.createElement('span');b.className='ghV26TierCorner';card.appendChild(b)}
+   b.style.color=R[rare].c;b.textContent=rare==='SSR'?'SSR 旧表示':`${R[rare].n}/6`;
+ });
+ document.querySelectorAll('.ghV23LBRow').forEach(row=>{
+   const rare=rarityFromText(row.querySelector('.ghV23LBHead b')?.textContent);if(!rare||!R[rare])return;
+   row.dataset.ghRarityTier=String(R[rare].n);row.style.setProperty('--ghRareColor',R[rare].c);
+ });
+}
+const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)decorate()});
+{const targets=['horse','jockey','gacha','cards','support','limitBreakCenterSafe'].map(id=>document.getElementById(id)).filter(Boolean);targets.forEach(t=>obs.observe(t,{childList:true,subtree:true}));}
+decorate();
+const REQUIRED_PAGES=['home','horse','jockey','gate','gacha','cards','support','rules','tacticsLabSafe','skillCollectionSafe','loadoutResearchSafe','goldenFinalSafe','limitBreakCenterSafe','rarityDexSafe'];
+const REQUIRED_TABS=['horse','jockey','custom','support'];
+function run(name){try{return window[name]?.selfTest?.()||window[name]?.audit?.()||null}catch(e){return {ok:false,error:String(e)}}}
+function audit(reason='manual'){
+ const h=document.documentElement.innerHTML;
+ const ids=[...document.querySelectorAll('[id]')].map(x=>x.id).filter(Boolean);
+ const duplicateIds=[...new Set(ids.filter((x,i)=>ids.indexOf(x)!==i))];
+ const missingPages=REQUIRED_PAGES.filter(id=>!document.getElementById(id));
+ const missingTabs=REQUIRED_TABS.filter(t=>!document.querySelector(`#gachaTabs [data-gacha-tab="${t}"]`));
+ const w=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0);
+ const modules={
+  lb:run('GH_V23_SERVER_LIMITBREAK_CENTER'),
+  audioRarity:run('GH_V24_AUDIO_RARITY'),
+  rarityDex:run('GH_V25_RARITY_DEX'),
+  childPages:run('GH_V19_CHILD_PAGE_RESTORE'),
+  compliance:run('GH_V16_MYHORSE_COMPLIANCE'),
+  hq:run('GH_V17_HQ_RENDER')
+ };
+ const core={
+  seven:Array.isArray(window.HORSES)&&HORSES.length===7,
+  bet120:h.includes('FIXED_BET_SECONDS=120'),
+  skip:!!document.getElementById('skipBtn'),
+  oddsLock:h.includes('finalOddsSnapshot'),
+  serverResult:h.includes('SERVER AUTHORITATIVE BET / RACE SYNC'),
+  secureDraw:h.includes('security_lock'),
+  cardLB:h.includes("call('card_limit_break'"),
+  equipLB:h.includes('V11.limitBreakEquip'),
+  rarityAPI:h.includes("gacha_rarity_state"),
+  bgmAudible:h.includes("tone(root,.72,'sine',.038)"),
+  countdownLouder:h.includes("tone(520+n*14,.075,'square',.055)")
+ };
+ const moduleOK=['lb','audioRarity','rarityDex','childPages','compliance','hq'].every(k=>modules[k]?.ok===true);
+ const pageOK=missingPages.length===0&&missingTabs.length===0&&duplicateIds.length===0&&Math.max(0,w-innerWidth)===0&&window.__GH_V26_ERRORS.length===0;
+ const coreOK=Object.values(core).every(Boolean);
+ const ok=moduleOK&&pageOK&&coreOK;
+ const result={ok,version:VERSION,reason,checkedAt:new Date().toISOString(),missingPages,missingTabs,duplicateIds,horizontalOverflow:Math.max(0,w-innerWidth),pageErrors:[...window.__GH_V26_ERRORS],core,modules};
+ document.documentElement.dataset.ghV26Release=ok?'PASS':'FAIL';
+ let node=document.getElementById('ghV26ReleaseReport');if(!node){node=document.createElement('pre');node.id='ghV26ReleaseReport';node.hidden=true;document.body.appendChild(node)}node.textContent=JSON.stringify(result);
+ try{sessionStorage.setItem('gh_v26_release_last',JSON.stringify(result))}catch(_){}
+ return result;
+}
+setTimeout(()=>audit('startup'),2200);
+setTimeout(()=>audit('settled'),4800);
+document.addEventListener('click',e=>{if(e.target.closest?.('[data-page],[data-gacha-tab]'))setTimeout(()=>{decorate();audit('navigation')},160)},true);
+window.GH_V26_RELEASE_AUDIT={version:VERSION,decorate,audit,selfTest:()=>audit('self-test')};
+document.documentElement.dataset.ghV26='safe-audio-rarity-lb-release-r1';
+})();
+</script>
+
+
+<style id="gh-v27-clean-name-pity-style">#ghV27PityGuide{margin:10px 0;padding:12px;border-radius:14px;border:1px solid #8c6d26;background:linear-gradient(180deg,#1a1406,#061019);color:#eaf8ff}#ghV27PityGuide h3{margin:0 0 6px;color:#ffe6a0}.ghV27PityGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.ghV27PityCell{padding:9px;border-radius:10px;background:#031019;border:1px solid #ffffff0e;text-align:center}.ghV27PityCell small{display:block;color:#7497a7;font-size:7px}.ghV27PityCell b{display:block;color:#ffe8a5;font-size:12px;margin-top:3px}.ghV27PityNote{margin-top:8px;color:#8fb0bf;font-size:8px;line-height:1.6}.ghV27PityBar{margin-top:8px;height:10px;border-radius:999px;background:#0b202b;overflow:hidden;border:1px solid #315d70}.ghV27PityBar i{display:block;height:100%;background:linear-gradient(90deg,#5bc3ff,#ffe06b);width:0}@media(max-width:520px){.ghV27PityGrid{grid-template-columns:repeat(2,1fr)}}</style>
+
+<script defer id="gh-v27-safe-clean-name-pity-r1">
+(()=>{'use strict';
+if(window.GH_V27_CLEAN_NAME_PITY)return;
+const VERSION='V27-SAFE-CLEAN-NAME-PITY-R1';
+/* 表示名だけ末尾の内部カタログ番号を消す。内部 name / key / serverId は一切変更しない。 */
+function cleanHorseDisplayName(v){
+  const s=String(v??'');
+  return s.replace(/-\d{1,3}(?=\s*$)/,'').trim();
+}
+function cleanVisibleHorseNames(root=document){
+  const selectors=[
+    '#horse .cardName','#horse .name','.horseCard .name','.horseCard b',
+    '#oddsCards .horseTitleLine b','#runners .nameTag',
+    '#loadoutResearchSafe b','#ghV13ServerContract b','#ghV23Ready b',
+    '#raceJournalSafe b','#ghV14JournalBody b'
+  ];
+  for(const sel of selectors){
+    root.querySelectorAll?.(sel).forEach(el=>{
+      const old=el.textContent;
+      const cleaned=cleanHorseDisplayName(old);
+      if(old!==cleaned)el.textContent=cleaned;
+    });
+  }
+  /* 画像のような My Horse 選択カードを広く拾う */
+  root.querySelectorAll?.('[data-v9safe-select="horse"],[data-v9safe-key],.ghV9Card,.ghV11ProgCard').forEach(card=>{
+    card.querySelectorAll?.('b,.name,.cardName').forEach(el=>{
+      const old=el.textContent;
+      const cleaned=cleanHorseDisplayName(old);
+      if(old!==cleaned)el.textContent=cleaned;
+    });
+  });
+}
+const nameObs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)cleanVisibleHorseNames(n)});
+nameObs.observe(document.body,{childList:true,subtree:true});
+cleanVisibleHorseNames();
+/* 天井表示：確率を煽るのではなく、残り回数と確定内容を透明に表示 */
+let pityState=null,busy=false;
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+function ensurePity(){
+  let p=document.getElementById('ghV27PityGuide');
+  if(!p){
+    p=document.createElement('div');p.id='ghV27PityGuide';
+    document.querySelector('#gacha .gachaMeta')?.insertAdjacentElement('afterend',p);
+  }
+  return p;
+}
+function renderPity(){
+  const p=ensurePity();
+  const type=(typeof gachaType!=='undefined'?String(gachaType):'horse');
+  const s=pityState?.[type]||{};
+  const pulls=Number(s.pull_count||0);
+  const urIn=Number(s.next_ur_in??30);
+  const spIn=Number(s.next_special_in??100);
+  const soft=Math.max(0,20-(pulls%30));
+  const pct=Math.max(0,Math.min(100,(1-Math.min(urIn,30)/30)*100));
+  p.innerHTML=`<h3>天井・救済メーター</h3>
+    <div class="ghV27PityGrid">
+      <div class="ghV27PityCell"><small>累計</small><b>${pulls}回</b></div>
+      <div class="ghV27PityCell"><small>UR以上保証まで</small><b>${urIn}回</b></div>
+      <div class="ghV27PityCell"><small>SPECIAL以上保証まで</small><b>${spIn}回</b></div>
+      <div class="ghV27PityCell"><small>救済ポイント</small><b>${Number(s.spark_points||0)}pt</b></div>
+    </div>
+    <div class="ghV27PityBar"><i style="width:${pct}%"></i></div>
+    <div class="ghV27PityNote">
+      30回でUR以上、100回でSPECIAL以上を保証。最高レアを毎回天井で直接確定させるのではなく、
+      <b>重複救済・選べる交換・途中の確定報酬</b>を組み合わせる設計の方が、納得感と長期の楽しさを保ちやすいです。
+    </div>`;
+}
+async function syncPity(){
+  if(!serverMode()){renderPity();return null}
+  if(busy)return pityState;busy=true;
+  try{
+    pityState=await call('gacha_pity_state');
+    renderPity();return pityState;
+  }catch(e){console.warn('GH_V27 pity',e);renderPity();return null}
+  finally{busy=false}
+}
+document.addEventListener('click',e=>{
+  const pg=e.target.closest?.('[data-page]')?.dataset.page;
+  if(pg==='gacha')setTimeout(()=>{cleanVisibleHorseNames();syncPity()},80);
+  if(e.target.closest?.('[data-gacha-tab]'))setTimeout(renderPity,50);
+  if(e.target.closest?.('#drawBtn'))setTimeout(()=>{cleanVisibleHorseNames();syncPity()},1600);
+},true);
+ensurePity();renderPity();
+if(serverMode())setTimeout(syncPity,1500);
+function selfTest(){
+  const src=document.getElementById('gh-v27-safe-clean-name-pity-r1')?.textContent||'';
+  const whole=document.documentElement.innerHTML;
+  const forbidden=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='];
+  const bad=forbidden.filter(x=>src.includes(x));
+  return {
+    ok:bad.length===0
+      &&src.includes("replace(/-\\\\d{1,3}(?=\\\\s*$)/,'')")
+      &&src.includes("call('gacha_pity_state')")
+      &&whole.includes('FIXED_BET_SECONDS=120')
+      &&!!document.getElementById('skipBtn')
+      &&whole.includes('finalOddsSnapshot'),
+    version:VERSION,
+    displayOnlyHorseSuffixCleanup:true,
+    internalHorseIdsUnchanged:true,
+    pityTransparent:true,
+    protectedMutationMarkers:bad
+  };
+}
+window.GH_V27_CLEAN_NAME_PITY={version:VERSION,cleanHorseDisplayName,cleanVisibleHorseNames,syncPity,selfTest,get pity(){return pityState}};
+document.documentElement.dataset.ghV27='safe-clean-name-pity-r1';
+})();
+</script>
+
+
+<style id="gh-v28-manual-lb-style">#ghV28LBModal{position:fixed;inset:0;z-index:999999;background:rgba(0,4,8,.92);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:14px}#ghV28LBModal.on{display:flex}#ghV28LBCard{width:min(700px,96vw);max-height:92vh;overflow:auto;border-radius:22px;border:1px solid #9b7729;background:radial-gradient(circle at 50% 0,#241b07 0,#07131d 42%,#02070b 100%);box-shadow:0 30px 90px #000;padding:18px;color:#eefaff}#ghV28LBCard h2{margin:4px 0;color:#ffe8a3}.ghV28Confirm{padding:12px;border-radius:14px;background:#06141d;border:1px solid #ffffff12;margin-top:10px}.ghV28ConfirmGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.ghV28ConfirmGrid div{padding:9px;border-radius:10px;background:#031019;border:1px solid #ffffff0e;text-align:center}.ghV28ConfirmGrid small{display:block;color:#7597a6;font-size:7px}.ghV28ConfirmGrid b{display:block;color:#ffe7a0;font-size:13px;margin-top:2px}.ghV28Warning{margin-top:9px;padding:9px;border-radius:10px;border:1px solid #866823;background:#1a1406;color:#ffe3a0;font-size:9px;line-height:1.55}.ghV28Actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.ghV28Actions button{min-height:43px;padding:0 13px;border-radius:10px;border:1px solid #3b7188;background:#08212d;color:#def8ff;font-weight:1000}.ghV28Actions button.gold{border-color:#b78e32;background:linear-gradient(#745617,#2b2007);color:#fff0b6}.ghV28Actions button:disabled{opacity:.35}#ghV28Burst{position:fixed;inset:0;z-index:1000000;display:none;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at center,#fff8cb 0,#e6b43e 4%,#5d3a06 18%,#04090e 55%,#000 100%)}#ghV28Burst.on{display:flex;animation:ghV28Flash .42s ease-out}#ghV28Burst::before,#ghV28Burst::after{content:"";position:absolute;width:160vmax;height:160vmax;border-radius:50%;background:repeating-conic-gradient(from 0deg,transparent 0 5deg,#ffe88722 5deg 7deg,transparent 7deg 15deg);animation:ghV28Spin 4s linear infinite}#ghV28Burst::after{animation-direction:reverse;filter:blur(10px);opacity:.55}#ghV28BurstCore{position:relative;z-index:2;width:min(700px,94vw);text-align:center;padding:26px}#ghV28BurstCore .title{font-size:13px;font-weight:1000;letter-spacing:.22em;color:#8feaff}#ghV28BurstCore h2{font-size:clamp(30px,9vw,64px);margin:8px 0;color:#fff1a7;text-shadow:0 0 24px #ffd457,0 5px 18px #000}#ghV28BurstCore .name{font-size:18px;font-weight:1000;color:#fff}#ghV28LevelChange{margin:18px auto 0;display:flex;justify-content:center;align-items:center;gap:12px;font-size:clamp(22px,7vw,42px);font-weight:1000}#ghV28LevelChange .old{color:#96a9b3}#ghV28LevelChange .arrow{color:#ffe275;animation:ghV28Pulse .8s infinite alternate}#ghV28LevelChange .new{color:#fff2ac;text-shadow:0 0 18px #ffd85c}#ghV28BurstCore button{margin-top:20px;min-height:45px;padding:0 17px;border-radius:11px;border:1px solid #e3b94c;background:#3b2a08;color:#fff0b4;font-weight:1000}@keyframes ghV28Flash{0%{opacity:0;filter:brightness(4)}100%{opacity:1;filter:brightness(1)}}@keyframes ghV28Spin{to{transform:rotate(360deg)}}@keyframes ghV28Pulse{to{transform:scale(1.25)}}#ghV28SkillPick{margin-top:14px;padding:12px;border-radius:14px;border:1px solid #327b98;background:#061722}#ghV28SkillPick h3{margin:0;color:#a9eeff}.ghV28SkillIntro{margin-top:4px;color:#86a9b8;font-size:8px;line-height:1.55}.ghV28SkillChoices{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:9px}.ghV28SkillChoice{padding:10px;border-radius:11px;border:1px solid #2e5e73;background:#04131d;color:#eaf9ff;text-align:left;cursor:pointer}.ghV28SkillChoice:hover,.ghV28SkillChoice.on{border-color:#d6aa3c;background:#1a1507}.ghV28SkillChoice b{display:block;color:#ffe5a0;font-size:10px}.ghV28SkillChoice small{display:block;color:#789cab;font-size:7px;line-height:1.5;margin-top:2px}.ghV28SkillChoice strong{display:block;color:#9ff0c0;font-size:8px;margin-top:4px}#ghV28SkillResult{margin-top:8px;color:#a7eaff;font-size:9px;line-height:1.55}@media(max-width:560px){.ghV28ConfirmGrid{grid-template-columns:repeat(2,1fr)}.ghV28SkillChoices{grid-template-columns:1fr}}</style>
+<script defer id="gh-v28-safe-manual-limitbreak-skill-choice-r1">
+(()=>{'use strict';
+if(window.GH_V28_LIMITBREAK_FLOW)return;
+const VERSION='V28-SAFE-MANUAL-LIMITBREAK-SKILL-CHOICE-R1';
+const V9=window.GH_MASTER_V9_SAFE,V11=window.GH_MASTER_V11_SAFE_PROGRESS,V10=window.GH_MASTER_V10_SAFE_SKILLS;
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+const reqId=p=>(`${p}-${Date.now()}-${crypto.randomUUID?.()||Math.random().toString(36).slice(2)}`).slice(0,118);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const BASE={N:20,R:30,SR:40,SSR:45,UR:50,'SPECIAL RARE':60,'SPECIAL ART':70};
+let pending=null,busy=false,lastSkillState=null;
+function collection(){return V9?.collection?.()||{horse:{},jockey:{},equip:{}}}
+function progression(){return V11?.state?.()||{}}
+function liveCopies(r){return (r?.copies||[]).filter(c=>!c.used&&c.serverId)}
+function equippedIds(){const eq=progression()?.serverLoadout?.equipment||{};return new Set(Object.values(eq).map(x=>String(x?.id||'')).filter(Boolean))}
+function activeId(type){const p=progression(),l=p.serverLoadout||{},s=state.ghV9Safe?.server||{};return String(type==='horse'?(l.horse?.id||s.activeHorseId||''):(l.jockey?.id||s.activeJockeyId||''))}
+function baseAndMaterial(type,r){
+ const live=liveCopies(r);if(!live.length)return {base:null,dup:null};
+ if(type==='equip'){
+   const eq=equippedIds();
+   const base=live.find(c=>eq.has(String(c.serverId))&&Number(c.limitBreak||0)<10)||live.find(c=>Number(c.limitBreak||0)<10)||live[0];
+   const dup=live.find(c=>c!==base&&!eq.has(String(c.serverId)))||null;
+   return {base,dup};
+ }
+ const aid=activeId(type);
+ const base=live.find(c=>String(c.serverId)===aid&&Number(c.limitBreak||0)<10)||live.find(c=>Number(c.limitBreak||0)<10)||live[0];
+ const dup=live.find(c=>c!==base&&String(c.serverId)!==aid)||null;
+ return {base,dup};
+}
+function levelCap(rarity,lb){return Number(BASE[String(rarity||'').toUpperCase()]||20)+Math.max(0,Math.min(10,Number(lb||0)))}
+function ensureModal(){
+ let m=document.getElementById('ghV28LBModal');if(m)return m;
+ m=document.createElement('div');m.id='ghV28LBModal';m.innerHTML='<div id="ghV28LBCard"></div>';document.body.appendChild(m);
+ m.addEventListener('click',e=>{if(e.target===m&&!busy)closeModal()});
+ return m;
+}
+function ensureBurst(){
+ let b=document.getElementById('ghV28Burst');if(b)return b;
+ b=document.createElement('div');b.id='ghV28Burst';b.innerHTML='<div id="ghV28BurstCore"></div>';document.body.appendChild(b);return b;
+}
+function closeModal(){ensureModal().classList.remove('on');pending=null}
+function request(type,key){
+ if(!serverMode())return window.toast?.('本番の限界突破はログイン後のみ実行できます');
+ if(busy)return;
+ const r=collection()?.[type]?.[key];if(!r)return window.toast?.('カード情報を確認できません');
+ const {base,dup}=baseAndMaterial(type,r);
+ if(!base)return window.toast?.('限界突破するベースカードがありません');
+ if(Number(base.limitBreak||0)>=10)return window.toast?.('限界突破は+10が最大です');
+ if(!dup)return window.toast?.('同じ名前・同じレアリティの未使用重複がもう1枚必要です');
+ const oldLb=Number(base.limitBreak||0),oldMax=levelCap(r.rare,oldLb),newMax=levelCap(r.rare,oldLb+1);
+ pending={type,key,r,base,dup,oldLb,oldMax,newMax};
+ const m=ensureModal(),card=document.getElementById('ghV28LBCard');
+ const kind=type==='horse'?'馬':type==='jockey'?'騎手':'装備';
+ card.innerHTML=`<div style="color:#68e8ff;font-size:9px;font-weight:1000;letter-spacing:.13em">MANUAL LIMIT BREAK / CONFIRM</div><h2>限界突破しますか？</h2><div class="ghV28Confirm"><b>${esc(r.name)} / ${esc(r.rare)}</b><div class="ghV28ConfirmGrid"><div><small>種類</small><b>${kind}</b></div><div><small>現在</small><b>LB+${oldLb}</b></div><div><small>最大Lv</small><b>${oldMax}</b></div><div><small>突破後</small><b>${newMax}</b></div></div></div><div class="ghV28Warning"><b>重複カード1枚を素材として使用します。</b><br>この画面を開いただけでは何も消費しません。下の「限界突破を実行」を押した時だけサーバー処理します。アクティブ馬・騎手、装備中カードは素材に使いません。</div><div class="ghV28Actions"><button data-ghv28-cancel>やめる</button><button class="gold" data-ghv28-confirm>限界突破を実行</button></div>`;
+ m.classList.add('on');
+ card.querySelector('[data-ghv28-cancel]').onclick=closeModal;
+ card.querySelector('[data-ghv28-confirm]').onclick=execute;
+}
+async function execute(){
+ if(!pending||busy)return;
+ busy=true;const p=pending,card=document.getElementById('ghV28LBCard'),btn=card.querySelector('[data-ghv28-confirm]');if(btn){btn.disabled=true;btn.textContent='サーバー処理中…'}
+ try{
+   let d;
+   if(p.type==='equip'){
+     d=await call('support_lb',{request_id:reqId('equip-lb'),base_id:p.base.serverId,duplicate_id:p.dup.serverId});
+   }else{
+     d=await call('card_limit_break',{request_id:reqId('card-lb'),type:p.type,base_id:p.base.serverId,duplicate_id:p.dup.serverId});
+   }
+   p.base.limitBreak=Number(d.limit_break||p.oldLb+1);p.dup.used='limitBreak';p.dup.usedAt=new Date().toISOString();
+   try{await V9.syncServer?.(false);await V11.syncServer?.(false)}catch(_){}
+   ensureModal().classList.remove('on');
+   await showBurst(d,p);
+   if(d.skill_selection_available)await openSkillChoice(p.type,p.r.name,p.r.rare);
+   try{window.GH_V23_SERVER_LIMITBREAK_CENTER?.sync?.(false)}catch(_){}
+ }catch(e){
+   const msg={active_card_cannot_exchange:'アクティブ中・装備中のカードは素材にできません',duplicates_must_match_exactly:'同じ名前・同じレアリティの重複だけ使用できます',duplicate_already_used:'その重複カードは使用済みです',limit_break_max:'限界突破は+10が最大です',location_verification_required:'店外GPSを再確認してください'};
+   window.toast?.(msg[e.message]||('限界突破できません: '+e.message));
+ }finally{busy=false;if(btn){btn.disabled=false;btn.textContent='限界突破を実行'}}
+}
+function showBurst(d,p){
+ return new Promise(resolve=>{
+   const b=ensureBurst(),core=document.getElementById('ghV28BurstCore');
+   const oldMax=Number(d.old_max_level??p.oldMax),newMax=Number(d.new_max_level??p.newMax),lb=Number(d.limit_break??p.oldLb+1);
+   core.innerHTML=`<div class="title">LIMIT BREAK SUCCESS</div><h2>限界突破 +${lb}</h2><div class="name">${esc(d.name||p.r.name)}</div><div id="ghV28LevelChange"><span class="old">最大Lv ${oldMax}</span><span class="arrow">→</span><span class="new">最大Lv ${newMax}</span></div><button data-ghv28-burst-close>${d.skill_selection_available?'スキル選択へ':'完了'}</button>`;
+   b.classList.add('on');
+   try{fourD();speak(`限界突破。最大レベル ${oldMax} から ${newMax}`)}catch(_){}
+   setTimeout(()=>{try{navigator.vibrate?.([70,40,110])}catch(_){}},200);
+   core.querySelector('[data-ghv28-burst-close]').onclick=()=>{b.classList.remove('on');resolve()};
+ });
+}
+async function openSkillChoice(type,name,rarity){
+ try{lastSkillState=await call('skill_state')}catch(e){window.toast?.('スキル状態を取得できません: '+e.message);return}
+ const c=(lastSkillState?.cards||[]).find(x=>x.type===type&&x.card_name===name&&x.rarity===rarity);
+ if(!c)return;
+ const acquire=Number(c.acquire_tokens||0)>0,upgrade=Number(c.upgrade_tokens||0)>0;
+ if(!acquire&&!upgrade)return;
+ const defs=V10?.skills||{};
+ const owned=new Map((c.skills||[]).map(s=>[s.id,s]));
+ let mode=acquire?'acquire':'upgrade';
+ const choices=mode==='acquire'
+   ? (lastSkillState.skill_ids||[]).filter(id=>!owned.has(id))
+   : [...owned.keys()].filter(id=>Number(owned.get(id)?.level||0)<10);
+ if(!choices.length)return;
+ const m=ensureModal(),card=document.getElementById('ghV28LBCard');
+ card.innerHTML=`<div style="color:#68e8ff;font-size:9px;font-weight:1000;letter-spacing:.13em">PLAYER SKILL CHOICE</div><h2>${mode==='acquire'?'新しいスキルを選ぶ':'LvUPするスキルを選ぶ'}</h2><div class="ghV28SkillIntro">${esc(name)} / ${esc(rarity)}<br><b>スキル名は自分で選択</b>。${mode==='acquire'?'ランクC/B/A/Sだけはレアリティに応じてサーバー確定。':'選んだスキルだけLv+1。'} 勝手に選ばれません。</div><div id="ghV28SkillPick"><div class="ghV28SkillChoices">${choices.map(id=>{const d=defs[id]||{},s=owned.get(id);return `<button class="ghV28SkillChoice" data-ghv28-skill="${esc(id)}"><b>${esc(d.name||id)}</b><small>${esc(d.desc||'')}<br>条件：${esc(d.condition||'-')}</small><strong>${s?`${esc(s.rank)} / Lv.${Number(s.level||1)} → Lv.${Math.min(10,Number(s.level||1)+1)}`:'このスキルを取得候補にする'}</strong></button>`}).join('')}</div><div id="ghV28SkillResult"></div></div><div class="ghV28Actions"><button data-ghv28-skill-later>あとで選ぶ</button></div>`;
+ m.classList.add('on');
+ card.querySelector('[data-ghv28-skill-later]').onclick=closeModal;
+ card.querySelectorAll('[data-ghv28-skill]').forEach(b=>b.onclick=()=>chooseSkill({type,name,rarity,mode,skillId:b.dataset.ghv28Skill,button:b}));
+}
+async function chooseSkill({type,name,rarity,mode,skillId,button}){
+ if(busy)return;busy=true;
+ document.querySelectorAll('[data-ghv28-skill]').forEach(x=>x.disabled=true);
+ const result=document.getElementById('ghV28SkillResult');if(result)result.textContent='サーバー確定中…';
+ try{
+   const d=await call('skill_choose',{request_id:reqId('skill-choice'),type,card_name:name,rarity,mode,skill_id:skillId});
+   const def=V10?.skills?.[skillId]||{};
+   if(result)result.innerHTML=`<b>${esc(def.name||skillId)}</b> を選択しました。${mode==='acquire'?`ランク <b>${esc(d.rank)}</b> / Lv.1`:`<b>${esc(d.rank)}</b> / Lv.${Number(d.level||1)}`}<br>サーバー確定済み。`;
+   try{fourD();speak(`${def.name||skillId} ${mode==='acquire'?'獲得':'レベルアップ'}`)}catch(_){}
+   setTimeout(async()=>{closeModal();try{await window.GH_V19_CHILD_PAGE_RESTORE?.syncSkills?.(true)}catch(_){}},1100);
+ }catch(e){
+   if(result)result.textContent='選択できません: '+String(e.message||e);
+   document.querySelectorAll('[data-ghv28-skill]').forEach(x=>x.disabled=false);
+ }finally{busy=false}
+}
+/* Prevent any external UI from bypassing confirmation through the old public bridge. */
+if(window.GH_V23_SERVER_LIMITBREAK_CENTER){
+ window.GH_V23_SERVER_LIMITBREAK_CENTER.serverLimitBreak=(type,key)=>request(type,key);
+}
+function selfTest(){
+ const src=document.getElementById('gh-v28-safe-manual-limitbreak-skill-choice-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const autoMarkers=['setInterval(()=>execute','MutationObserver(()=>execute','setTimeout(()=>execute'];
+ const badAuto=autoMarkers.filter(x=>src.includes(x));
+ return {
+  ok:badAuto.length===0
+    &&src.includes("data-ghv28-confirm")
+    &&src.includes("call('card_limit_break'")
+    &&src.includes("call('support_lb'")
+    &&src.includes("call('skill_choose'")
+    &&src.includes('old_max_level')
+    &&src.includes('new_max_level')
+    &&whole.includes('FIXED_BET_SECONDS=120')
+    &&!!document.getElementById('skipBtn')
+    &&whole.includes('finalOddsSnapshot'),
+  version:VERSION,
+  automaticLimitBreak:false,
+  confirmationRequired:true,
+  consumesMaterialOnlyAfterConfirm:true,
+  fullScreenAnimation:true,
+  maxLevelBeforeAfter:true,
+  playerChoosesSkill:true,
+  playerChoosesUpgradeTarget:true,
+  skillRankServerDetermined:true,
+  protectedRaceCore:true
+ };
+}
+window.GH_V28_LIMITBREAK_FLOW={version:VERSION,request,openSkillChoice,selfTest};
+document.documentElement.dataset.ghV28='safe-manual-limitbreak-skill-choice-r1';
+})();
+</script>
+
+
+<style id="gh-v29-login-lottery-style">#ghV29SignupGift,#ghV29DailyGate{position:fixed;inset:0;z-index:1000001;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(0,5,9,.94);backdrop-filter:blur(12px)}#ghV29SignupGift.on,#ghV29DailyGate.on{display:flex}.ghV29Card{width:min(720px,96vw);max-height:92vh;overflow:auto;border-radius:22px;border:1px solid #9b7628;background:radial-gradient(circle at 50% 0,#261c07 0,#07131d 42%,#02070b 100%);box-shadow:0 30px 90px #000;padding:18px;color:#edfaff}.ghV29Kicker{color:#69e9ff;font-size:9px;font-weight:1000;letter-spacing:.13em}.ghV29Card h2{margin:4px 0 7px;color:#ffe8a4}.ghV29Lead{color:#8db1c0;font-size:9px;line-height:1.65}.ghV29GiftAmount{margin:16px 0;text-align:center;font-size:clamp(34px,9vw,66px);font-weight:1000;color:#fff1aa;text-shadow:0 0 25px #ffd557}.ghV29LockNote{padding:10px;border-radius:11px;border:1px solid #7d6321;background:#191305;color:#ffe29b;font-size:9px;line-height:1.55}.ghV29Actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.ghV29Actions button{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #3d7186;background:#08212d;color:#def8ff;font-weight:1000}.ghV29Actions button.gold{border-color:#bf9433;background:linear-gradient(#795a18,#2b2007);color:#fff0b6}.ghV29Streak{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px}.ghV29Day{padding:7px 2px;border-radius:9px;background:#031019;border:1px solid #ffffff0e;text-align:center}.ghV29Day b{display:block;font-size:9px;color:#dff7ff}.ghV29Day small{display:block;color:#6f94a4;font-size:6px;margin-top:2px}.ghV29Day.hot{border-color:#c39936;background:#1c1607}.ghV29Day.hot b{color:#ffe49c}#ghV29TicketStage{margin-top:13px;min-height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:18px;border:1px solid #315f72;background:radial-gradient(circle at 50% 40%,#16364a,#06141d 55%,#02080d)}#ghV29Ticket{width:150px;height:88px;border-radius:14px;border:2px solid #e0b348;background:linear-gradient(135deg,#332507,#8b6922 40%,#2c2007);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px #ffd55745;transform:rotate(-4deg);font-weight:1000;color:#fff0ae;letter-spacing:.12em}#ghV29Ticket.shake{animation:ghV29Shake .72s ease-in-out infinite}#ghV29TicketResult{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle,#fff8c7 0,#e4b13a 8%,#513307 22%,#04090e 62%)}#ghV29TicketResult.on{display:flex;animation:ghV29Flash .45s ease-out}.ghV29ResultBig{font-size:clamp(34px,10vw,70px);font-weight:1000;color:#fff2ab;text-shadow:0 0 24px #ffd45b}.ghV29ResultSmall{margin-top:7px;color:#b9edff;font-size:10px;font-weight:900}#ghV29DrawList{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px}.ghV29DrawChip{padding:6px 9px;border-radius:999px;border:1px solid #3d7185;background:#061923;color:#cbeeff;font-size:9px;font-weight:1000}#ghV29HomeBonus{margin:8px 12px;padding:9px 11px;border-radius:11px;border:1px solid #315f73;background:#061722;color:#b9eaff;font-size:8px;line-height:1.5}#ghV29HomeBonus b{color:#ffe59e}#ghV29RegisterNotice{margin:8px 0;padding:9px 10px;border-radius:10px;border:1px solid #8d7028;background:#181305;color:#ffe4a0;font-size:8px;line-height:1.55}@keyframes ghV29Shake{0%,100%{transform:rotate(-4deg) translateX(0)}25%{transform:rotate(-8deg) translateX(-6px)}75%{transform:rotate(3deg) translateX(6px)}}@keyframes ghV29Flash{0%{opacity:0;filter:brightness(4)}100%{opacity:1;filter:brightness(1)}}@media(max-width:560px){.ghV29Streak{grid-template-columns:repeat(7,1fr);gap:3px}.ghV29Day{padding:6px 1px}}</style>
+<script defer id="gh-v29-safe-login-lottery-onboarding-r1">
+(()=>{'use strict';
+if(window.GH_V29_LOGIN_LOTTERY)return;
+const VERSION='V29-SAFE-LOGIN-LOTTERY-ONBOARDING-R1';
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const token=()=>localStorage.getItem('gh_session_token')||'';
+let dailyBusy=false,lastDailyState=null,lastShownDay='',authWrapped=false;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function ensureShells(){
+ let s=document.getElementById('ghV29SignupGift');
+ if(!s){s=document.createElement('div');s.id='ghV29SignupGift';s.innerHTML='<div class="ghV29Card" id="ghV29SignupCard"></div>';document.body.appendChild(s)}
+ let d=document.getElementById('ghV29DailyGate');
+ if(!d){d=document.createElement('div');d.id='ghV29DailyGate';d.innerHTML='<div class="ghV29Card" id="ghV29DailyCard"></div>';document.body.appendChild(d)}
+ let n=document.getElementById('ghV29RegisterNotice');
+ if(!n){
+   const host=document.querySelector('#login .twoCol .formCard');
+   if(host){n=document.createElement('div');n.id='ghV29RegisterNotice';n.innerHTML='<b>新規登録特典：50G</b><br>登録完了時に1回だけ付与。付与Goldとして扱い、そのままオープン懸賞応募には使えません。';host.insertBefore(n,host.children[2]||null)}
+ }
+ return {s,d};
+}
+function ensureHomeBadge(){
+ let b=document.getElementById('ghV29HomeBonus');
+ if(!b){b=document.createElement('div');b.id='ghV29HomeBonus';const home=document.getElementById('home');const anchor=home?.querySelector('.raceInfo,.betTypes,.menu');if(anchor)anchor.insertAdjacentElement('beforebegin',b)}
+ return b;
+}
+function renderHomeState(st){
+ const b=ensureHomeBadge();if(!b||!st)return;
+ const locked=Number(st.grant_gold??st.bonus_locked_gold??0),cash=Number(st.cashable_gold||0),total=Number(st.gold||0);
+ let daily=st.claimed_today?`本日くじ <b>受取済 ${Number(st.amount||0).toFixed(1)}G</b>`:st.available?'本日くじ <b>未受取</b>':'本日くじ <b>11:00から</b>';
+ b.innerHTML=`${daily}　/　総Gold <b>${total.toFixed(1)}G</b>　/　付与Gold <b>${locked.toFixed(1)}G</b>　/　懸賞利用可能Gold <b>${cash.toFixed(1)}G</b>`;
+}
+function streakHTML(){
+ return `<div class="ghV29Streak">${[1,2,3,4,5,6,7].map(n=>`<div class="ghV29Day"><b>毎日</b><small>くじ1回</small></div>`).join('')}</div>`;
+}
+async function showSignupGift(){
+ if(!token()||!call)return null;
+ try{
+   const d=await call('signup_bonus');
+   if(!d?.granted)return d;
+   ensureShells();
+   const shell=document.getElementById('ghV29SignupGift'),card=document.getElementById('ghV29SignupCard');
+   card.innerHTML=`${onboardingSteps(2)}<div class="ghV29Kicker">NEW MEMBER START BONUS</div><h2>初回50Gを受け取りました</h2><div class="ghV29Lead">反社会的勢力の確認が完了した会員だけに、Golden Horseスタート特典をサーバーから1回だけ付与します。</div><div class="ghV29GiftAmount">50.0 GOLD</div><div class="ghV29LockNote"><b>付与Gold</b><br>レース・ガチャなどのゲーム内利用には使えますが、そのままオープン懸賞へ応募するGoldには使えません。<br><br><b>特別抽選の解放条件：</b>3活動日＋この登録後に決着したレースBET合計45G以上。</div><div class="ghV29Actions"><button class="gold" id="ghV29SignupNext">50Gを確認してログインくじへ</button></div>`;
+   shell.classList.add('on');
+   card.querySelector('#ghV29SignupNext').onclick=()=>{shell.classList.remove('on');setTimeout(()=>checkDaily(true),220)};
+   try{fourD();speak('新規登録ボーナス 50ゴールド獲得')}catch(_){}
+   return d;
+ }catch(e){console.warn('GH_V32 signup bonus',e);return null}
+}
+function complianceOpen(){return document.getElementById('ghComplianceGate')?.classList.contains('on')}
+function onboardingSteps(active){
+ const names=['反社確認','初回50G','ログインくじ','通常ホーム'];
+ return `<div class="ghV32Steps">${names.map((n,i)=>`<div class="${i+1<active?'done':i+1===active?'active':''}"><b>${i+1}</b><small>${n}</small></div>`).join('')}</div>`;
+}
+function decorateComplianceSteps(){
+ const card=document.getElementById('ghComplianceCard');if(!card)return;
+ let x=document.getElementById('ghV32ComplianceSteps');
+ if(!x){x=document.createElement('div');x.id='ghV32ComplianceSteps';x.innerHTML=onboardingSteps(1);card.insertBefore(x,card.firstElementChild)}
+}
+async function afterComplianceApproved(){
+ if(!token()||!call||complianceOpen())return;
+ const d=await showSignupGift();
+ if(!d?.granted)setTimeout(()=>checkDaily(true),120);
+}
+async function startOnboarding(){
+ if(!token()||!call)return;
+ decorateComplianceSteps();
+ if(window.GH_V16_MYHORSE_COMPLIANCE?.checkCompliance){
+   try{
+     const ok=await window.GH_V16_MYHORSE_COMPLIANCE.checkCompliance(false);
+     if(!ok)return;
+   }catch(_){return}
+ }
+ if(complianceOpen())return;
+ return afterComplianceApproved();
+}
+async function checkDaily(forceShow=false){
+ if(dailyBusy||!token()||!call)return lastDailyState;
+ dailyBusy=true;
+ try{
+   const st=await call('daily_login_state');lastDailyState=st;renderHomeState(st);
+   if(st?.available&&!st?.claimed_today){
+     const day=String(st.claim_date||'');
+     if(forceShow||day!==lastShownDay){lastShownDay=day;showDailyReady(st)}
+   }
+   return st;
+ }catch(e){console.warn('GH_V29 daily state',e);return null}
+ finally{dailyBusy=false}
+}
+function showDailyReady(st){
+ ensureShells();if(complianceOpen())return;
+ const shell=document.getElementById('ghV29DailyGate'),card=document.getElementById('ghV29DailyCard');
+ card.innerHTML=`${onboardingSteps(3)}<div class="ghV29Kicker">DAILY GOLD LOTTERY / 11:00 JST</div><h2>今日のログインくじ</h2><div class="ghV29Lead">0.1〜1.0Gのくじを<b>毎日1回</b>。11:00以降なら12時でも夜でも、その日の最初のゲーム開始前にこの画面が出ます。<br>休んだ日の分は後からまとめて受け取れません。くじだけでは活動日にならず、<b>このあとBETしたレースを最後まで見る</b>と1活動日になります。</div>${streakHTML()}<div id="ghV29TicketStage"><div id="ghV29Ticket">GOLD LOTTERY</div><div id="ghV29TicketResult"></div></div><div class="ghV29Actions"><button class="gold" id="ghV29DrawBtn">くじを引く</button></div>`;
+ shell.classList.add('on');
+ card.querySelector('#ghV29DrawBtn').onclick=claimDaily;
+}
+async function claimDaily(){
+ if(dailyBusy)return;dailyBusy=true;
+ const btn=document.getElementById('ghV29DrawBtn'),ticket=document.getElementById('ghV29Ticket'),res=document.getElementById('ghV29TicketResult');
+ if(btn){btn.disabled=true;btn.textContent='抽選中…'}if(ticket)ticket.classList.add('shake');
+ try{
+   const d=await call('daily_login_claim');
+   const draws=Array.isArray(d?.draws)?d.draws.map(Number):[];
+   await new Promise(r=>setTimeout(r,800));
+   if(ticket)ticket.classList.remove('shake');
+   if(res){
+     res.classList.add('on');
+     res.innerHTML=`<div class="ghV29ResultBig">+${Number(d.amount||0).toFixed(1)}G</div><div class="ghV29ResultSmall">GOLD 獲得！ / 今日のログインくじ受取完了</div><div id="ghV29DrawList">${draws.map((x,i)=>`<span class="ghV29DrawChip">${i+1}回目 +${Number(x).toFixed(1)}G</span>`).join('')}</div>`;
+   }
+   const card=document.getElementById('ghV29DailyCard');
+   const a=document.createElement('div');a.className='ghV29LockNote';a.style.marginTop='10px';
+   a.innerHTML=`<b>付与完了</b><br>今回のGoldは付与Goldとしてサーバー残高へ反映済み。<br>今日レースを最後まで遊ぶとGOLDEN STREAKの活動日が進みます。`;
+   card.appendChild(a);
+   const done=document.createElement('div');done.innerHTML=onboardingSteps(4);card.appendChild(done);const actions=document.createElement('div');actions.className='ghV29Actions';actions.innerHTML='<button class="gold" id="ghV29StartGame">通常ホームへ進む</button>';card.appendChild(actions);
+   document.getElementById('ghV29StartGame').onclick=()=>{
+     document.getElementById('ghV29DailyGate').classList.remove('on');
+     lastDailyState=d;renderHomeState(d);
+     try{save();renderHome();page('home')}catch(_){}
+   };
+   btn?.remove();
+   try{fourD();speak(`${Number(d.amount||0).toFixed(1)}ゴールド獲得`);navigator.vibrate?.([60,35,100])}catch(_){}
+ }catch(e){
+   if(btn){btn.disabled=false;btn.textContent='もう一度引く'}
+   window.toast?.('ログインくじを受け取れません: '+String(e.message||e));
+ }finally{dailyBusy=false}
+}
+function wrapAuth(){
+ if(authWrapped)return;authWrapped=true;
+ const rb=document.getElementById('registerBtn'),lb=document.getElementById('loginBtn');
+ if(rb?.onclick){
+   const old=rb.onclick;
+   rb.onclick=async function(e){await old.call(this,e);setTimeout(()=>{if(token())startOnboarding()},650)}
+ }
+ if(lb?.onclick){
+   const old=lb.onclick;
+   lb.onclick=async function(e){await old.call(this,e);setTimeout(()=>{if(token())startOnboarding()},750)}
+ }
+}
+function watchCompliance(){
+ const g=document.getElementById('ghComplianceGate');if(!g)return;
+ decorateComplianceSteps();
+ new MutationObserver(()=>{
+   decorateComplianceSteps();
+   if(!g.classList.contains('on')&&token())setTimeout(afterComplianceApproved,180);
+ }).observe(g,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
+}
+ensureShells();ensureHomeBadge();wrapAuth();watchCompliance();
+if(token())setTimeout(startOnboarding,1100);
+setInterval(()=>{if(token()&&!document.getElementById('ghV29DailyGate')?.classList.contains('on')&&!complianceOpen())checkDaily(false)},60000);
+function selfTest(){
+ const src=document.getElementById('gh-v29-safe-login-lottery-onboarding-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const forbidden=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0&&src.includes("call('signup_bonus')")&&src.includes("call('daily_login_state')")&&src.includes("call('daily_login_claim')")
+    &&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&whole.includes('finalOddsSnapshot'),
+  version:VERSION,
+  signupBonus50:true,
+  dailyResetJST1100:true,
+  catchUp:false,
+  dailyDrawRange:'0.1-1.0G',
+  streak3:'extra draw + horse gacha ticket',
+  streak7:'extra 2 draws + jockey gacha ticket',
+  complianceBeforeDaily:true,
+  raceCoreUntouched:true,
+  forbiddenMutationMarkers:bad
+ };
+}
+window.GH_V29_LOGIN_LOTTERY={version:VERSION,showSignupGift,checkDaily,claimDaily,selfTest,get state(){return lastDailyState}};
+document.documentElement.dataset.ghV29='safe-login-lottery-onboarding-r1';
+})();
+</script>
+
+
+<style id="gh-v30-gacha-skill-odds-style">#ghV30Journey{margin:10px 0;padding:12px;border-radius:15px;border:1px solid #8b6d27;background:linear-gradient(180deg,#181306,#05121b);color:#eefaff}#ghV30Journey h3{margin:0 0 6px;color:#ffe6a0}.ghV30JourneyLead{color:#8baebe;font-size:8px;line-height:1.55}.ghV30JourneyStats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.ghV30JourneyStats div{padding:8px;border-radius:10px;background:#031019;border:1px solid #ffffff0e;text-align:center}.ghV30JourneyStats small{display:block;color:#7195a5;font-size:7px}.ghV30JourneyStats b{display:block;color:#ffe7a5;font-size:12px;margin-top:2px}.ghV30Track{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:9px}.ghV30Step{padding:8px 4px;border-radius:10px;background:#031019;border:1px solid #ffffff0d;text-align:center;position:relative;overflow:hidden}.ghV30Step.on{border-color:#c79a36;background:#1c1607}.ghV30Step b{display:block;color:#ffe49b;font-size:10px}.ghV30Step small{display:block;color:#799dac;font-size:6px;line-height:1.4;margin-top:2px}.ghV30Step i{position:absolute;left:0;right:0;bottom:0;height:3px;background:#ffe06d}.ghV30Wallet{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ghV30Wallet span{padding:5px 8px;border-radius:999px;border:1px solid #356c83;background:#061923;color:#bdeeff;font-size:7px;font-weight:1000}.ghV30Actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ghV30Actions button{min-height:38px;padding:0 10px;border-radius:9px;border:1px solid #3b738a;background:#08212d;color:#def8ff;font-weight:1000;font-size:8px}.ghV30Actions button.gold{border-color:#ac852c;background:#2a1f07;color:#ffe5a0}.ghV30Actions button:disabled{opacity:.35}.ghV30Candidates{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.ghV30Candidate{padding:9px;border-radius:11px;border:1px solid #826626;background:#1a1406}.ghV30Candidate b{display:block;color:#ffe5a0;font-size:9px}.ghV30Candidate small{display:block;color:#8db1c0;font-size:7px;margin-top:2px}.ghV30Candidate button{width:100%;margin-top:6px;min-height:36px;border-radius:8px;border:1px solid #c89b38;background:#372806;color:#fff0b4;font-weight:1000}#ghV30SkillOdds{margin:8px 12px;padding:10px;border-radius:12px;border:1px solid #2e6680;background:#061823;color:#b9eaff;font-size:8px;line-height:1.55}#ghV30SkillOdds b{color:#ffe69e}.ghV30AdjustedOdds{margin-top:5px;padding:5px 7px;border-radius:8px;border:1px solid #4f8aa3;background:#061a25;color:#bfefff;font-size:7px;font-weight:1000}.ghV30SkillManage{margin-top:8px;padding:10px;border-radius:11px;border:1px solid #3b6f86;background:#061722}.ghV30SkillManage b{color:#ffe4a0;font-size:9px}.ghV30SkillManage small{display:block;color:#789dab;font-size:7px;line-height:1.5;margin-top:3px}.ghV30SkillManage button{margin-top:6px;min-height:36px;padding:0 10px;border-radius:8px;border:1px solid #ad842c;background:#2a1f07;color:#ffe4a0;font-weight:1000}#ghV30SA{position:fixed;inset:0;z-index:1000002;display:none;align-items:center;justify-content:center;background:radial-gradient(circle,#fff9cf 0,#f0bd42 5%,#5b3b08 18%,#050a10 58%,#000 100%);overflow:hidden}#ghV30SA.on{display:flex;animation:ghV30SAFlash .52s ease-out}#ghV30SA:before{content:"";position:absolute;width:170vmax;height:170vmax;border-radius:50%;background:repeating-conic-gradient(transparent 0 7deg,#ffe37f2d 8deg 10deg,transparent 11deg 22deg);animation:ghV30SASpin 6s linear infinite}#ghV30SACore{position:relative;z-index:2;text-align:center;padding:24px;width:min(760px,94vw)}#ghV30SACore .k{color:#8ff0ff;font-size:10px;font-weight:1000;letter-spacing:.25em}#ghV30SACore h2{margin:7px 0;font-size:clamp(36px,11vw,78px);color:#fff0a8;text-shadow:0 0 34px #ffd653,0 7px 22px #000}#ghV30SACore .n{font-size:20px;font-weight:1000;color:#fff}#ghV30SACore button{margin-top:18px;min-height:44px;padding:0 15px;border-radius:10px;border:1px solid #e0b244;background:#382806;color:#fff0b4;font-weight:1000}@keyframes ghV30SASpin{to{transform:rotate(360deg)}}@keyframes ghV30SAFlash{0%{opacity:0;filter:brightness(5)}100%{opacity:1;filter:brightness(1)}}@media(max-width:560px){.ghV30JourneyStats{grid-template-columns:repeat(2,1fr)}.ghV30Track{grid-template-columns:repeat(3,1fr)}.ghV30Candidates{grid-template-columns:1fr}}</style>
+<script defer id="gh-v30-safe-gacha-journey-skill-odds-r1">
+(()=>{'use strict';
+if(window.GH_V30_GACHA_SKILL_ODDS)return;
+const VERSION='V30-SAFE-GACHA-JOURNEY-SKILL-ODDS-R1';
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+const reqId=p=>(`${p}-${Date.now()}-${crypto.randomUUID?.()||Math.random().toString(36).slice(2)}`).slice(0,118);
+const clean=n=>window.GH_V27_CLEAN_NAME_PITY?.cleanHorseDisplayName?.(n)||String(n||'');
+let pityState=null,skillState=null,oddsState=null,busy=false,lastSAKey='';
+function currentType(){
+ const t=typeof gachaType!=='undefined'?String(gachaType):'horse';
+ return ['horse','jockey','custom','support'].includes(t)?t:'horse';
+}
+function ensureJourney(){
+ let p=document.getElementById('ghV30Journey');
+ if(!p){p=document.createElement('div');p.id='ghV30Journey';document.querySelector('#gacha .gachaMeta')?.insertAdjacentElement('afterend',p)}
+ return p;
+}
+function step(label,reward,active){
+ return `<div class="ghV30Step ${active?'on':''}"><b>${label}回</b><small>${reward}</small>${active?'<i></i>':''}</div>`;
+}
+function renderJourney(){
+ const p=ensureJourney(),type=currentType(),s=pityState?.[type]||{};
+ const pulls=Number(s.pull_count||0),pos=Number(s.cycle_position||0),points=Number(s.exchange_points||0),mats=Number(s.lb_materials||0),tickets=Number(s.selector_tickets||0);
+ const soft=!!s.soft_pity_active,bonusSA=Number(s.soft_pity_special_art_bonus_bp||0)/100,bonusSR=Number(s.soft_pity_special_rare_bonus_bp||0)/100;
+ const cand=Array.isArray(s.featured_candidates)?s.featured_candidates:[];
+ p.innerHTML=`<h3>ガチャ進行 / ${pulls}回引いた</h3><div class="ghV30JourneyLead">150回サイクルの進行をサーバー保存。自然に高レアが当たった時も天井ゲージを全部0にせず25%残します。50回以降はSPECIAL系ソフト天井。</div>
+ <div class="ghV30JourneyStats"><div><small>総回数</small><b>${pulls}回</b></div><div><small>UR以上まで</small><b>${Number(s.next_ur_in||30)}回</b></div><div><small>SPECIALまで</small><b>${Number(s.next_special_in||100)}回</b></div><div><small>150回まで</small><b>${Number(s.next_selector150_in??150)}回</b></div></div>
+ <div class="ghV30Track">${step(10,'交換pt+5',pos>=10)}${step(30,'UR以上保証',Number(s.since_ur||0)>=29)}${step(50,'ソフト天井',soft)}${step(70,'pt+25 / 素材×2',pos>=70)}${step(100,'SPECIAL以上',Number(s.since_special||0)>=99)}${step(150,'ART選択券',tickets>0)}</div>
+ <div class="ghV30Wallet"><span>交換pt ${points}</span><span>限界突破素材 ${mats}</span><span>SPECIAL ART選択券 ${tickets}</span><span>${s.featured_guaranteed_next_special_art?'次のSPECIAL ARTはピックアップ確定':'ピックアップ保証待機なし'}</span></div>
+ <div class="ghV30JourneyLead" style="margin-top:7px">${soft?`ソフト天井中：SPECIAL RARE +${bonusSR.toFixed(2)}% / SPECIAL ART +${bonusSA.toFixed(2)}%`:'ソフト天井はSPECIALを49回連続で引けなかった次の抽選から段階上昇。'}</div>
+ <div class="ghV30Actions"><button data-ghv30-sync>状態更新</button><button data-ghv30-exchange="lb_material" ${points>=40?'':'disabled'}>40pt→限界突破素材</button><button data-ghv30-exchange="selector_ticket" ${points>=180?'':'disabled'}>180pt→ART選択券</button></div>
+ ${tickets>0?`<div class="ghV30Candidates">${cand.map(c=>`<div class="ghV30Candidate"><b>${clean(c.name)}</b><small>今月のピックアップ候補 / SPECIAL ART</small><button data-ghv30-redeem="${Number(c.catalog_no)}">この1枚を選ぶ</button></div>`).join('')}</div>`:''}`;
+ p.querySelector('[data-ghv30-sync]')?.addEventListener('click',()=>syncPity(true));
+ p.querySelectorAll('[data-ghv30-exchange]').forEach(b=>b.onclick=()=>exchangePoints(b.dataset.ghv30Exchange));
+ p.querySelectorAll('[data-ghv30-redeem]').forEach(b=>b.onclick=()=>redeem(Number(b.dataset.ghv30Redeem)));
+}
+async function syncPity(show=false){
+ if(!serverMode())return null;
+ try{
+   pityState=await call('gacha_pity_state');renderJourney();
+   if(show)window.toast?.('ガチャ進行をサーバー同期しました');
+   return pityState;
+ }catch(e){if(show)window.toast?.('ガチャ進行を取得できません: '+e.message);return null}
+}
+async function verifyLocation(){
+ return new Promise((resolve,reject)=>{
+   if(!navigator.geolocation)return reject(new Error('GPSを利用できません'));
+   navigator.geolocation.getCurrentPosition(async p=>{
+     try{const d=await call('location',{lat:p.coords.latitude,lon:p.coords.longitude,accuracy_m:p.coords.accuracy});if(!d?.allowed)throw new Error(d?.reason||'location_not_allowed');resolve(d)}
+     catch(e){reject(e)}
+   },()=>reject(new Error('GPS許可が必要です')),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+ });
+}
+async function exchangePoints(reward){
+ if(busy)return;busy=true;
+ try{
+   await verifyLocation();
+   const d=await call('gacha_exchange_points',{request_id:reqId('gacha-exchange'),type:currentType(),reward});
+   window.toast?.(reward==='lb_material'?'限界突破素材を1個獲得':'SPECIAL ART選択券を1枚獲得');
+   await syncPity(false);
+ }catch(e){window.toast?.('交換できません: '+String(e.message||e))}
+ finally{busy=false}
+}
+async function redeem(catalogNo){
+ if(busy)return;busy=true;
+ try{
+   await verifyLocation();
+   const d=await call('selector_redeem',{request_id:reqId('selector'),type:currentType(),catalog_no:catalogNo});
+   await syncPity(false);
+   showSA(d.name||'SPECIAL ART');
+   try{await window.GH_V23_SERVER_LIMITBREAK_CENTER?.sync?.(false);await window.GH_V19_CHILD_PAGE_RESTORE?.syncSkills?.(true)}catch(_){}
+ }catch(e){window.toast?.('SPECIAL ARTを選択できません: '+String(e.message||e))}
+ finally{busy=false}
+}
+function ensureSA(){
+ let s=document.getElementById('ghV30SA');
+ if(!s){s=document.createElement('div');s.id='ghV30SA';s.innerHTML='<div id="ghV30SACore"></div>';document.body.appendChild(s)}
+ return s;
+}
+function showSA(name){
+ const shell=ensureSA(),core=document.getElementById('ghV30SACore');
+ core.innerHTML=`<div class="k">ULTRA PREMIUM DRAW</div><h2>SPECIAL ART</h2><div class="n">${clean(name)}</div><div class="ghV97ResultActions"><button type="button" id="ghV30SAClose">獲得カードを見る</button><button type="button" id="ghV30SAGameBack">← ゲームに戻る</button><button type="button" id="ghV30SAGachaBack">ガチャを続ける</button></div>`;
+ shell.classList.add('on');
+ core.querySelector('#ghV30SAClose').onclick=()=>shell.classList.remove('on');
+ core.querySelector('#ghV30SAGameBack').onclick=()=>{shell.classList.remove('on');document.getElementById('reveal')?.classList.remove('on');window.GH_V38_SAFE_SPECIAL_ART_CINEMA?.close?.();page('home')};
+ core.querySelector('#ghV30SAGachaBack').onclick=()=>{shell.classList.remove('on');document.getElementById('reveal')?.classList.remove('on');window.GH_V38_SAFE_SPECIAL_ART_CINEMA?.close?.();page('gacha')};
+ try{fourD();speak('スペシャルアート 獲得');navigator.vibrate?.([100,40,160,40,220])}catch(_){}
+}
+function watchReveal(){
+ const r=document.getElementById('reveal');if(!r)return;
+ let lastSpecialRoot=null;
+ new MutationObserver(()=>{
+   const root=r.firstElementChild;
+   const rarity=root?.firstElementChild?.textContent?.trim();
+   if(r.classList.contains('on')&&rarity==='SPECIAL ART'&&root!==lastSpecialRoot){
+     lastSpecialRoot=root;
+     const h=root.querySelector('h2')?.textContent||'SPECIAL ART';
+     setTimeout(()=>{
+       if(r.classList.contains('on')&&r.firstElementChild===root&&root.firstElementChild?.textContent?.trim()==='SPECIAL ART')showSA(h);
+     },180);
+   }
+   setTimeout(()=>syncPity(false),220);
+ }).observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+}
+function normalizeLimitBreakText(root=document){
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const list=[];while(walker.nextNode())list.push(walker.currentNode);
+ for(const n of list){
+   let t=n.nodeValue||'',x=t;
+   x=x.replace(/\bLB\s*MAX\b/g,'限界突破Lv.10/10');
+   x=x.replace(/\bLB\+(\d+)(?:\/10)?/g,'限界突破Lv.$1/10');
+   x=x.replace(/今すぐLB可能/g,'今すぐ限界突破可能');
+   x=x.replace(/LB値/g,'限界突破Lv');
+   if(x!==t)n.nodeValue=x;
+ }
+}
+function ensureSkillOdds(){
+ let b=document.getElementById('ghV30SkillOdds');
+ if(!b){b=document.createElement('div');b.id='ghV30SkillOdds';document.querySelector('#home .betTypes,#home .raceInfo')?.insertAdjacentElement('beforebegin',b)}
+ return b;
+}
+async function syncOdds(){
+ if(!serverMode())return null;
+ try{
+   oddsState=await call('skill_odds_state');renderOddsBonus();return oddsState;
+ }catch(e){console.warn('GH_V30 odds',e);return null}
+}
+function renderOddsBonus(){
+ const b=ensureSkillOdds(),d=oddsState||{};
+ const bonus=Number(d.odds_bonus_pct||0),base=d.base_win_odds,adj=d.skill_adjusted_win_odds;
+ b.innerHTML=`スキル・人馬シンクロ補正：<b>+${bonus.toFixed(1)}%</b>（最大+12%）　スキル ${Number(d.skill_count||0)}個 / S ${Number(d.s_rank_count||0)}個 / SYNC ${Number(d.pair_sync||0)}<br>${base?`MY HORSE単勝プレビュー <b>${Number(base).toFixed(1)} → ${Number(adj||base).toFixed(1)}</b>`:'MY HORSE選択後に補正後オッズを表示'}　※着順は変更せず、BET時の払戻オッズだけサーバー確定して固定。`;
+ const no=Number(d.my_horse_no||0),card=no?document.querySelectorAll('#oddsCards .oddsHorseCard')[no-1]:null;
+ if(card){
+   let x=card.querySelector('.ghV30AdjustedOdds');if(!x){x=document.createElement('div');x.className='ghV30AdjustedOdds';card.appendChild(x)}
+   x.textContent=adj?`会員スキル補正後 単勝 ${Number(adj).toFixed(1)}倍 / BET時固定`:`スキル補正 +${bonus.toFixed(1)}%`;
+ }
+}
+async function syncSkills(){
+ if(!serverMode())return;
+ try{skillState=await call('skill_state');renderSkillManagers()}catch(e){console.warn('GH_V30 skills',e)}
+}
+function renderSkillManagers(){
+ const host=document.getElementById('skillCollectionSafeBody');if(!host||!skillState)return;
+ host.querySelectorAll('.ghV30SkillManage').forEach(x=>x.remove());
+ for(const c of skillState.cards||[]){
+   if(!['UR','SPECIAL RARE','SPECIAL ART'].includes(c.rarity))continue;
+   const box=document.createElement('div');box.className='ghV30SkillManage';
+   const rates=skillState.rank_rates_percent?.[c.rarity]||{};
+   box.innerHTML=`<b>${clean(c.card_name)} / ${c.rarity}　スキル ${Number(c.skills?.length||0)}/${Number(c.max_slots||0)}</b><small>最大枠：UR 2 / SPECIAL RARE 3 / SPECIAL ART 4<br>ランク抽選 C ${Number(rates.C||0)}% / B ${Number(rates.B||0)}% / A ${Number(rates.A||0)}% / <b>S ${Number(rates.S||0)}%</b>。Sが最も出にくい設定。<br>新規選択権 ${Number(c.acquire_tokens||0)} / LvUP選択権 ${Number(c.upgrade_tokens||0)}</small>${Number(c.acquire_tokens||0)>0||Number(c.upgrade_tokens||0)>0?`<button data-ghv30-skill="${escAttr(c.type)}" data-name="${escAttr(c.card_name)}" data-rarity="${escAttr(c.rarity)}">自分でスキルを選ぶ</button>`:''}`;
+   host.appendChild(box);
+ }
+ host.querySelectorAll('[data-ghv30-skill]').forEach(b=>b.onclick=()=>window.GH_V28_LIMITBREAK_FLOW?.openSkillChoice?.(b.dataset.ghv30Skill,b.dataset.name,b.dataset.rarity));
+}
+function escAttr(s){return String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)normalizeLimitBreakText(n)});
+{const targets=['gacha','skillCollectionSafe','limitBreakCenterSafe','home'].map(id=>document.getElementById(id)).filter(Boolean);targets.forEach(t=>obs.observe(t,{childList:true,subtree:true}));}normalizeLimitBreakText();
+document.addEventListener('click',e=>{
+ const pg=e.target.closest?.('[data-page]')?.dataset.page;
+ if(pg==='gacha')setTimeout(()=>syncPity(false),100);
+ if(pg==='skillCollectionSafe')setTimeout(()=>syncSkills(),120);
+ if(pg==='home')setTimeout(()=>syncOdds(),100);
+ if(e.target.closest?.('[data-gacha-tab]'))setTimeout(()=>syncPity(false),80);
+ if(e.target.closest?.('#drawBtn'))setTimeout(()=>syncPity(false),1800);
+ if(e.target.closest?.('[data-v9safe-select="horse"],[data-v9safe-select="jockey"],[data-equip-item]'))setTimeout(()=>syncOdds(),1400);
+},true);
+ensureJourney();ensureSkillOdds();ensureSA();watchReveal();
+if(serverMode()){setTimeout(()=>syncPity(false),1400);setTimeout(()=>syncSkills(),1750);setTimeout(()=>syncOdds(),2000)}
+function selfTest(){
+ const src=document.getElementById('gh-v30-safe-gacha-journey-skill-odds-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const forbidden=['finish_order=','finalOddsSnapshot=','settleRaceBets=','startRace=','makeRacePlan='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0&&src.includes("call('gacha_pity_state')")&&src.includes("call('selector_redeem')")&&src.includes("call('skill_state')")&&src.includes("call('skill_odds_state')")
+   &&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&whole.includes('finalOddsSnapshot'),
+  version:VERSION,
+  pullCountVisible:true,
+  milestones:[10,30,50,70,100,150],
+  selectorThreeChoices:true,
+  specialArtFullScreen:true,
+  skillSlots:{UR:2,SPECIAL_RARE:3,SPECIAL_ART:4},
+  sRankRarest:true,
+  oddsBonusPreview:true,
+  resultUnchanged:true,
+  visibleLBReplacedByLimitBreakLevel:true,
+  forbiddenMutationMarkers:bad
+ };
+}
+window.GH_V30_GACHA_SKILL_ODDS={version:VERSION,syncPity,syncSkills,syncOdds,showSA,selfTest};
+document.documentElement.dataset.ghV30='safe-gacha-journey-skill-odds-r1';
+})();
+</script>
+
+
+<style id="gh-v31-activity-continuity-style">#activityContinuitySafe{background:radial-gradient(circle at 50% 0,#172b36 0,#061019 40%,#020609 100%)}#ghV31ActivityBody{padding:10px 12px 24px}.ghV31Hero{padding:15px;border-radius:18px;border:1px solid #3c7d95;background:linear-gradient(180deg,#071f2b,#061019);box-shadow:0 18px 44px #0007}.ghV31Hero h2{margin:4px 0;color:#ffe8a3}.ghV31Hero p{margin:0;color:#89adbc;font-size:9px;line-height:1.65}.ghV31Stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.ghV31Stat{padding:9px;border-radius:10px;background:#031019;border:1px solid #ffffff0e;text-align:center}.ghV31Stat small{display:block;color:#7196a6;font-size:7px}.ghV31Stat b{display:block;color:#ffe7a2;font-size:13px;margin-top:2px}.ghV31Panel{margin-top:10px;padding:12px;border-radius:14px;background:#06141d;border:1px solid #ffffff10}.ghV31Panel h3{margin:0 0 7px;color:#9eeaff}.ghV31Note{color:#7e9fad;font-size:8px;line-height:1.6}.ghV31Unlock{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.ghV31Unlock div{padding:10px;border-radius:11px;background:#031019;border:1px solid #ffffff0e}.ghV31Unlock small{display:block;color:#779aaa;font-size:7px}.ghV31Unlock b{display:block;margin-top:2px;color:#fff0ae;font-size:12px}.ghV31OK{border-color:#42c995!important;background:#06251b!important}.ghV31OK b{color:#a5ffd0!important}.ghV31Track{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:9px}.ghV31Day{position:relative;padding:7px 2px;border-radius:8px;background:#031019;border:1px solid #ffffff0d;text-align:center}.ghV31Day.done{background:#0b261e;border-color:#44c89755}.ghV31Day.now{background:#251c06;border-color:#d4a83b}.ghV31Day b{display:block;color:#dff7ff;font-size:8px}.ghV31Day small{display:block;color:#6f94a4;font-size:5px;line-height:1.25;margin-top:2px}.ghV31Day.milestone b{color:#ffe29a}.ghV31Day.milestone{border-color:#8e6e26}.ghV31Progress{height:10px;border-radius:999px;background:#0a202b;border:1px solid #315d70;overflow:hidden;margin-top:9px}.ghV31Progress i{display:block;height:100%;background:linear-gradient(90deg,#53c8ff,#ffe06b);width:0}.ghV31Actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.ghV31Actions button{min-height:42px;padding:0 12px;border-radius:10px;border:1px solid #3a758d;background:#08212d;color:#dcf7ff;font-weight:1000}.ghV31Actions button.gold{border-color:#ae872f;background:#2a2007;color:#ffe6a1}.ghV31Actions button:disabled{opacity:.35}#ghV31HomeProgress{margin:8px 12px;padding:9px 11px;border-radius:11px;border:1px solid #8c6c26;background:linear-gradient(180deg,#181305,#06131d);color:#d8f3ff;font-size:8px;line-height:1.55}#ghV31HomeProgress b{color:#ffe49b}.ghV31Eligible{display:inline-block;padding:3px 7px;border-radius:999px;border:1px solid #42cc9866;background:#06261b;color:#a4ffd0;font-size:7px;font-weight:1000}.ghV31Locked{display:inline-block;padding:3px 7px;border-radius:999px;border:1px solid #8d6d28;background:#1b1506;color:#ffe39c;font-size:7px;font-weight:1000}@media(max-width:560px){.ghV31Stats{grid-template-columns:repeat(2,1fr)}.ghV31Track{grid-template-columns:repeat(6,1fr)}.ghV31Unlock{grid-template-columns:1fr}}</style>
+<script defer id="gh-v31-safe-activity-continuity-r1">
+(()=>{'use strict';
+if(window.GH_V31_ACTIVITY_CONTINUITY)return;
+const VERSION='V31-SAFE-ACTIVITY-CONTINUITY-R1';
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+let last=null,busy=false;
+function ensurePage(){
+ const app=document.querySelector('.app');if(!app)return null;
+ let p=document.getElementById('activityContinuitySafe');
+ if(!p){p=document.createElement('section');p.id='activityContinuitySafe';p.className='screen subpage';p.innerHTML='<div class="header"><button class="back" data-page="home">← 戻る</button><h1>継続ミッション</h1></div><div id="ghV31ActivityBody"></div>';app.appendChild(p)}
+ const menu=document.querySelector('#home .menu');
+ if(menu&&!menu.querySelector('[data-page="activityContinuitySafe"]')){const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page='activityContinuitySafe';b.innerHTML='<span class="ico">∞</span>継続ミッション';menu.appendChild(b)}
+ return p;
+}
+function ensureHome(){
+ let b=document.getElementById('ghV31HomeProgress');
+ if(!b){b=document.createElement('div');b.id='ghV31HomeProgress';const h=document.getElementById('home');const a=h?.querySelector('.raceInfo,.betTypes,.menu');if(a)a.insertAdjacentElement('beforebegin',b)}
+ return b;
+}
+const milestone = d => d===5?'PT+2':d===10?'馬券':d===15?'PT+5':d===20?'騎手券':d===25?'PT+10':d===30?'30日BOX':'';
+function dayGrid(s){
+ const active=Number(s.active_days||0),cycle=Number(s.cycle_day||1);
+ const completedInCycle=active===0?0:cycle;
+ return Array.from({length:30},(_,i)=>{
+  const d=i+1,done=active>0&&d<=completedInCycle,now=d===cycle+1&&cycle<30;
+  const ms=milestone(d);
+  return `<div class="ghV31Day ${done?'done':''} ${now?'now':''} ${ms?'milestone':''}"><b>${d}</b><small>${ms||'活動'}</small></div>`;
+ }).join('');
+}
+function render(s=last){
+ ensurePage();const body=document.getElementById('ghV31ActivityBody');if(!body)return;
+ if(!s){body.innerHTML='<div class="ghV31Panel"><div class="ghV31Note">ログインするとサーバーの活動状況を表示します。</div></div>';return}
+ const active=Number(s.active_days||0),login=Number(s.login_days||0),month=Number(s.month_active_days||0),streak=Number(s.current_active_streak||0),cycle=Number(s.cycle_day||1);
+ const daysLeft=Number(s.lottery_days_remaining||0),betLeft=Number(s.qualifying_wager_remaining||0),eligible=!!s.lottery_eligible;
+ const pct=Math.min(100,Math.max(0,((active===0?0:cycle)/30)*100));
+ body.innerHTML=`<div class="ghV31Hero"><small style="color:#6be8ff;font-weight:1000;letter-spacing:.13em">GOLDEN STREAK / ACTIVE PLAY</small><h2>ログインだけやなく、遊んだ日が進む</h2><p><b>活動日とは：</b>①その日のログインくじを受け取る　＋　②最低1レースにBET　＋　③そのレースがサーバーで最後まで決着。この3つを満たして初めて1活動日です。取り逃した日の後日まとめ受取はありません。</p><div class="ghV31Stats"><div class="ghV31Stat"><small>今月の活動</small><b>${month}日</b></div><div class="ghV31Stat"><small>累計活動</small><b>${active}日</b></div><div class="ghV31Stat"><small>連続活動</small><b>${streak}日</b></div><div class="ghV31Stat"><small>継続PT</small><b>${Number(s.continuity_points||0)}pt</b></div></div><div class="ghV31Note" style="margin-top:8px">累計ログイン ${login}日。1日休むと連続活動は止まりますが、今月・累計活動日は消えません。</div></div>
+ <div class="ghV31Panel"><h3>特別抽選の参加資格 ${eligible?'<span class="ghV31Eligible">解放済み</span>':'<span class="ghV31Locked">まだロック中</span>'}</h3><div class="ghV31Unlock"><div class="${daysLeft<=0?'ghV31OK':''}"><small>条件1：活動日</small><b>${daysLeft<=0?'3活動日クリア':`あと ${daysLeft} 活動日`}</b></div><div class="${betLeft<=0?'ghV31OK':''}"><small>条件2：登録後レースBET 45G</small><b>${betLeft<=0?'45G条件クリア':`あと ${betLeft.toFixed(1)}G`}</b></div></div><div class="ghV31Note" style="margin-top:8px">初回50Gと毎日ログインGoldはゲーム専用。特別抽選は、<b>3活動日＋初回50G付与後に決着したレースBET合計45G以上</b>で解放します。昔のBETではクリアできません。抽選応募に使えるのはゲーム専用ボーナスGoldを除いた通常Goldです。</div></div>
+ <div class="ghV31Panel"><h3>30活動日 継続メーター</h3><div class="ghV31Note">3日・7日で終わらず、30活動日で1周。31日目から次の周回へ入り、累計活動日と連続記録は残ります。</div><div class="ghV31Progress"><i style="width:${pct}%"></i></div><div class="ghV31Track">${dayGrid(s)}</div><div class="ghV31Note" style="margin-top:8px">毎活動日：継続pt+1　/　5日:+2pt　/　10日:馬ガチャ券　/　15日:+5pt　/　20日:騎手ガチャ券　/　25日:+10pt　/　30日:馬券＋騎手券＋15pt</div><div class="ghV31Actions"><button class="gold" id="ghV31Claim" ${s.reward_available?'':'disabled'}>${s.reward_available?'今日の継続ボーナスを受け取る':s.today_active?'本日受取済み':'今日のレース完了後に解放'}</button><button id="ghV31Refresh">更新</button></div></div>`;
+ body.querySelector('#ghV31Claim')?.addEventListener('click',claim);
+ body.querySelector('#ghV31Refresh')?.addEventListener('click',()=>sync(false));
+ renderHome(s);
+}
+function renderHome(s){
+ const b=ensureHome();if(!b||!s)return;
+ const days=Number(s.lottery_days_remaining||0),bet=Number(s.qualifying_wager_remaining||0),eligible=!!s.lottery_eligible;
+ b.innerHTML=eligible
+  ?`特別抽選 <b>解放済み</b>　/　今月 <b>${Number(s.month_active_days||0)}活動日</b>　/　累計 ${Number(s.active_days||0)}日　/　連続 ${Number(s.current_active_streak||0)}日　/　継続 ${Number(s.continuity_points||0)}pt`
+  :`特別抽選まで <b>${days>0?`あと${days}活動日`:'活動日OK'}</b>　/　45G条件 <b>${bet>0?`あと${bet.toFixed(1)}G`:'クリア'}</b>　/　今月 ${Number(s.month_active_days||0)}日　/　累計 ${Number(s.active_days||0)}日　/　連続 ${Number(s.current_active_streak||0)}日`;
+}
+async function sync(silent=true){
+ if(!serverMode()){render(null);return null}
+ if(busy)return last;busy=true;
+ try{last=await call('activity_state');render(last);return last}
+ catch(e){console.warn('GH_V31 activity',e);if(!silent)window.toast?.('活動状況を取得できません: '+e.message);return null}
+ finally{busy=false}
+}
+async function claim(){
+ if(busy||!serverMode())return;busy=true;
+ try{
+  const d=await call('activity_claim');last=d;render(d);
+  const r=d?.reward||{},txt=[Number(r.continuity_points||0)?`継続pt+${Number(r.continuity_points)}`:'',Number(r.horse_gacha_ticket||0)?'馬ガチャ券×1':'',Number(r.jockey_gacha_ticket||0)?'騎手ガチャ券×1':''].filter(Boolean).join(' ＋ ');
+  window.toast?.(txt?`継続ボーナス：${txt}`:'継続ボーナス受取完了');
+  try{fourD();speak('継続ボーナス獲得')}catch(_){}
+ }catch(e){window.toast?.('継続ボーナスを受け取れません: '+e.message)}
+ finally{busy=false}
+}
+ensurePage();ensureHome();
+document.addEventListener('click',e=>{
+ const pg=e.target.closest?.('[data-page]')?.dataset.page;
+ if(pg==='activityContinuitySafe'||pg==='home'||pg==='campaign')setTimeout(()=>sync(true),120);
+},true);
+if(serverMode())setTimeout(()=>sync(true),1700);
+setInterval(()=>{if(serverMode()&&(document.getElementById('home')?.classList.contains('on')||document.getElementById('activityContinuitySafe')?.classList.contains('on')))sync(true)},45000);
+function selfTest(){
+ const src=document.getElementById('gh-v31-safe-activity-continuity-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const bad=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='].filter(x=>src.includes(x));
+ return {ok:bad.length===0&&src.includes("call('activity_state')")&&src.includes("call('activity_claim')")&&whole.includes('V30-SAFE-GACHA-JOURNEY-SKILL-ODDS-R1')&&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&whole.includes('finalOddsSnapshot'),version:VERSION,parentV30Preserved:true,threeSevenLoginBonusRemoved:true,thirtyDayContinuity:true,lotteryActivityGate:true,postGrantBetRequirement:true,protectedMutationMarkers:bad};
+}
+window.GH_V31_ACTIVITY_CONTINUITY={version:VERSION,sync,claim,selfTest,get state(){return last}};
+document.documentElement.dataset.ghV31='safe-activity-continuity-r1';
+})();
+</script>
+
+
+<style id="gh-v33-bonus-gold-style">#bonusGoldSafe{background:radial-gradient(circle at 50% 0,#182b36 0,#061019 40%,#020609 100%)}#ghV33BonusBody{padding:10px 12px 24px}.ghV33Hero{padding:15px;border-radius:18px;border:1px solid #8b6b28;background:linear-gradient(180deg,#181305,#061019);box-shadow:0 18px 44px #0007}.ghV33Hero h2{margin:4px 0;color:#ffe8a5}.ghV33Hero p{margin:0;color:#8eb0bf;font-size:9px;line-height:1.65}.ghV33Stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.ghV33Stat{padding:9px;border-radius:10px;background:#031019;border:1px solid #ffffff0e;text-align:center}.ghV33Stat small{display:block;color:#7296a5;font-size:7px}.ghV33Stat b{display:block;color:#ffe7a1;font-size:13px;margin-top:2px}.ghV33Panel{margin-top:10px;padding:12px;border-radius:14px;background:#06141d;border:1px solid #ffffff10}.ghV33Panel h3{margin:0 0 7px;color:#a6ecff}.ghV33Note{color:#7fa1b0;font-size:8px;line-height:1.62}.ghV33Rules{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.ghV33Rule{padding:9px;border-radius:10px;background:#031019;border:1px solid #ffffff0e}.ghV33Rule b{display:block;color:#e9f9ff;font-size:9px}.ghV33Rule small{display:block;margin-top:3px;color:#799aa9;font-size:7px;line-height:1.45}.ghV33Rule.ok{border-color:#42c99666;background:#06251b}.ghV33Rule.ok b{color:#a7ffd2}.ghV33Rule.no{border-color:#846823;background:#181305}.ghV33Rule.no b{color:#ffe3a0}.ghV33History{display:grid;gap:6px;margin-top:8px}.ghV33Hist{display:grid;grid-template-columns:1fr auto;gap:8px;padding:9px;border-radius:10px;background:#031019;border:1px solid #ffffff0d}.ghV33Hist b{font-size:9px;color:#e8f9ff}.ghV33Hist small{display:block;color:#7394a4;font-size:7px;margin-top:2px}.ghV33Hist strong{font-size:10px;color:#a6ffd0}#ghV33HomeBonus{margin:8px 12px;padding:9px 11px;border-radius:11px;border:1px solid #816526;background:linear-gradient(180deg,#181305,#06131d);color:#d9f3ff;font-size:8px;line-height:1.55}#ghV33HomeBonus b{color:#ffe49b}#ghV33UnlockToast{position:fixed;left:50%;top:16%;transform:translateX(-50%) translateY(-10px);z-index:1000005;min-width:min(88vw,520px);padding:14px 16px;border-radius:16px;border:1px solid #d4aa3d;background:linear-gradient(180deg,#2b2007,#06131d);box-shadow:0 24px 70px #000b;text-align:center;color:#eaf9ff;opacity:0;pointer-events:none;transition:.25s}#ghV33UnlockToast.on{opacity:1;transform:translateX(-50%) translateY(0)}#ghV33UnlockToast b{display:block;color:#fff0ad;font-size:18px;margin-top:2px}#ghV33UnlockToast small{display:block;color:#8fb4c4;font-size:8px;margin-top:3px}@media(max-width:560px){.ghV33Stats{grid-template-columns:repeat(2,1fr)}.ghV33Rules{grid-template-columns:1fr}}</style>
+
+<script defer id="gh-v33-safe-bonus-gold-conversion-r1">
+(()=>{'use strict';
+if(window.GH_V33_BONUS_GOLD)return;
+const VERSION='V33-SAFE-BONUS-GOLD-CONVERSION-R1';
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+let last=null,busy=false,initialized=false,lastSeen=sessionStorage.getItem('gh_v33_last_unlock_bet')||'';
+function ensurePage(){
+ const app=document.querySelector('.app');if(!app)return null;
+ let p=document.getElementById('bonusGoldSafe');
+ if(!p){p=document.createElement('section');p.id='bonusGoldSafe';p.className='screen subpage';p.innerHTML='<div class="header"><button class="back" data-page="home">← 戻る</button><h1>ボーナスGold</h1></div><div id="ghV33BonusBody"></div>';app.appendChild(p)}
+ const menu=document.querySelector('#home .menu');
+ if(menu&&!menu.querySelector('[data-page="bonusGoldSafe"]')){const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page='bonusGoldSafe';b.innerHTML='<span class="ico">G</span>ボーナスGold';menu.appendChild(b)}
+ return p;
+}
+function ensureHome(){
+ let b=document.getElementById('ghV33HomeBonus');
+ if(!b){b=document.createElement('div');b.id='ghV33HomeBonus';const a=document.getElementById('ghV31HomeProgress')||document.querySelector('#home .raceInfo,#home .betTypes,#home .menu');if(a)a.insertAdjacentElement('afterend',b)}
+ return b;
+}
+function ensureToast(){
+ let t=document.getElementById('ghV33UnlockToast');if(!t){t=document.createElement('div');t.id='ghV33UnlockToast';document.body.appendChild(t)}return t;
+}
+function showUnlock(x){
+ const n=Number(x?.unlocked_gold||0);if(n<=0)return;
+ const t=ensureToast();
+ t.innerHTML=`レース決着でボーナスGoldを解放<b>+${n.toFixed(1)}G 懸賞利用可能</b><small>取消・返還BETは対象外 / Gold総量を新しく増やす処理ではありません</small>`;
+ t.classList.add('on');
+ try{fourD();speak(`${n.toFixed(1)}ゴールド 懸賞利用可能になりました`);navigator.vibrate?.([55,35,90])}catch(_){}
+ setTimeout(()=>t.classList.remove('on'),3800);
+}
+function renderHome(s){
+ const b=ensureHome();if(!b||!s)return;
+ b.innerHTML=`Gold合計 <b>${Number(s.gold_total||0).toFixed(1)}G</b>　/　ゲーム専用 <b>${Number(s.bonus_locked_gold||0).toFixed(1)}G</b>　/　懸賞利用可能 <b>${Number(s.sweepstakes_eligible_gold||0).toFixed(1)}G</b><br>レース正常決着でゲーム専用Gを順に解放。累計解放 <b>${Number(s.lifetime_bonus_unlocked_by_race||0).toFixed(1)}G</b>`;
+}
+function render(s=last){
+ ensurePage();const body=document.getElementById('ghV33BonusBody');if(!body)return;
+ if(!s){body.innerHTML='<div class="ghV33Panel"><div class="ghV33Note">ログイン後にサーバー残高を表示します。</div></div>';return}
+ const hist=Array.isArray(s.unlock_history)?s.unlock_history:[];
+ body.innerHTML=`<div class="ghV33Hero"><small style="color:#66e9ff;font-weight:1000;letter-spacing:.13em">BONUS GOLD → SWEEPSTAKES ELIGIBLE</small><h2>レースを遊んだ分だけ解放</h2><p>新規50G・毎日のログインGoldは最初はゲーム専用。実際にレースへBETし、そのレースがサーバーで正常決着した分だけ懸賞利用可能Goldへ移ります。</p><div class="ghV33Stats"><div class="ghV33Stat"><small>Gold合計</small><b>${Number(s.gold_total||0).toFixed(1)}G</b></div><div class="ghV33Stat"><small>ゲーム専用</small><b>${Number(s.bonus_locked_gold||0).toFixed(1)}G</b></div><div class="ghV33Stat"><small>懸賞利用可能</small><b>${Number(s.sweepstakes_eligible_gold||0).toFixed(1)}G</b></div><div class="ghV33Stat"><small>累計レース解放</small><b>${Number(s.lifetime_bonus_unlocked_by_race||0).toFixed(1)}G</b></div></div></div>
+ <div class="ghV33Panel"><h3>何をしたら懸賞に使える？</h3><div class="ghV33Rules"><div class="ghV33Rule ok"><b>✓ レースBET → 正常決着</b><small>当たり・ハズレどちらでも、そのBET額のうちゲーム専用Gold相当分を解放。</small></div><div class="ghV33Rule no"><b>× 取消・除外・返還</b><small>勝負が成立していないBETは解放に数えません。</small></div><div class="ghV33Rule no"><b>× ガチャ等で消費</b><small>ゲームには使えますが、その使用分を懸賞利用可能へ変換はしません。</small></div></div><div class="ghV33Note" style="margin-top:8px">負けたBET分を別で再付与する仕組みではありません。Gold総量を増やさず、残っているGoldのゲーム専用ロックを外す方式です。</div></div>
+ <div class="ghV33Panel"><h3>特別抽選の解放条件</h3><div class="ghV33Note">別条件として、<b>3活動日＋登録後45Gの決着済みレースBET</b>も必要です。現在：活動日あと ${Number(s.special_lottery_days_remaining||0)}日 / 45G条件あと ${Number(s.special_lottery_45g_remaining||0).toFixed(1)}G / ${s.special_lottery_eligible?'<b style="color:#a7ffd0">解放済み</b>':'<b style="color:#ffe39c">ロック中</b>'}</div></div>
+ <div class="ghV33Panel"><h3>最近の解放履歴</h3><div class="ghV33History">${hist.length?hist.map(x=>`<div class="ghV33Hist"><span><b>レースBET ${Number(x.stake||0).toFixed(1)}G / ${x.bet_status==='won'?'的中':'不的中'}</b><small>${x.settled_at?new Date(x.settled_at).toLocaleString('ja-JP'):'-'}</small></span><strong>+${Number(x.unlocked_gold||0).toFixed(1)}G</strong></div>`).join(''):'<div class="ghV33Note">まだレース決着による解放履歴はありません。</div>'}</div></div>
+ <div class="ghV33Panel"><div class="ghV33Note">累計付与 ${Number(s.lifetime_bonus_granted||0).toFixed(1)}G　/　レース解放 ${Number(s.lifetime_bonus_unlocked_by_race||0).toFixed(1)}G　/　ガチャ等で使用 ${Number(s.lifetime_bonus_used_elsewhere||0).toFixed(1)}G</div></div>`;
+ renderHome(s);
+}
+async function sync(silent=true){
+ if(!serverMode()){render(null);return null}
+ if(busy)return last;busy=true;
+ try{
+   const s=await call('bonus_gold_state');
+   const newest=Array.isArray(s?.unlock_history)&&s.unlock_history.length?s.unlock_history[0]:null;
+   if(!initialized){
+     initialized=true;
+     if(newest?.bet_id&&!lastSeen){lastSeen=String(newest.bet_id);sessionStorage.setItem('gh_v33_last_unlock_bet',lastSeen)}
+   }else if(newest?.bet_id&&String(newest.bet_id)!==lastSeen){
+     lastSeen=String(newest.bet_id);sessionStorage.setItem('gh_v33_last_unlock_bet',lastSeen);
+     if(Number(newest.unlocked_gold||0)>0)showUnlock(newest);
+   }
+   last=s;render(s);return s;
+ }catch(e){console.warn('GH_V33 bonus gold',e);if(!silent)window.toast?.('ボーナスGold状態を取得できません: '+e.message);return null}
+ finally{busy=false}
+}
+ensurePage();ensureHome();ensureToast();
+document.addEventListener('click',e=>{
+ const pg=e.target.closest?.('[data-page]')?.dataset.page;
+ if(pg==='bonusGoldSafe'||pg==='home'||pg==='campaign')setTimeout(()=>sync(true),100);
+},true);
+if(serverMode())setTimeout(()=>sync(true),1600);
+setInterval(()=>{if(serverMode())sync(true)},20000);
+function selfTest(){
+ const src=document.getElementById('gh-v33-safe-bonus-gold-conversion-r1')?.textContent||'',h=document.documentElement.innerHTML;
+ const bad=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='].filter(x=>src.includes(x));
+ return {
+   ok:bad.length===0&&src.includes("call('bonus_gold_state')")&&!!document.getElementById('bonusGoldSafe')
+     &&h.includes('V32-SAFE-ONBOARDING-45G-ACTIVITY-R1')&&h.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&h.includes('finalOddsSnapshot'),
+   version:VERSION,
+   settledRaceUnlock:true,
