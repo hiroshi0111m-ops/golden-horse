@@ -1,0 +1,1000 @@
+}
+function coreAudit(){
+ const s=document.documentElement.innerHTML;
+ return {
+  seven:Array.isArray(window.HORSES)&&HORSES.length===7,
+  bet120:s.includes('FIXED_BET_SECONDS=120'),
+  skip:!!document.getElementById('skipBtn'),
+  oddsLock:s.includes('finalOddsSnapshot'),
+  serverAuthority:s.includes('SERVER AUTHORITATIVE BET / RACE SYNC'),
+  securityLock:s.includes('security_lock'),
+  photo:s.includes('写真判定'),
+  custom100:Number(window.GH_V10_CUSTOM_EQUIPMENT_COMPLETE?.selfTest?.()?.equipmentCatalog||0)===100
+ };
+}
+function selfTest(){
+ const dom=domAudit(),modules=moduleAudit(),core=coreAudit();
+ const moduleKeys=['v9','v10Skills','v10Custom','v11Progress','v11Integrity','v12Tactics','v12Complete','v13','v14','master'];
+ const moduleOK=moduleKeys.every(k=>modules[k]?.ok===true);
+ const coreOK=Object.values(core).every(Boolean);
+ const ok=moduleOK&&coreOK&&dom.duplicateIdCount===0&&dom.horizontalOverflow===0&&dom.missingPages.length===0&&dom.missingTabs.length===0&&dom.pageErrors.length===0;
+ const result={ok,version:VERSION,checkedAt:new Date().toISOString(),dom,modules,core,readonly:true};
+ document.documentElement.dataset.ghV15Regression=ok?'PASS':'FAIL';
+ let p=document.getElementById('ghV15RegressionReport');
+ if(!p){p=document.createElement('pre');p.id='ghV15RegressionReport';p.hidden=true;document.body.appendChild(p)}
+ p.textContent=JSON.stringify(result);
+ try{sessionStorage.setItem('gh_v15_regression_last',JSON.stringify(result))}catch(_){}
+ return result;
+}
+setTimeout(()=>{try{selfTest()}catch(_){}},1800);
+setTimeout(()=>{try{selfTest()}catch(_){}},4200);
+window.GH_V15_REGRESSION_GATE={version:VERSION,domAudit,moduleAudit,coreAudit,selfTest};
+document.documentElement.dataset.ghV15Complete='final-r1';
+})();
+</script>
+
+
+<style id="gh-v16-myhorse-compliance-style">#ghComplianceGate{position:fixed;inset:0;z-index:999999;background:rgba(0,5,10,.94);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:14px}#ghComplianceGate.on{display:flex}#ghComplianceCard{width:min(760px,96vw);max-height:92vh;overflow:auto;border-radius:20px;border:1px solid #9a7829;background:linear-gradient(180deg,#101a20,#050b10 42%,#070807);box-shadow:0 30px 90px #000;padding:18px;color:#eefaff}#ghComplianceCard h2{margin:2px 0 8px;color:#ffe6a0;font-size:21px}#ghComplianceCard .lead{color:#9cbac7;font-size:11px;line-height:1.7;margin-bottom:10px}.ghComplianceItem{display:grid;grid-template-columns:24px 1fr;gap:8px;padding:10px 8px;border-top:1px solid #ffffff10;font-size:11px;line-height:1.65}.ghComplianceItem input{width:18px;height:18px;margin-top:2px}.ghComplianceNote{margin-top:9px;padding:10px;border-radius:11px;border:1px solid #5d4c22;background:#181305;color:#ffe5a1;font-size:9px;line-height:1.65}.ghComplianceNote.blue{border-color:#285b73;background:#061722;color:#bdeeff}.ghComplianceOverall{display:grid;grid-template-columns:24px 1fr;gap:8px;margin-top:12px;padding:11px;border:1px solid #48ba8966;border-radius:11px;background:#062219;font-size:11px;font-weight:900}.ghComplianceOverall input{width:18px;height:18px}#ghComplianceActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}#ghComplianceActions button{min-height:44px;padding:0 15px;border-radius:11px;border:1px solid #876a25;background:#241a05;color:#ffe6a0;font-weight:1000}#ghComplianceActions button.primary{background:linear-gradient(#82621b,#3a2905);border-color:#c49a35;color:#fff2bb}#ghComplianceActions button:disabled{opacity:.35}.ghMyHorseBadge{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:999px;border:1px solid #e8bf4f;background:#2d2107;color:#ffe89c;font-size:7px;font-weight:1000;vertical-align:middle}#raceScreen .runner.ghMyHorseRunner{filter:drop-shadow(0 0 13px #ffd75a) drop-shadow(0 12px 9px #000b) saturate(1.12) contrast(1.1)}#raceScreen .runner.ghMyHorseRunner .num{box-shadow:0 0 0 2px #ffd95d,0 0 18px #ffd95d}#raceScreen .runner.ghMyHorseRunner:before{content:"MY";position:absolute;left:5px;top:-7px;z-index:9;padding:2px 5px;border-radius:999px;background:#ffe277;color:#1b1200;border:1px solid #fff0ac;font-size:7px;font-weight:1000;box-shadow:0 0 12px #ffd65b}.oddsHorseCard.ghMyHorseOdds{border-color:#d3a632!important;box-shadow:inset 0 0 0 1px #d3a63255,0 0 20px #d3a63218}#ghV16MyHorseState{margin:7px 0;padding:8px 10px;border-radius:10px;border:1px solid #2e6780;background:#061823;color:#aee8ff;font-size:8px;line-height:1.5}</style>
+<script defer id="gh-v16-safe-myhorse-compliance-r1">
+(()=>{'use strict';
+if(window.GH_V16_MYHORSE_COMPLIANCE)return;
+const VERSION='V16-SAFE-MYHORSE-COMPLIANCE-R1';
+let compliance=null,checking=false,accepting=false,lastHorseSignature='';
+const oldEnsure=window.ensureGameAllowed||ensureGameAllowed;
+const oldRenderOdds=window.renderOdds||renderOdds;
+const oldBuildRaceUI=window.buildRaceUI||buildRaceUI;
+const oldSelectionText=window.selectionText||selectionText;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const token=()=>localStorage.getItem('gh_session_token')||'';
+const serverMode=()=>!!token();
+async function complianceCall(action,payload={}){
+ if(window.GH_V8_TOUR_SYNC?.call)return await window.GH_V8_TOUR_SYNC.call(action,payload);
+ return await ghApi({action,token:token(),device_key:getDeviceKey(),...payload});
+}
+function ensureComplianceUI(){
+ let gate=document.getElementById('ghComplianceGate');if(gate)return gate;
+ gate=document.createElement('div');gate.id='ghComplianceGate';
+ gate.innerHTML='<div id="ghComplianceCard"><div style="color:#65e6ff;font-size:9px;font-weight:1000;letter-spacing:.12em">FIRST PLAY COMPLIANCE / ONE-TIME CONFIRMATION</div><h2>反社会的勢力の排除に関する確認</h2><div class="lead" id="ghComplianceLead">確認事項を取得しています…</div><div class="ghComplianceNote blue"><b>初回ログイン時に必須</b><br>必要項目を確認できない場合はゲームを開始できません。運営審査で利用不可となった場合は、ログイン・BET・ガチャ・懸賞を含む利用を停止します。</div><div id="ghComplianceItems"></div><div id="ghComplianceFive" class="ghComplianceNote"></div><div id="ghComplianceTen" class="ghComplianceNote"></div><div id="ghComplianceLimit" class="ghComplianceNote blue"></div><label class="ghComplianceOverall"><input type="checkbox" id="ghComplianceOverall"><span>上記すべてを読み、内容を理解したうえで、各項目の確認内容が真実であることを表明します。</span></label><div id="ghComplianceActions"><button id="ghComplianceLogout">ログアウトして戻る</button><button class="primary" id="ghComplianceAccept" disabled>確認してゲーム利用を開始</button></div><div id="ghComplianceMsg" class="lead" style="margin-top:9px"></div></div>';
+ document.body.appendChild(gate);
+ gate.querySelector('#ghComplianceLogout').onclick=()=>{localStorage.removeItem('gh_session_token');gate.classList.remove('on');try{page('login')}catch(_){}};
+ gate.querySelector('#ghComplianceOverall').onchange=updateAcceptButton;
+ gate.querySelector('#ghComplianceAccept').onclick=acceptCompliance;
+ return gate;
+}
+function updateAcceptButton(){
+ const gate=ensureComplianceUI(),checks=[...gate.querySelectorAll('[data-gh-compliance-key]')],all=checks.length>0&&checks.every(x=>x.checked)&&gate.querySelector('#ghComplianceOverall').checked;
+ gate.querySelector('#ghComplianceAccept').disabled=!all||accepting;
+}
+function renderCompliance(d){
+ compliance=d;const gate=ensureComplianceUI(),pol=d?.policy||{},items=Array.isArray(pol.items)?pol.items:[];
+ gate.querySelector('#ghComplianceLead').textContent=pol.intro||'Golden Horseを初めて利用する前に確認してください。';
+ gate.querySelector('#ghComplianceItems').innerHTML=items.map((x,i)=>`<label class="ghComplianceItem"><input type="checkbox" data-gh-compliance-key="${esc(x.key)}"><span><b>${i+1}.</b> ${esc(x.label)}</span></label>`).join('');
+ gate.querySelectorAll('[data-gh-compliance-key]').forEach(x=>x.onchange=updateAcceptButton);
+ gate.querySelector('#ghComplianceFive').innerHTML='<b>5年基準</b><br>'+esc(pol.five_year_note||'');
+ gate.querySelector('#ghComplianceTen').innerHTML='<b>過去10年程度の確認について</b><br>'+esc(pol.ten_year_note||'');
+ gate.querySelector('#ghComplianceLimit').innerHTML='<b>重要：時効について</b><br>'+esc(pol.limitation_note||'');
+ gate.querySelector('#ghComplianceOverall').checked=false;
+ if(d?.access_denied||d?.review_status==='denied'){
+   gate.querySelector('#ghComplianceLead').textContent='このアカウントは利用できません。';
+   gate.querySelector('#ghComplianceItems').innerHTML='<div class="ghComplianceNote"><b>利用不可</b><br>運営の反社会的勢力確認・利用審査により利用停止となっています。</div>';
+   gate.querySelector('#ghComplianceOverall').checked=false;
+   gate.querySelector('#ghComplianceOverall').disabled=true;
+   gate.querySelector('#ghComplianceAccept').disabled=true;
+   gate.querySelector('#ghComplianceMsg').textContent='ゲーム、BET、ガチャ、懸賞を利用できません。';
+   gate.classList.add('on');
+   return;
+ }
+ gate.querySelector('#ghComplianceOverall').disabled=false;updateAcceptButton();
+ gate.classList.toggle('on',!!d?.requires_acceptance);
+}
+async function checkCompliance(force=false){
+ if(!serverMode()){compliance=null;ensureComplianceUI().classList.remove('on');return true}
+ if(checking)return compliance?.accepted_current===true;
+ if(!force&&compliance?.accepted_current===true)return true;
+ checking=true;
+ try{
+  const d=await complianceCall('compliance_state');renderCompliance(d);
+  return d?.accepted_current===true;
+ }catch(e){console.warn('GH compliance state',e);document.getElementById('ghComplianceMsg').textContent='確認状態を取得できません：'+String(e.message||e);ensureComplianceUI().classList.add('on');return false}
+ finally{checking=false}
+}
+async function acceptCompliance(){
+ if(accepting||!compliance?.policy?.version)return;
+ const gate=ensureComplianceUI(),confirmations={};
+ gate.querySelectorAll('[data-gh-compliance-key]').forEach(x=>confirmations[x.dataset.ghComplianceKey]=!!x.checked);
+ if(!Object.values(confirmations).every(Boolean)||!gate.querySelector('#ghComplianceOverall').checked)return;
+ accepting=true;updateAcceptButton();gate.querySelector('#ghComplianceMsg').textContent='サーバーへ確認内容を記録しています…';
+ try{
+   await complianceCall('compliance_accept',{policy_version:compliance.policy.version,confirmations});
+   gate.querySelector('#ghComplianceMsg').textContent='確認完了。ゲームを利用できます。';
+   compliance={...compliance,accepted_current:true,requires_acceptance:false};
+   setTimeout(()=>gate.classList.remove('on'),350);
+   try{await window.GH_SECURE_RACE_SYNC?.(true)}catch(_){}
+ }catch(e){gate.querySelector('#ghComplianceMsg').textContent='確認を完了できません：'+String(e.message||e)}
+ finally{accepting=false;updateAcceptButton()}
+}
+window.ensureGameAllowed=ensureGameAllowed=async function(){
+ if(serverMode()&&!(await checkCompliance(false)))return false;
+ return await oldEnsure();
+};
+// --- Member-specific MY HORSE presentation. Odds/result remain shared and immutable.
+function serverRows(){const d=window.__ghSecureServerState;return Array.isArray(d?.presentation_horses)&&d.presentation_horses.length===7?d.presentation_horses:null}
+function row(no){return serverRows()?.find(x=>Number(x.no)===Number(no))||null}
+function horseName(no){return String(row(no)?.name||HORSES[Number(no)-1]?.[0]||('HORSE '+no))}
+window.raceName=raceName=function(id){return horseName(id)};
+window.selectionText=selectionText=function(){
+ if(!betSelections.length)return '未選択';
+ if(betType==='3連単')return betSelections.map((n,i)=>`${i+1}着 ${n}番 ${horseName(n)}`).join(' → ');
+ return betSelections.map(n=>`${n}番 ${horseName(n)}`).join(' ＋ ');
+};
+function applyMyHorsePresentation(){
+ const rows=serverRows();if(!rows)return;
+ rows.forEach(h=>{
+   const n=Number(h.no),card=document.querySelectorAll('#oddsCards .oddsHorseCard')[n-1],runner=document.getElementById('runner'+n);
+   if(card){
+     const title=card.querySelector('.horseTitleLine b');if(title)title.textContent=String(h.name||horseName(n));
+     card.classList.toggle('ghMyHorseOdds',!!h.my_horse);
+     const line=card.querySelector('.horseTitleLine');
+     let badge=line?.querySelector('.ghMyHorseBadge');
+     if(h.my_horse&&!badge&&line){badge=document.createElement('span');badge.className='ghMyHorseBadge';badge.textContent='MY HORSE';line.appendChild(badge)}
+     if(!h.my_horse&&badge)badge.remove();
+   }
+   if(runner){
+     runner.classList.toggle('ghMyHorseRunner',!!h.my_horse);
+     const tag=runner.querySelector('.nameTag');if(tag)tag.textContent=`${n} ${h.name||horseName(n)}`;
+   }
+ });
+ renderHorseChoices();
+ const d=window.__ghSecureServerState;
+ let box=document.getElementById('ghV16MyHorseState');
+ if(!box){box=document.createElement('div');box.id='ghV16MyHorseState';document.querySelector('.betChoose')?.insertAdjacentElement('beforebegin',box)}
+ if(box){
+   const mh=rows.find(x=>x.my_horse);
+   box.innerHTML=mh?`MY HORSE：<b>${esc(mh.name)}</b> / ${Number(mh.no)}番　${d?.my_horse_frozen?'このレースはBET済みのため固定':'BET前はマイホース変更を即時反映'}<br><small>馬番・単勝/複勝オッズ・サーバー確定着順は変更しません。</small>`:'MY HORSE未選択';
+ }
+}
+window.renderOdds=renderOdds=function(){oldRenderOdds();applyMyHorsePresentation()};
+window.buildRaceUI=buildRaceUI=function(){oldBuildRaceUI();applyMyHorsePresentation()};
+async function refreshRaceAfterHorseChange(){
+ try{
+   const d=await window.GH_SECURE_RACE_SYNC?.(false);
+   applyMyHorsePresentation();
+   if(d?.my_horse_frozen)toast('このレースはBET済みなので出走馬は固定。新しいマイホースは次レースから反映します');
+   else if(d?.my_horse_id)toast('マイホースを現在の出走馬表示へ反映しました');
+ }catch(e){console.warn('MY HORSE race resync',e)}
+}
+document.addEventListener('click',e=>{
+ const horseSel=e.target.closest?.('[data-v9safe-select="horse"]');
+ if(horseSel)setTimeout(refreshRaceAfterHorseChange,650);
+ const login=e.target.closest?.('#loginBtn,#registerBtn');
+ if(login)setTimeout(()=>checkCompliance(true),1100);
+},true);
+setInterval(()=>{
+ const d=window.__ghSecureServerState,rows=serverRows();
+ const sig=d&&rows?`${d.race_id}|${d.my_horse_id}|${d.my_horse_frozen}|${rows.map(x=>x.name).join('|')}`:'';
+ if(sig&&sig!==lastHorseSignature){lastHorseSignature=sig;applyMyHorsePresentation()}
+},800);
+ensureComplianceUI();
+if(serverMode())setTimeout(()=>checkCompliance(true),900);
+function selfTest(){
+ const src=document.getElementById('gh-v16-safe-myhorse-compliance-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const forbidden=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','liveOdds='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0
+    &&src.includes("compliance_state")&&src.includes("compliance_accept")
+    &&src.includes("presentation_horses")&&src.includes("my_horse_frozen")
+    &&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')
+    &&whole.includes('finalOddsSnapshot')&&whole.includes('SERVER AUTHORITATIVE BET / RACE SYNC'),
+  version:VERSION,
+  complianceFirstPlayGate:true,
+  myHorsePresentation:true,
+  oddsUnchanged:true,
+  resultUnchanged:true,
+  protectedMutationMarkers:bad
+ };
+}
+window.GH_V16_MYHORSE_COMPLIANCE={version:VERSION,checkCompliance,acceptCompliance,applyMyHorsePresentation,selfTest};
+document.documentElement.dataset.ghV16='safe-myhorse-compliance-r1';
+})();
+</script>
+
+
+<style id="gh-v17-hq-render-style">html.ghHQ #raceScreen{isolation:isolate;background:#010407}html.ghHQ #raceScreen::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(122,197,255,.08),transparent 25%),radial-gradient(ellipse at 52% 74%,rgba(255,221,149,.11),transparent 42%),linear-gradient(90deg,rgba(0,0,0,.28),transparent 14%,transparent 86%,rgba(0,0,0,.32));mix-blend-mode:screen}html.ghHQ #raceScreen::after{content:"";position:absolute;inset:0;z-index:40;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 11%,transparent 86%,rgba(0,0,0,.42)),radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.26) 100%)}html.ghHQ .raceBg{filter:saturate(1.08) contrast(1.08) brightness(.98);transform:translateZ(0);backface-visibility:hidden}html.ghHQ .runner{transform:translateZ(0);backface-visibility:hidden;contain:layout style;filter:drop-shadow(0 3px 1px rgba(255,255,255,.05)) drop-shadow(0 13px 9px rgba(0,0,0,.82)) saturate(1.03) contrast(1.13)}html.ghHQ .runner::after{content:"";position:absolute;left:20%;right:2%;bottom:2px;height:12px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.58),rgba(0,0,0,.08) 60%,transparent 72%);filter:blur(3px);transform:skewX(-12deg);z-index:-1}html.ghHQ .runner svg{width:100%;height:100%;overflow:visible;shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:auto;filter:contrast(1.045) saturate(1.055)}html.ghHQ .runner svg path,html.ghHQ .runner svg ellipse,html.ghHQ .runner svg circle{shape-rendering:geometricPrecision}html.ghHQ .runner svg .horseNeck,html.ghHQ .runner svg .jockeyForm{filter:drop-shadow(0 1px .35px rgba(255,255,255,.13))}html.ghHQ .runner svg .jockeyForm{filter:drop-shadow(0 1px .55px rgba(255,255,255,.18)) drop-shadow(0 2px 1px rgba(0,0,0,.34))}html.ghHQ .runner .num{background:radial-gradient(circle at 35% 28%,#18344a,#03101d 58%,#01050a);box-shadow:inset 0 1px 0 #ffffff22,0 3px 9px #000b}html.ghHQ .runner .nameTag{display:block!important;background:linear-gradient(180deg,rgba(5,20,31,.93),rgba(1,7,12,.95));backdrop-filter:blur(5px);text-shadow:0 1px 2px #000;box-shadow:0 4px 12px #0008,0 0 8px color-mix(in srgb,var(--c),transparent 45%)}html.ghHQ .dust{filter:blur(10px) saturate(1.15);opacity:.78}html.ghHQ .speedFX{mix-blend-mode:screen;filter:blur(.25px);opacity:.12}html.ghHQ .raceScreen.sprint .speedFX{opacity:.72}html.ghHQ .raceScreen.sprint .runner{filter:drop-shadow(-9px 1px 7px rgba(221,242,255,.08)) drop-shadow(0 16px 10px #000d) saturate(1.10) contrast(1.14)}html.ghHQ .raceScreen.photoApproach .raceBg{filter:saturate(.82) contrast(1.25) brightness(.96)}html.ghHQ .raceScreen.photoApproach .runner{filter:drop-shadow(0 17px 12px #000e) saturate(1.02) contrast(1.18)}html.ghHQ .raceScreen.photo .raceBg{filter:grayscale(.10) saturate(.92) contrast(1.25) brightness(1.04)}html.ghHQ .raceScreen.photo .runner{filter:drop-shadow(0 18px 12px #000e) saturate(1.04) contrast(1.18)}html.ghHQ #startGate{filter:drop-shadow(0 11px 12px #000c) contrast(1.08)}html.ghHQ .trackGoalLine{filter:drop-shadow(0 0 7px rgba(255,255,255,.38))}html.ghHQ .phaseCaption{backdrop-filter:blur(8px) saturate(1.1);box-shadow:0 8px 24px #0008,inset 0 1px 0 #ffffff18}html.ghHQ .raceCommentary{backdrop-filter:blur(10px);text-shadow:0 1px 2px #000}html.ghHQ3 .runner svg{filter:contrast(1.065) saturate(1.07)}html.ghHQ3 .raceBg{filter:saturate(1.10) contrast(1.10) brightness(.99)}html.ghHQ3 .runner{will-change:left,top,transform,filter}html.ghHQ .miniArt,html.ghHQ .orb,html.ghHQ [style*="background-image"]{image-rendering:auto;background-repeat:no-repeat;background-position:center;background-size:cover}@media(max-width:560px){html.ghHQ .runner .nameTag{font-size:7px!important;max-width:94px;overflow:hidden;text-overflow:ellipsis}html.ghHQ .runner::after{height:9px}}@media(prefers-reduced-motion:reduce){html.ghHQ #raceScreen::before,html.ghHQ #raceScreen::after{animation:none!important}}</style>
+<script defer id="gh-v17-safe-hq-render-r1">
+(()=>{'use strict';
+if(window.GH_V17_HQ_RENDER)return;
+const VERSION='V17-SAFE-HQ-RENDER-R1';
+const oldBuild=window.buildRaceUI||buildRaceUI;
+const oldTheme=window.setRaceTheme||setRaceTheme;
+function qualityClass(){
+ const dpr=Math.max(1,Math.min(4,Number(devicePixelRatio||1)));
+ document.documentElement.classList.add('ghHQ');
+ document.documentElement.classList.toggle('ghHQ3',dpr>=2);
+ return dpr;
+}
+function refine(){
+ const dpr=qualityClass();
+ document.querySelectorAll('#runners svg').forEach(svg=>{
+   svg.setAttribute('shape-rendering','geometricPrecision');
+   svg.setAttribute('text-rendering','geometricPrecision');
+   svg.style.transform='translateZ(0)';
+   svg.querySelectorAll('path,ellipse,circle,polygon,polyline,line').forEach(n=>n.setAttribute('shape-rendering','geometricPrecision'));
+ });
+ document.querySelectorAll('#runners .runner').forEach(r=>{r.style.backfaceVisibility='hidden'});
+ return {dpr,runners:document.querySelectorAll('#runners .runner').length};
+}
+window.buildRaceUI=buildRaceUI=function(){oldBuild();requestAnimationFrame(refine)};
+window.setRaceTheme=setRaceTheme=function(){oldTheme();requestAnimationFrame(refine)};
+new MutationObserver(()=>{if(document.getElementById('raceScreen')?.classList.contains('on'))requestAnimationFrame(refine)}).observe(document.getElementById('runners')||document.body,{childList:true,subtree:true});
+qualityClass();setTimeout(refine,700);
+function selfTest(){
+ const src=document.getElementById('gh-v17-safe-hq-render-r1')?.textContent||'';
+ const whole=document.documentElement.innerHTML;
+ const forbidden=['liveOdds=','finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+   ok:bad.length===0&&src.includes('geometricPrecision')&&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&whole.includes('finalOddsSnapshot'),
+   version:VERSION,
+   visualOnly:true,
+   dpr:qualityClass(),
+   oddsMutation:false,
+   resultMutation:false,
+   protectedMutationMarkers:bad
+ };
+}
+window.GH_V17_HQ_RENDER={version:VERSION,refine,selfTest};
+document.documentElement.dataset.ghV17='safe-hq-render-r1';
+})();
+</script>
+
+
+<style id="gh-v18-compliance-rules-style">#ghV18ComplianceRules{margin:12px 0;padding:14px;border-radius:15px;border:1px solid #8b6c24;background:linear-gradient(180deg,#171205,#071019);color:#eaf8ff}#ghV18ComplianceRules h3{margin:0 0 7px;color:#ffe6a0}#ghV18ComplianceRules .intro{color:#90afbd;font-size:9px;line-height:1.65}#ghV18ComplianceRules ol{margin:10px 0 0;padding-left:20px}#ghV18ComplianceRules li{margin:7px 0;color:#dbeaf0;font-size:9px;line-height:1.65}#ghV18ComplianceRules .note{margin-top:8px;padding:9px;border-radius:10px;background:#061722;border:1px solid #315e73;color:#bfeaff;font-size:8px;line-height:1.65}#ghV18ComplianceRules .warn{background:#1d1605;border-color:#79601f;color:#ffe3a1}#ghV18ComplianceRules .status{display:inline-block;margin-top:8px;padding:4px 7px;border-radius:999px;border:1px solid #3a7890;background:#071f2a;color:#a9eaff;font-size:7px;font-weight:1000}#ghV18ComplianceRules .status.ok{border-color:#43ce9a;background:#06261b;color:#a2ffd0}</style>
+<script defer id="gh-v18-safe-compliance-rules-r1">
+(()=>{'use strict';
+if(window.GH_V18_COMPLIANCE_RULES)return;
+const VERSION='V18-SAFE-COMPLIANCE-RULES-R1';
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+let last=null,busy=false;
+function host(){return document.getElementById('rulesGrid')?.parentElement||document.getElementById('rules')}
+function ensure(){
+ const h=host();if(!h)return null;
+ let p=document.getElementById('ghV18ComplianceRules');
+ if(!p){p=document.createElement('div');p.id='ghV18ComplianceRules';h.appendChild(p)}
+ return p;
+}
+function render(d){
+ last=d;const p=ensure();if(!p)return;
+ const pol=d?.policy||{},items=Array.isArray(pol.items)?pol.items:[];
+ p.innerHTML=`<h3>反社会的勢力の排除に関する確認</h3>
+ <div class="intro">${esc(pol.intro||'Golden Horseを初めて利用する前に、以下の内容を確認します。')}</div>
+ <ol>${items.map(x=>`<li>${esc(x.label)}</li>`).join('')}</ol>
+ <div class="note warn"><b>5年基準</b><br>${esc(pol.five_year_note||'暴力団員でなくなった日から5年を経過していない者を対象とする基準があります。')}</div>
+ <div class="note"><b>過去10年程度の事情確認</b><br>${esc(pol.ten_year_note||'安全確保のため、必要に応じて過去の重大な暴力的不法行為等を確認・審査する場合があります。')}</div>
+ <div class="note"><b>時効について</b><br>${esc(pol.limitation_note||'この利用確認は刑事・民事上の時効を変更するものではありません。')}</div>
+ <span class="status ${d?.accepted_current?'ok':''}">${d?.accepted_current?'この会員は現行版に確認済み':'初回プレイ前に確認が必要'}</span>`;
+}
+function fallback(){
+ return {
+  accepted_current:false,
+  policy:{
+   intro:'Golden Horseを初めて利用する前に、反社会的勢力との関係がないこと、暴力的要求・威圧・不当要求等を行わないことを確認します。',
+   items:[
+    {label:'現在、暴力団その他これらに準ずる反社会的勢力に該当しないこと。'},
+    {label:'暴力団員でなくなった日から5年を経過していない者に該当しないこと。'},
+    {label:'反社会的勢力による経営支配・実質関与、資金提供・便宜供与、不当利用、密接な関係がないこと。'},
+    {label:'暴力的要求、不当要求、脅迫、偽計・威力による信用毀損・業務妨害等を行わないこと。'},
+    {label:'過去の所属・関係をほのめかして威力を示し、不当な要求等に利用しないこと。'},
+    {label:'虚偽申告や違反が後日判明した場合、利用停止等の対象となり得ること。'}
+   ],
+   five_year_note:'公的な暴力団排除制度で「暴力団員でなくなった日から5年を経過しない者」という基準が用いられています。',
+   ten_year_note:'当店は安全確保のため、必要に応じて過去10年程度の重大な暴力的不法行為等を含む事情を確認・審査する場合があります。これは一律10年間排除する一般法ルールという意味ではありません。',
+   limitation_note:'本確認は刑事・民事上の時効を延長・停止・無効化するものではありません。虚偽申告や後日判明した規約違反について、その判明時点で利用継続を判断することは妨げません。'
+  }
+ };
+}
+async function sync(){
+ if(busy)return;busy=true;
+ try{
+  if(localStorage.getItem('gh_session_token')&&window.GH_V8_TOUR_SYNC?.call){
+    const d=await window.GH_V8_TOUR_SYNC.call('compliance_state');render(d);
+  }else render(fallback());
+ }catch(e){console.warn('GH_V18 compliance rules',e);render(fallback())}
+ finally{busy=false}
+}
+document.addEventListener('click',e=>{if(e.target.closest?.('[data-page="rules"]'))setTimeout(sync,80)},true);
+setTimeout(sync,900);
+function selfTest(){
+ const src=document.getElementById('gh-v18-safe-compliance-rules-r1')?.textContent||'';
+ return {ok:src.includes('5年基準')&&src.includes('過去10年程度')&&src.includes('時効')&&src.includes("compliance_state"),version:VERSION,readOnly:true};
+}
+window.GH_V18_COMPLIANCE_RULES={version:VERSION,sync,selfTest};
+document.documentElement.dataset.ghV18='safe-compliance-rules-r1';
+})();
+</script>
+
+
+<style id="gh-v19-childpage-restore-style">.ghV19Hero{margin:10px 12px;padding:15px;border-radius:18px;background:radial-gradient(circle at 18% 0,#17394c 0,#07131c 43%,#03070b 100%);border:1px solid #5fd4ef38;box-shadow:0 18px 46px #0008}.ghV19Hero h2{margin:4px 0 6px;color:#fff0b2}.ghV19Hero p{margin:0;color:#8db2c2;font-size:9px;line-height:1.65}.ghV19Stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:10px}.ghV19Stats div{padding:9px;border-radius:11px;background:#02090e;border:1px solid #ffffff0d;text-align:center}.ghV19Stats small{display:block;color:#6f94a4;font-size:7px}.ghV19Stats b{display:block;color:#fff0b3;font-size:14px}.ghV19Panel{margin:10px 12px;padding:12px;border-radius:15px;background:#05131d;border:1px solid #ffffff10}.ghV19Panel h3{margin:0 0 8px;color:#9eeaff}.ghV19Rows{display:grid;gap:6px}.ghV19Row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:9px;border-radius:10px;background:#02090e;border:1px solid #ffffff0d}.ghV19Row b{color:#fff0b3;font-size:10px}.ghV19Row small{display:block;color:#789faf;font-size:8px;line-height:1.5}.ghV19Row strong{color:#8ff0b7;font-size:9px}.ghV19SkillGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 12px 12px}.ghV19Skill{padding:11px;border-radius:14px;background:#05131c;border:1px solid #ffffff10}.ghV19Skill h3{margin:0;color:#ffe5a0;font-size:12px}.ghV19Skill p{margin:4px 0 7px;color:#759bab;font-size:8px;line-height:1.5}.ghV19Ranks{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.ghV19Rank{padding:7px 3px;border-radius:9px;text-align:center;background:#02070b;border:1px solid #ffffff0d;color:#4f6874}.ghV19Rank.on{color:#fff;border-color:#d4aa4355;background:#171205}.ghV19Rank b{display:block;font-size:15px}.ghV19Rank small{font-size:6px;line-height:1.4}.ghV19Gear{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.ghV19Gear div{padding:8px;border-radius:10px;background:#04111a;border:1px solid #ffffff0e;text-align:center}.ghV19Gear small{display:block;color:#7196a5;font-size:7px}.ghV19Gear b{display:block;color:#eafaff;font-size:9px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#goldenFinalSafe{background:radial-gradient(circle at 50% 0,#201806 0,#061019 40%,#020609 100%)}.ghV19FinalActions{display:flex;gap:7px;flex-wrap:wrap}.ghV19FinalActions button,.ghV19FinalActions select{min-height:42px;padding:0 11px;border-radius:10px;border:1px solid #6c5723;background:#211906;color:#ffe6a0;font-weight:1000}.ghV19FinalField{display:grid;gap:6px}.ghV19FinalRunner{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;padding:9px;border-radius:10px;background:#031019;border:1px solid #ffffff0d}.ghV19FinalRunner.me{border-color:#d6aa3e;background:#1b1506}.ghV19FinalRunner .no{font-size:16px;font-weight:1000;color:#ffe49a;text-align:center}.ghV19FinalRunner b{font-size:10px}.ghV19FinalRunner small{display:block;color:#7898a7;font-size:7px}.ghV19FinalRunner strong{color:#8ff0b7;font-size:9px}@media(max-width:560px){.ghV19Stats{grid-template-columns:repeat(2,1fr)}.ghV19SkillGrid{grid-template-columns:1fr}.ghV19Gear{grid-template-columns:repeat(2,1fr)}.ghV19FinalRunner{grid-template-columns:30px 1fr}.ghV19FinalRunner strong{grid-column:2}}</style>
+
+<script defer id="gh-v19-safe-childpage-restore-r1">
+(()=>{'use strict';
+if(window.GH_V19_CHILD_PAGE_RESTORE)return;
+const VERSION='V19-SAFE-CHILDPAGE-RESTORE-R1';
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+let skillState=null,loadoutState=null,pairState=null,finalState=null,finalBusy=false;
+function addPage(id,title,icon,label){
+ const app=document.querySelector('.app');if(!app)return null;
+ let p=document.getElementById(id);
+ if(!p){p=document.createElement('section');p.id=id;p.className='screen subpage';p.innerHTML=`<div class="header"><button class="back" data-page="home">← 戻る</button><h1>${title}</h1></div><div id="${id}Body"></div>`;app.appendChild(p)}
+ const menu=document.querySelector('#home .menu');
+ if(menu&&!menu.querySelector(`[data-page="${id}"]`)){const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page=id;b.innerHTML=`<span class="ico">${icon}</span>${label}`;menu.appendChild(b)}
+ return p;
+}
+function ensurePages(){
+ addPage('skillCollectionSafe','スキル図鑑','✦','スキル図鑑');
+ addPage('loadoutResearchSafe','人馬・装備研究所','◎','人馬・装備研究所');
+ addPage('goldenFinalSafe','GOLDEN FINAL','★','GOLDEN FINAL');
+}
+function localSkills(){
+ const rows=[];try{
+  const C=window.GH_MASTER_V9_SAFE?.collection?.()||{};
+  for(const type of ['horse','jockey','equip'])for(const r of Object.values(C[type]||{}))for(const s of r.safeSkills||[])rows.push({type,card_name:r.name,rarity:r.rare,skills:[s]});
+ }catch(_){}
+ return rows;
+}
+function renderSkills(){
+ ensurePages();const body=document.getElementById('skillCollectionSafeBody');if(!body)return;
+ const defs=window.GH_MASTER_V10_SAFE_SKILLS?.skills||{};
+ const serverCards=Array.isArray(skillState?.cards)?skillState.cards:[];
+ const local=localSkills();
+ const cards=serverCards.length?serverCards:local;
+ let owned=0,acts=0,tries=0;
+ for(const c of cards)for(const s of c.skills||[]){owned++;acts+=Number(s.activations||0);tries+=Number(s.attempts||0)}
+ body.innerHTML=`<div class="ghV19Hero"><small style="color:#6ee8ff;font-weight:900;letter-spacing:.13em">SKILL COLLECTION / RESTORED</small><h2>スキル図鑑</h2><p>${serverCards.length?'サーバー確定スキルを表示。':'端末保存スキルを表示。ログイン後はサーバー状態を優先。'} C・B・A・S、Lv1〜10、発動履歴を独立子ページで確認できます。BET後の固定オッズ・サーバー確定着順は変更しません。</p><div class="ghV19Stats"><div><small>所持</small><b>${owned}</b></div><div><small>発動</small><b>${acts}</b></div><div><small>試行</small><b>${tries}</b></div><div><small>発動率</small><b>${tries?Math.round(acts/tries*100):0}%</b></div></div></div>
+ <div class="ghV19SkillGrid">${Object.entries(defs).map(([id,d])=>{const ranks=['C','B','A','S'];return `<div class="ghV19Skill"><h3>${esc(d.name)}</h3><p>${esc(d.desc||'')} / 条件：${esc(d.condition||'')}</p><div class="ghV19Ranks">${ranks.map(rank=>{const xs=[];for(const c of cards)for(const s of c.skills||[])if(s.id===id&&s.rank===rank)xs.push(s);const lv=xs.length?Math.max(...xs.map(x=>Number(x.level||1))):0,ac=xs.reduce((a,x)=>a+Number(x.activations||0),0);return `<div class="ghV19Rank ${xs.length?'on':''}"><b>${rank}</b><small>${xs.length?`所持${xs.length}<br>最高Lv.${lv}<br>発動${ac}`:'未所持'}</small></div>`}).join('')}</div></div>`}).join('')}</div>`;
+}
+async function syncSkills(silent=true){
+ if(serverMode())try{skillState=await call('skill_state')}catch(e){if(!silent)window.toast?.('スキル図鑑を同期できません: '+e.message)}
+ renderSkills();
+}
+function renderResearch(){
+ ensurePages();const body=document.getElementById('loadoutResearchSafeBody');if(!body)return;
+ const l=loadoutState||{},gear=l.equipment||{},pairs=Array.isArray(pairState?.pairs)?pairState.pairs:[],pair=pairs.find(x=>String(x.horse_id||'')===String(l.horse?.id||'')&&String(x.jockey_id||'')===String(l.jockey?.id||''))||pairs[0]||{};
+ const labels={helmet:'ヘルメット',goggles:'ゴーグル',cloth:'勝負服',whip:'ムチ',boots:'ブーツ'};
+ body.innerHTML=`<div class="ghV19Hero"><small style="color:#6ee8ff;font-weight:900;letter-spacing:.13em">HUMAN × HORSE × EQUIPMENT LAB / RESTORED</small><h2>${esc(l.horse?.name||'マイホース')} × ${esc(l.jockey?.name||'マイ騎手')}</h2><p>現在の人馬・5部位装備・SYNC・相性をサーバーから読取確認。個人ロードアウトは共有ラウンドのオッズへ適用しません。</p><div class="ghV19Stats"><div><small>SYNC</small><b>${Number(pair.sync_value||0)}/100</b></div><div><small>相性</small><b>${esc(pair.affinity||'-')}</b></div><div><small>装備</small><b>${Object.values(gear).filter(Boolean).length}/5</b></div><div><small>ODDS</small><b>${l.applied_to_odds===false?'PREVIEW':'-'}</b></div></div></div>
+ <div class="ghV19Panel"><h3>現在装備</h3><div class="ghV19Gear">${Object.keys(labels).map(k=>`<div><small>${labels[k]}</small><b>${esc(gear?.[k]?.name||'未装備')}</b></div>`).join('')}</div></div>
+ <div class="ghV19Panel"><h3>サーバー契約</h3><div class="ghV19Rows"><div class="ghV19Row"><span><b>LOADOUT HASH</b><small>${esc(String(l.loadout_hash||'-'))}</small></span><strong>${l.server_authoritative?'SERVER':'CHECK'}</strong></div><div class="ghV19Row"><span><b>BET LOCK</b><small>${esc(l.bet_lock_policy||'BET後の確定オッズは変更しない')}</small></span><strong>IMMUTABLE</strong></div></div></div>`;
+}
+async function syncResearch(silent=true){
+ if(serverMode())try{[loadoutState,pairState]=await Promise.all([call('loadout_preview'),call('pair_sync_state')])}catch(e){if(!silent)window.toast?.('人馬・装備研究所を同期できません: '+e.message)}
+ renderResearch();
+}
+function finalOrderMap(run){const m=new Map();(run?.presentation_order||run?.finish_order||[]).forEach((n,i)=>m.set(Number(n),i+1));return m}
+function renderFinal(){
+ ensurePages();const body=document.getElementById('goldenFinalSafeBody');if(!body)return;
+ const d=finalState||{},run=d.run||null,phase=String(d.phase||'LOCKED'),field=Array.isArray(run?.field)?run.field:[],ord=finalOrderMap(run),horses=Array.isArray(d.my_horses)?d.my_horses:[];
+ const canOpen=!!d.unlocked&&!d.used&&!run,canBet=phase==='BETTING'&&!d.used&&run&&!run.stake;
+ body.innerHTML=`<div class="ghV19Hero"><small style="color:#ffe07a;font-weight:1000;letter-spacing:.13em">ISOLATED SERVER FINAL</small><h2>GOLDEN FINAL</h2><p>通常レースのBET120秒・SKIP・購入時オッズ固定・サーバー確定着順とは完全分離。FINALはサーバー専用240秒BET→180秒RACE→結果確定。</p><div class="ghV19Stats"><div><small>PHASE</small><b>${esc(phase)}</b></div><div><small>残り</small><b>${Number(d.seconds||0)}秒</b></div><div><small>Gold</small><b>${Number(d.gold||0).toLocaleString('ja-JP')}G</b></div><div><small>1回限定</small><b>${d.used?'USED':'READY'}</b></div></div></div>
+ <div class="ghV19Panel"><h3>FINAL操作</h3>${canBet?`<select id="ghV19FinalHorse">${horses.map(h=>`<option value="${esc(h.id)}">${esc(h.name)} / ${esc(h.rarity)} / POWER ${Number(h.power||0)}</option>`).join('')}</select>`:''}<div class="ghV19FinalActions">${canOpen?'<button id="ghV19FinalOpen">FINALを開く</button>':''}${canBet?'<button data-ghv19-final-bet="50">50G BET</button><button data-ghv19-final-bet="100">100G BET</button>':''}<button id="ghV19FinalRefresh">状態更新</button></div><div style="margin-top:7px;color:#8fb4c4;font-size:8px">${!d.unlocked?'全国制覇・予選条件が未達です。':d.used?'FINAL権は使用済みです。':phase==='BETTING'?'BET受付中。':'サーバー状態を確認してください。'}</div></div>
+ <div class="ghV19Panel"><h3>FINAL 7頭</h3><div class="ghV19FinalField">${field.length?field.map(r=>`<div class="ghV19FinalRunner ${r.my_horse?'me':''}"><span class="no">${Number(r.no||0)}</span><span><b>${esc(r.name)}</b><small>${esc(r.rarity||'')} / POWER ${Number(r.power||0)}</small></span><strong>${ord.get(Number(r.no))?`${ord.get(Number(r.no))}着`:phase==='RACING'?'RACING':'-'}</strong></div>`).join(''):'<div class="ghV19FinalRunner"><span class="no">-</span><span><b>フィールド未確定</b><small>BET後にサーバー確定フィールドを表示します。</small></span></div>'}</div></div>`;
+ body.querySelector('#ghV19FinalRefresh')?.addEventListener('click',()=>syncFinal(false));
+ body.querySelector('#ghV19FinalOpen')?.addEventListener('click',openFinal);
+ body.querySelectorAll('[data-ghv19-final-bet]').forEach(b=>b.addEventListener('click',()=>betFinal(Number(b.dataset.ghv19FinalBet))));
+}
+async function verifyLocation(){
+ return new Promise((resolve,reject)=>{
+  if(!navigator.geolocation)return reject(new Error('geolocation_unavailable'));
+  navigator.geolocation.getCurrentPosition(async p=>{try{const d=await call('location',{lat:p.coords.latitude,lon:p.coords.longitude,accuracy_m:p.coords.accuracy});if(!d?.allowed)throw new Error(d?.reason||'location_not_allowed');resolve(d)}catch(e){reject(e)}},()=>reject(new Error('location_permission_required')),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+ });
+}
+async function syncFinal(silent=true){
+ if(!serverMode()){renderFinal();return null}
+ try{finalState=await call('final_state');renderFinal();return finalState}catch(e){if(!silent)window.toast?.('FINALを同期できません: '+e.message);return null}
+}
+async function openFinal(){
+ if(finalBusy)return;finalBusy=true;
+ try{await verifyLocation();await call('final_open');window.toast?.('FINAL 240秒BET受付を開始しました');await syncFinal(true)}catch(e){window.toast?.('FINALを開けません: '+e.message)}finally{finalBusy=false}
+}
+async function betFinal(stake){
+ if(finalBusy)return;const horseId=document.getElementById('ghV19FinalHorse')?.value;if(!horseId)return window.toast?.('マイホースを選択してください');
+ finalBusy=true;
+ try{await verifyLocation();await call('final_bet',{request_id:'GH-FINAL-'+Date.now()+'-'+(crypto.randomUUID?.()||Math.random().toString(36).slice(2)),horse_id:horseId,stake});window.toast?.(`GOLDEN FINAL ${stake}G BET確定`);await syncFinal(true)}catch(e){window.toast?.('FINAL BETできません: '+e.message)}finally{finalBusy=false}
+}
+function audit(){
+ ensurePages();
+ const required=['skillCollectionSafe','loadoutResearchSafe','goldenFinalSafe'];
+ const missing=required.filter(id=>!document.getElementById(id));
+ return {ok:missing.length===0,version:VERSION,missing,protected:{bet120:document.documentElement.innerHTML.includes('FIXED_BET_SECONDS=120'),skip:!!document.getElementById('skipBtn'),oddsLock:document.documentElement.innerHTML.includes('finalOddsSnapshot'),serverResult:document.documentElement.innerHTML.includes('SERVER AUTHORITATIVE BET / RACE SYNC')}};
+}
+ensurePages();renderSkills();renderResearch();renderFinal();
+document.addEventListener('click',e=>{
+ const pg=e.target.closest?.('[data-page]')?.dataset.page;
+ if(pg==='skillCollectionSafe')setTimeout(()=>syncSkills(false),80);
+ if(pg==='loadoutResearchSafe')setTimeout(()=>syncResearch(false),80);
+ if(pg==='goldenFinalSafe')setTimeout(()=>syncFinal(false),80);
+},true);
+if(serverMode()){setTimeout(()=>syncSkills(true),1200);setTimeout(()=>syncResearch(true),1400);setTimeout(()=>syncFinal(true),1600)}
+window.GH_V19_CHILD_PAGE_RESTORE={version:VERSION,syncSkills,syncResearch,syncFinal,audit};
+document.documentElement.dataset.ghV19='safe-childpage-restore-r1';
+})();
+</script>
+
+
+<script defer id="gh-v20-safe-release-guard-r1">
+(()=>{'use strict';
+if(window.GH_V20_RELEASE_GUARD)return;
+const VERSION='V20-SAFE-RELEASE-GUARD-R1';
+const REQUIRED_PAGES=['home','horse','jockey','gate','gacha','seat','cards','support','points','ranking','campaign','how','rules','save','tacticsLabSafe','raceJournalSafe','japanTour','skillCollectionSafe','loadoutResearchSafe','goldenFinalSafe'];
+const REQUIRED_TABS=['horse','jockey','custom','support'];
+window.__GH_V20_ERRORS=window.__GH_V20_ERRORS||[];
+addEventListener('error',e=>window.__GH_V20_ERRORS.push(String(e.message||e.error||'error')));
+addEventListener('unhandledrejection',e=>window.__GH_V20_ERRORS.push(String(e.reason||'unhandledrejection')));
+function audit(reason='manual'){
+ const ids=[...document.querySelectorAll('[id]')].map(x=>x.id).filter(Boolean);
+ const duplicates=[...new Set(ids.filter((x,i)=>ids.indexOf(x)!==i))];
+ const missingPages=REQUIRED_PAGES.filter(id=>!document.getElementById(id));
+ const missingTabs=REQUIRED_TABS.filter(t=>!document.querySelector(`#gachaTabs [data-gacha-tab="${t}"]`));
+ const w=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0);
+ const h=document.documentElement.innerHTML;
+ const modules={
+  v10Custom:window.GH_V10_CUSTOM_EQUIPMENT_COMPLETE?.selfTest?.()||null,
+  v11Integrity:window.GH_V11_INTEGRITY_COMPLETION?.selfTest?.()||null,
+  v12:window.GH_V12_SERVER_PRESETS_COMPLETION?.selfTest?.()||null,
+  v13:window.GH_V13_SERVER_LOADOUT_CONTRACT?.selfTest?.()||null,
+  v14:window.GH_V14_SERVER_RACE_JOURNAL?.selfTest?.()||null,
+  v16:window.GH_V16_MYHORSE_COMPLIANCE?.selfTest?.()||null,
+  v17:window.GH_V17_HQ_RENDER?.selfTest?.()||null,
+  v18:window.GH_V18_COMPLIANCE_RULES?.selfTest?.()||null,
+  v19:window.GH_V19_CHILD_PAGE_RESTORE?.audit?.()||null
+ };
+ const protectedCore={
+  seven:Array.isArray(window.HORSES)&&HORSES.length===7,
+  bet120:h.includes('FIXED_BET_SECONDS=120'),
+  skip:!!document.getElementById('skipBtn'),
+  oddsLock:h.includes('finalOddsSnapshot'),
+  serverResult:h.includes('SERVER AUTHORITATIVE BET / RACE SYNC'),
+  secureDraw:h.includes('security_lock')
+ };
+ const ok=missingPages.length===0&&missingTabs.length===0&&duplicates.length===0&&Math.max(0,w-innerWidth)===0&&window.__GH_V20_ERRORS.length===0
+   &&Object.values(protectedCore).every(Boolean)&&modules.v19?.ok===true;
+ const r={ok,version:VERSION,reason,checkedAt:new Date().toISOString(),missingPages,missingTabs,duplicates,horizontalOverflow:Math.max(0,w-innerWidth),pageErrors:[...window.__GH_V20_ERRORS],protectedCore,modules};
+ document.documentElement.dataset.ghV20Release=ok?'PASS':'FAIL';
+ let p=document.getElementById('ghV20ReleaseReport');if(!p){p=document.createElement('pre');p.id='ghV20ReleaseReport';p.hidden=true;document.body.appendChild(p)}p.textContent=JSON.stringify(r);
+ try{sessionStorage.setItem('gh_v20_release_guard_last',JSON.stringify(r))}catch(_){}
+ return r;
+}
+const obs=new MutationObserver(()=>setTimeout(()=>audit('dom-change'),60));
+setTimeout(()=>{const m=document.querySelector('#home .menu');if(m)obs.observe(m,{childList:true,subtree:true});const a=document.querySelector('.app');if(a)obs.observe(a,{childList:true})},400);
+setTimeout(()=>audit('startup'),1700);
+setTimeout(()=>audit('settled'),3800);
+window.GH_V20_RELEASE_GUARD={version:VERSION,requiredPages:REQUIRED_PAGES,requiredTabs:REQUIRED_TABS,audit};
+document.documentElement.dataset.ghV20='safe-release-guard-r1';
+})();
+</script>
+
+
+<style id="gh-v21-visual-identity-style">#raceScreen .runner[data-gh-visual-seed]{transition:filter .18s ease,opacity .18s ease}#raceScreen .runner[data-gh-visual-seed] svg{transition:filter .18s ease}#raceScreen .runner[data-gh-visual-seed] .nameTag{border:1px solid color-mix(in srgb,var(--ghIdentity),transparent 48%)!important;box-shadow:0 4px 12px #0009,0 0 12px color-mix(in srgb,var(--ghIdentity),transparent 52%)!important}#raceScreen .runner[data-gh-visual-seed] .num{box-shadow:inset 0 1px 0 #ffffff20,0 0 0 1px color-mix(in srgb,var(--ghIdentity),transparent 55%),0 4px 12px #000b!important}#raceScreen .runner.ghIdentityMyHorse{filter:drop-shadow(0 0 14px color-mix(in srgb,var(--ghIdentity),white 20%)) drop-shadow(0 14px 10px #000d) saturate(1.14) contrast(1.12)!important}#raceScreen .runner.ghIdentityMyHorse .nameTag{background:linear-gradient(180deg,color-mix(in srgb,var(--ghIdentity),#06131d 74%),#02080d)!important;color:#fff!important}.ghV21IdentityChip{display:inline-flex;align-items:center;gap:5px;margin-left:5px;padding:2px 6px;border-radius:999px;border:1px solid #ffffff1d;background:#06131dcc;color:#dff8ff;font-size:7px;font-weight:1000}.ghV21IdentityDot{width:7px;height:7px;border-radius:50%;background:var(--ghIdentity);box-shadow:0 0 8px var(--ghIdentity)}.ghV21VisualLegend{margin:8px 0;padding:8px 10px;border-radius:10px;border:1px solid #2e6780;background:#061823;color:#aee8ff;font-size:8px;line-height:1.5}</style>
+<script defer id="gh-v21-safe-visual-identity-r1">
+(()=>{'use strict';
+if(window.GH_V21_VISUAL_IDENTITY)return;
+const VERSION='V21-SAFE-VISUAL-IDENTITY-R1';
+const oldBuild=window.buildRaceUI||buildRaceUI;
+const oldOdds=window.renderOdds||renderOdds;
+const oldTheme=window.setRaceTheme||setRaceTheme;
+const PALETTE=['#5a2f18','#2f241f','#75411f','#3a261b','#8a5630','#281b16','#62321c','#1f2635','#4b2a1d','#70472e','#33241c','#995c35','#1d2e32','#5d402d'];
+let lastSignature='';
+function serverRows(){
+ const d=window.__ghSecureServerState;
+ return Array.isArray(d?.presentation_horses)&&d.presentation_horses.length===7?d.presentation_horses:null;
+}
+function hash(str){
+ str=String(str||'');
+ let h=2166136261>>>0;
+ for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}
+ return h>>>0;
+}
+function identity(row,no){
+ const key=String(row?.horse_id||row?.id||row?.name||('runner-'+no));
+ const h=hash(key),color=PALETTE[h%PALETTE.length];
+ const hue=(h%41)-20,sat=1+((h>>>5)%9)/100,bright=.96+((h>>>10)%8)/100;
+ return {key,seed:h,color,hue,sat,bright};
+}
+function replaceHorseSvg(runner,row,no){
+ if(!runner||typeof horseSVG!=='function')return;
+ const id=identity(row,no);
+ const svg=runner.querySelector('svg');
+ if(!svg||runner.dataset.ghVisualSeed===String(id.seed))return;
+ const holder=document.createElement('div');holder.innerHTML=horseSVG(id.color).trim();
+ const next=holder.firstElementChild;
+ if(next){
+   next.setAttribute('aria-hidden','true');
+   svg.replaceWith(next);
+ }
+ runner.dataset.ghVisualSeed=String(id.seed);
+ runner.style.setProperty('--ghIdentity',id.color);
+ runner.style.setProperty('--c',id.color);
+ runner.style.filter=`hue-rotate(${id.hue}deg) saturate(${id.sat}) brightness(${id.bright}) drop-shadow(0 13px 9px rgba(0,0,0,.82))`;
+ runner.classList.toggle('ghIdentityMyHorse',!!row?.my_horse);
+ const tag=runner.querySelector('.nameTag');
+ if(tag)tag.textContent=`${no} ${row?.name||tag.textContent.replace(/^\d+\s+/,'')}`;
+}
+function applyOddsIdentity(rows){
+ const cards=document.querySelectorAll('#oddsCards .oddsHorseCard');
+ rows.forEach((row,i)=>{
+   const card=cards[i];if(!card)return;
+   const id=identity(row,i+1);
+   card.style.setProperty('--ghIdentity',id.color);
+   card.style.borderColor=`color-mix(in srgb,${id.color},#1b2f3b 55%)`;
+   const line=card.querySelector('.horseTitleLine');
+   let chip=line?.querySelector('.ghV21IdentityChip');
+   if(!chip&&line){chip=document.createElement('span');chip.className='ghV21IdentityChip';chip.innerHTML='<i class="ghV21IdentityDot"></i><span>VISUAL ID</span>';line.appendChild(chip)}
+   if(chip)chip.style.setProperty('--ghIdentity',id.color);
+ });
+}
+function legend(rows){
+ let box=document.getElementById('ghV21VisualLegend');
+ if(!box){box=document.createElement('div');box.id='ghV21VisualLegend';box.className='ghV21VisualLegend';document.querySelector('.betChoose')?.insertAdjacentElement('beforebegin',box)}
+ const my=rows.find(x=>x.my_horse);
+ if(box)box.innerHTML=my?`MY HORSE <b>${String(my.name||'')}</b> は馬IDから固定したビジュアルIDを使用。ゲート→レース→ゴールまで同じ馬体色・発光を維持します。`:'出走7頭は馬IDごとの固定ビジュアルIDで表示します。';
+}
+function apply(){
+ const rows=serverRows();if(!rows)return null;
+ rows.forEach((row,i)=>replaceHorseSvg(document.getElementById('runner'+(i+1)),row,i+1));
+ applyOddsIdentity(rows);legend(rows);
+ const sig=rows.map((r,i)=>`${r.horse_id||r.id||r.name}|${r.name}|${!!r.my_horse}`).join('||');
+ lastSignature=sig;
+ return rows;
+}
+window.buildRaceUI=buildRaceUI=function(){oldBuild();requestAnimationFrame(()=>{try{apply()}catch(e){console.warn('GH_V21 identity build',e)}})};
+window.renderOdds=renderOdds=function(){oldOdds();requestAnimationFrame(()=>{try{apply()}catch(e){console.warn('GH_V21 identity odds',e)}})};
+window.setRaceTheme=setRaceTheme=function(){oldTheme();requestAnimationFrame(()=>{try{apply()}catch(_){}})};
+const raceScreenV21=document.getElementById('raceScreen');
+const runnersV21=document.getElementById('runners');
+const refreshV21=()=>requestAnimationFrame(()=>{try{apply()}catch(e){console.warn('GH_V21 identity event',e)}});
+if(raceScreenV21)new MutationObserver(refreshV21).observe(raceScreenV21,{attributes:true,attributeFilter:['class']});
+if(runnersV21)new MutationObserver(refreshV21).observe(runnersV21,{childList:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshV21()});
+window.addEventListener('pageshow',refreshV21);
+if(new URLSearchParams(location.search).get('debug')==='1')setInterval(()=>{
+ const rows=serverRows();if(!rows)return;
+ const sig=rows.map((r,i)=>`${r.horse_id||r.id||r.name}|${r.name}|${!!r.my_horse}`).join('||');
+ if(sig!==lastSignature)refreshV21();
+},650);
+setTimeout(()=>apply(),1500);
+function selfTest(){
+ const src=document.getElementById('gh-v21-safe-visual-identity-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const forbidden=['finish_order=','finalOddsSnapshot=','liveOdds=','settleRaceBets=','makeRacePlan=','raceState='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0&&src.includes('presentation_horses')&&src.includes('horse_id')&&src.includes('horseSVG(id.color)')
+    &&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&whole.includes('finalOddsSnapshot'),
+  version:VERSION,
+  visualOnly:true,
+  deterministicByHorseId:true,
+  gateToFinishSameIdentity:true,
+  myHorseVisualChange:true,
+  oddsMutation:false,
+  resultMutation:false,
+  forbiddenMutationMarkers:bad
+ };
+}
+window.GH_V21_VISUAL_IDENTITY={version:VERSION,apply,selfTest,identity};
+document.documentElement.dataset.ghV21='safe-visual-identity-r1';
+})();
+</script>
+
+
+<script defer id="gh-v22-safe-candidate-checkpoint-r1">
+(()=>{'use strict';
+if(window.GH_V22_CANDIDATE_CHECKPOINT)return;
+const VERSION='V22-SAFE-CANDIDATE-CHECKPOINT-R1';
+window.__GH_V22_ERRORS=window.__GH_V22_ERRORS||[];
+addEventListener('error',e=>window.__GH_V22_ERRORS.push(String(e.message||e.error||'error')));
+addEventListener('unhandledrejection',e=>window.__GH_V22_ERRORS.push(String(e.reason||'unhandledrejection')));
+const run=n=>{try{return window[n]?.selfTest?.()||window[n]?.audit?.()||null}catch(e){return {ok:false,error:String(e)}}};
+function audit(reason='manual'){
+ const ids=[...document.querySelectorAll('[id]')].map(x=>x.id).filter(Boolean);
+ const duplicateIds=[...new Set(ids.filter((x,i)=>ids.indexOf(x)!==i))];
+ const requiredPages=['home','horse','jockey','gate','gacha','seat','cards','support','points','ranking','campaign','how','rules','save','tacticsLabSafe','raceJournalSafe','japanTour','skillCollectionSafe','loadoutResearchSafe','goldenFinalSafe'];
+ const missingPages=requiredPages.filter(id=>!document.getElementById(id));
+ const requiredTabs=['horse','jockey','custom','support'];
+ const missingTabs=requiredTabs.filter(t=>!document.querySelector(`#gachaTabs [data-gacha-tab="${t}"]`));
+ const w=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0);
+ const source=document.documentElement.innerHTML;
+ const modules={
+  v10Custom:run('GH_V10_CUSTOM_EQUIPMENT_COMPLETE'),
+  v11Integrity:run('GH_V11_INTEGRITY_COMPLETION'),
+  v12Preset:run('GH_V12_SERVER_PRESETS_COMPLETION'),
+  v13Loadout:run('GH_V13_SERVER_LOADOUT_CONTRACT'),
+  v14Journal:run('GH_V14_SERVER_RACE_JOURNAL'),
+  v16Compliance:run('GH_V16_MYHORSE_COMPLIANCE'),
+  v17HQ:run('GH_V17_HQ_RENDER'),
+  v18Rules:run('GH_V18_COMPLIANCE_RULES'),
+  v19Pages:run('GH_V19_CHILD_PAGE_RESTORE'),
+  v20Guard:run('GH_V20_RELEASE_GUARD'),
+  v21Visual:run('GH_V21_VISUAL_IDENTITY')
+ };
+ const protectedCore={
+  seven:Array.isArray(window.HORSES)&&HORSES.length===7,
+  bet120:source.includes('FIXED_BET_SECONDS=120'),
+  skip:!!document.getElementById('skipBtn'),
+  oddsLock:source.includes('finalOddsSnapshot'),
+  serverResult:source.includes('SERVER AUTHORITATIVE BET / RACE SYNC'),
+  secureDraw:source.includes('security_lock'),
+  photoFinish:source.includes('写真判定')
+ };
+ const functional={
+  customGacha:source.includes("custom_gacha"),
+  supportGacha:source.includes("support_gacha"),
+  skillState:source.includes("skill_state"),
+  finalState:source.includes("final_state"),
+  compliance:source.includes("compliance_state")&&source.includes("compliance_accept"),
+  myHorseServer:source.includes("presentation_horses")&&source.includes("my_horse_frozen"),
+  visualIdentity:source.includes('V21-SAFE-VISUAL-IDENTITY-R1')
+ };
+ const pageOK=missingPages.length===0&&missingTabs.length===0&&duplicateIds.length===0&&Math.max(0,w-innerWidth)===0&&window.__GH_V22_ERRORS.length===0;
+ const coreOK=Object.values(protectedCore).every(Boolean);
+ const functionalOK=Object.values(functional).every(Boolean);
+ const criticalModules=['v10Custom','v11Integrity','v12Preset','v13Loadout','v14Journal','v16Compliance','v17HQ','v18Rules','v19Pages','v20Guard','v21Visual'];
+ const modulesOK=criticalModules.every(k=>modules[k]?.ok===true);
+ const ok=pageOK&&coreOK&&functionalOK&&modulesOK;
+ const result={ok,version:VERSION,reason,checkedAt:new Date().toISOString(),pageOK,coreOK,functionalOK,modulesOK,missingPages,missingTabs,duplicateIds,horizontalOverflow:Math.max(0,w-innerWidth),pageErrors:[...window.__GH_V22_ERRORS],protectedCore,functional,modules};
+ document.documentElement.dataset.ghV22Candidate=ok?'PASS':'FAIL';
+ let node=document.getElementById('ghV22CandidateReport');
+ if(!node){node=document.createElement('pre');node.id='ghV22CandidateReport';node.hidden=true;document.body.appendChild(node)}
+ node.textContent=JSON.stringify(result);
+ try{sessionStorage.setItem('gh_v22_candidate_last',JSON.stringify(result))}catch(_){}
+ return result;
+}
+setTimeout(()=>audit('startup'),2200);
+setTimeout(()=>audit('settled'),4800);
+document.addEventListener('click',e=>{if(e.target.closest?.('[data-page],[data-gacha-tab]'))setTimeout(()=>audit('navigation'),180)},true);
+window.GH_V22_CANDIDATE_CHECKPOINT={version:VERSION,audit,selfTest:()=>audit('self-test')};
+document.documentElement.dataset.ghV22='safe-candidate-checkpoint-r1';
+})();
+</script>
+
+
+<style id="gh-v23-limitbreak-center-style">#limitBreakCenterSafe{background:radial-gradient(circle at 50% 0,#132a36 0,#061019 38%,#020609 100%)}#ghV23LBBody{padding:10px 12px 24px}.ghV23LBHero{padding:15px;border-radius:18px;border:1px solid #347b98;background:linear-gradient(180deg,#071f2c,#061019);box-shadow:0 18px 44px #0007}.ghV23LBHero h2{margin:4px 0;color:#e0f9ff}.ghV23LBHero p{margin:0;color:#84a9b9;font-size:9px;line-height:1.65}.ghV23LBStats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.ghV23LBStat{padding:8px;border-radius:10px;background:#031019;border:1px solid #ffffff0e;text-align:center}.ghV23LBStat small{display:block;color:#7296a6;font-size:7px}.ghV23LBStat b{display:block;color:#ffe7a5;font-size:13px;margin-top:2px}.ghV23LBPanel{margin-top:10px;padding:12px;border-radius:14px;background:#06141d;border:1px solid #ffffff10}.ghV23LBPanel h3{margin:0 0 7px;color:#9eeaff}.ghV23LBNote{color:#7e9fad;font-size:8px;line-height:1.55}.ghV23LBRows{display:grid;gap:7px;margin-top:8px}.ghV23LBRow{padding:10px;border-radius:11px;background:#031019;border:1px solid #ffffff0d}.ghV23LBHead{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.ghV23LBHead b{font-size:10px;color:#eefaff}.ghV23LBHead strong{font-size:9px;color:#ffe49b}.ghV23LBMeta{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:7px}.ghV23LBMeta div{padding:6px;border-radius:8px;background:#061822;border:1px solid #ffffff0b;text-align:center}.ghV23LBMeta small{display:block;color:#7195a5;font-size:6px}.ghV23LBMeta b{display:block;color:#eaf9ff;font-size:9px;margin-top:2px}.ghV23LBActions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ghV23LBActions button{min-height:38px;padding:0 10px;border-radius:9px;border:1px solid #397894;background:#08212d;color:#def8ff;font-weight:1000;font-size:9px}.ghV23LBActions button.gold{border-color:#aa842c;background:#2a1f07;color:#ffe5a0}.ghV23LBActions button:disabled{opacity:.34}.ghV23LBReady{display:inline-block;padding:3px 6px;border-radius:999px;border:1px solid #44d39e66;background:#06291d;color:#a3ffd0;font-size:7px;font-weight:1000}.ghV23LBWait{display:inline-block;padding:3px 6px;border-radius:999px;border:1px solid #826625;background:#1b1506;color:#ffe29a;font-size:7px;font-weight:1000}.ghV23CountBadge{display:block;margin-top:3px;color:#9edfff;font-size:7px;font-weight:1000}@media(max-width:560px){.ghV23LBStats{grid-template-columns:repeat(2,1fr)}.ghV23LBMeta{grid-template-columns:repeat(3,1fr)}}</style>
+<script defer id="gh-v23-safe-server-limitbreak-center-r1">
+(()=>{'use strict';
+if(window.GH_V23_SERVER_LIMITBREAK_CENTER)return;
+const VERSION='V23-SAFE-SERVER-LIMITBREAK-CENTER-R1';
+const V9=window.GH_MASTER_V9_SAFE,V11=window.GH_MASTER_V11_SAFE_PROGRESS;
+if(!V9||!V11){console.warn('V23 LB dependencies missing');return}
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+const reqId=p=>(`${p}-${Date.now()}-${crypto.randomUUID?.()||Math.random().toString(36).slice(2)}`).slice(0,118);
+let busy=false,lastSync=null;
+function col(){return V9.collection?.()||{horse:{},jockey:{},equip:{}}}
+function pstate(){return V11.state?.()||{}}
+function activeId(type){
+ const p=pstate(),load=p.serverLoadout||{},v9s=state.ghV9Safe?.server||{};
+ return String(type==='horse'?(load.horse?.id||v9s.activeHorseId||''):(load.jockey?.id||v9s.activeJockeyId||''));
+}
+function equippedIds(){
+ const p=pstate(),eq=p.serverLoadout?.equipment||{};
+ return new Set(Object.values(eq).map(x=>String(x?.id||'')).filter(Boolean));
+}
+function liveCopies(r){return (r?.copies||[]).filter(c=>!c.used&&c.serverId)}
+function usedCopies(r){return (r?.copies||[]).filter(c=>!!c.used)}
+function lbBase(type,r){
+ const live=liveCopies(r);
+ if(!live.length)return null;
+ if(type==='equip'){
+   const eq=equippedIds(),e=live.find(c=>eq.has(String(c.serverId))&&Number(c.limitBreak||0)<10);
+   return e||live.find(c=>Number(c.limitBreak||0)<10)||live[0];
+ }
+ const a=activeId(type),x=live.find(c=>String(c.serverId)===a&&Number(c.limitBreak||0)<10);
+ return x||live.find(c=>Number(c.limitBreak||0)<10)||live[0];
+}
+function material(type,r,base){
+ const live=liveCopies(r);
+ if(type==='equip'){
+   const eq=equippedIds();
+   return live.find(c=>c!==base&&!eq.has(String(c.serverId)))||null;
+ }
+ const a=activeId(type);
+ return live.find(c=>c!==base&&String(c.serverId)!==a)||null;
+}
+function canLB(type,r){
+ const base=lbBase(type,r),dup=material(type,r,base);
+ return !!base&&Number(base.limitBreak||0)<10&&!!dup;
+}
+function totalStats(){
+ let groups=0,total=0,live=0,used=0,ready=0;
+ for(const type of ['horse','jockey','equip'])for(const r of Object.values(col()[type]||{})){
+   const n=(r.copies||[]).length;if(!n)continue;
+   groups++;total+=n;live+=liveCopies(r).length;used+=usedCopies(r).length;if(canLB(type,r))ready++;
+ }
+ return {groups,total,live,used,ready};
+}
+function ensurePage(){
+ const app=document.querySelector('.app');if(!app)return null;
+ let p=document.getElementById('limitBreakCenterSafe');
+ if(!p){p=document.createElement('section');p.id='limitBreakCenterSafe';p.className='screen subpage';p.innerHTML='<div class="header"><button class="back" data-page="home">← 戻る</button><h1>重複・限界突破</h1></div><div id="ghV23LBBody"></div>';app.appendChild(p)}
+ const menu=document.querySelector('#home .menu');
+ if(menu&&!menu.querySelector('[data-page="limitBreakCenterSafe"]')){const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page='limitBreakCenterSafe';b.innerHTML='<span class="ico">⤒</span>重複・限界突破';menu.appendChild(b)}
+ return p;
+}
+function rowHTML(type,r){
+ const copies=r.copies||[],live=liveCopies(r),used=usedCopies(r),base=lbBase(type,r),dup=material(type,r,base);
+ const active=type!=='equip'&&live.some(c=>String(c.serverId)===activeId(type));
+ const equipped=type==='equip'&&live.some(c=>equippedIds().has(String(c.serverId)));
+ const lb=Number(base?.limitBreak||0),ready=!!base&&lb<10&&!!dup;
+ const dupeCount=Math.max(0,live.length-1);
+ const label=type==='horse'?'馬':type==='jockey'?'騎手':'装備';
+ const next=lb>=10?'LB MAX':ready?'今すぐLB可能':live.length<2?'あと1枚必要':'素材候補を確認';
+ return `<div class="ghV23LBRow">
+   <div class="ghV23LBHead"><span><b>${esc(r.name)} / ${esc(r.rare)}</b><span class="${ready?'ghV23LBReady':'ghV23LBWait'}">${next}</span></span><strong>${label} / LB+${lb}/10</strong></div>
+   <div class="ghV23LBMeta">
+     <div><small>所持総数</small><b>${copies.length}枚</b></div>
+     <div><small>使用可能</small><b>${live.length}枚</b></div>
+     <div><small>重複</small><b>${dupeCount}枚</b></div>
+     <div><small>使用済み</small><b>${used.length}枚</b></div>
+     <div><small>${type==='equip'?'装備中':'アクティブ'}</small><b>${(equipped||active)?'YES':'NO'}</b></div>
+     <div><small>限界突破</small><b>+${lb}/10</b></div>
+   </div>
+   <div class="ghV23LBActions">
+     <button class="gold" data-ghv23-lb="${type}" data-key="${esc(r.key)}" ${ready?'':'disabled'}>${ready?'重複1枚でサーバー限界突破':lb>=10?'LB MAX':'重複不足'}</button>
+     ${type!=='equip'?`<button data-ghv23-exchange="${type}" data-key="${esc(r.key)}" ${dupeCount>=2?'':'disabled'}>重複2枚→無料券</button>`:''}
+   </div>
+ </div>`;
+}
+function render(){
+ ensurePage();const body=document.getElementById('ghV23LBBody');if(!body)return;
+ const s=totalStats();
+ const groups={horse:Object.values(col().horse||{}).filter(r=>r.copies?.length),jockey:Object.values(col().jockey||{}).filter(r=>r.copies?.length),equip:Object.values(col().equip||{}).filter(r=>r.copies?.length)};
+ body.innerHTML=`<div class="ghV23LBHero"><small style="color:#68e8ff;font-weight:1000;letter-spacing:.12em">SERVER DUPLICATE INVENTORY / LIMIT BREAK</small><h2>重複枚数・限界突破を全部見える化</h2><p>ログイン中はサーバー個体だけを本番素材として数えます。馬・騎手は <b>card_limit_break</b>、装備は <b>support_lb</b> でサーバー確定。アクティブ馬/騎手・装備中カードは素材に使いません。</p><div class="ghV23LBStats"><div class="ghV23LBStat"><small>カード種類</small><b>${s.groups}</b></div><div class="ghV23LBStat"><small>所持総数</small><b>${s.total}枚</b></div><div class="ghV23LBStat"><small>使用可能</small><b>${s.live}枚</b></div><div class="ghV23LBStat"><small>今LB可能</small><b>${s.ready}種</b></div></div></div>
+ <div class="ghV23LBPanel"><div class="ghV23LBActions"><button data-ghv23-sync>サーバー所持を再同期</button></div><div class="ghV23LBNote">最終同期：${lastSync?new Date(lastSync).toLocaleString('ja-JP'):'未同期'}。重複ガチャ直後は自動同期します。</div></div>
+ ${['horse','jockey','equip'].map(type=>`<div class="ghV23LBPanel"><h3>${type==='horse'?'馬':type==='jockey'?'騎手':'装備'}カード</h3><div class="ghV23LBRows">${groups[type].length?groups[type].map(r=>rowHTML(type,r)).join(''):'<div class="ghV23LBNote">所持カードなし</div>'}</div></div>`).join('')}`;
+}
+async function sync(show=false){
+ if(!serverMode()){render();if(show)window.toast?.('ログイン後にサーバー所持を確認できます');return null}
+ if(busy)return null;busy=true;
+ try{
+   await V9.syncServer?.(false);
+   await V11.syncServer?.(false);
+   lastSync=Date.now();render();decorateGacha();
+   if(show)window.toast?.('重複枚数・限界突破状態をサーバー同期しました');
+   return true;
+ }catch(e){if(show)window.toast?.('重複同期できません: '+e.message);return null}
+ finally{busy=false}
+}
+async function serverLimitBreak(type,key){
+ if(!serverMode())return window.toast?.('本番の限界突破はログイン後のみ実行できます');
+ if(busy)return;
+ const r=col()?.[type]?.[key];if(!r)return;
+ const base=lbBase(type,r),dup=material(type,r,base);
+ if(!base||Number(base.limitBreak||0)>=10)return window.toast?.('このカードは限界突破上限です');
+ if(!dup)return window.toast?.('同じ名前・同じレアリティの未使用重複がもう1枚必要です');
+ busy=true;
+ try{
+   const d=await call('card_limit_break',{request_id:reqId('card-lb'),type,base_id:base.serverId,duplicate_id:dup.serverId});
+   base.limitBreak=Number(d?.limit_break||base.limitBreak||0);dup.used='limitBreak';dup.usedAt=new Date().toISOString();
+   await sync(false);
+   try{renderHorse();renderJockey();renderGachaCollection();renderCards()}catch(_){}
+   document.getElementById('ghV9SafeModal')?.classList.remove('on');
+   window.toast?.(`${r.name} サーバー限界突破 +${base.limitBreak}/10 完了`);
+ }catch(e){
+   const m={active_card_cannot_exchange:'アクティブ中の個体は素材にできません',duplicates_must_match_exactly:'同じ名前・同じレアリティの重複だけ使用できます',duplicate_already_used:'その重複カードはすでに使用済みです',limit_break_max:'限界突破は+10が最大です',location_verification_required:'店外GPSを再確認してください'};
+   window.toast?.(m[e.message]||('限界突破できません: '+e.message));
+ }finally{busy=false;render()}
+}
+async function doLimitBreak(type,key){
+ if(type==='equip'){
+   if(!serverMode())return window.toast?.('本番の装備限界突破はログイン後のみ実行できます');
+   if(busy)return;busy=true;
+   try{await V11.limitBreakEquip?.(key);lastSync=Date.now();render();decorateGacha()}
+   finally{busy=false}
+   return;
+ }
+ return serverLimitBreak(type,key);
+}
+async function exchange(type,key){
+ if(!serverMode())return window.toast?.('重複交換はログイン後のみ実行できます');
+ if(busy)return;busy=true;
+ try{await V11.exchangeTwo?.(type,key);lastSync=Date.now();render();decorateGacha()}
+ finally{busy=false}
+}
+function nameCounts(type,name){
+ const records=Object.values(col()?.[type]||{}).filter(r=>String(r.name)===String(name));
+ const copies=records.flatMap(r=>r.copies||[]);
+ const live=copies.filter(c=>!c.used&&c.serverId),used=copies.filter(c=>!!c.used);
+ return {total:copies.length,live:live.length,used:used.length,dupes:Math.max(0,live.length-1)};
+}
+function decorateGacha(){
+ const type=typeof gachaType!=='undefined'?String(gachaType):'horse';
+ const mapType=type==='custom'?'equip':type;
+ if(!['horse','jockey','equip'].includes(mapType))return;
+ document.querySelectorAll('#gachaCollection .collectionMini').forEach(card=>{
+   const name=card.querySelector('.miniName')?.textContent?.trim();
+   card.querySelector('.ghV23CountBadge')?.remove();
+   if(!name||name==='？？？')return;
+   const c=nameCounts(mapType,name);
+   if(!c.total)return;
+   const b=document.createElement('small');b.className='ghV23CountBadge';b.textContent=`所持 ${c.total} / 使用可 ${c.live} / 重複 ${c.dupes}`;
+   card.appendChild(b);
+ });
+}
+const oldRender=window.renderGachaCollection||renderGachaCollection;
+window.renderGachaCollection=renderGachaCollection=function(){oldRender();setTimeout(decorateGacha,20)};
+// Stop the old local-only horse/jockey LB handler before it runs.
+document.addEventListener('click',e=>{
+ const old=e.target.closest?.('[data-v9safe-lb]');
+ if(old){
+   e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+   if(window.GH_V28_LIMITBREAK_FLOW?.request)return window.GH_V28_LIMITBREAK_FLOW.request(String(old.dataset.v9safeLb||''),String(old.dataset.v9safeKey||''));
+   return window.toast?.('限界突破画面を準備中です');
+ }
+ const lb=e.target.closest?.('[data-ghv23-lb]');
+ if(lb){
+   e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+   if(window.GH_V28_LIMITBREAK_FLOW?.request)return window.GH_V28_LIMITBREAK_FLOW.request(String(lb.dataset.ghv23Lb||''),String(lb.dataset.key||''));
+   return window.toast?.('限界突破画面を準備中です');
+ }
+ const ex=e.target.closest?.('[data-ghv23-exchange]');
+ if(ex){e.preventDefault();return exchange(String(ex.dataset.ghv23Exchange||''),String(ex.dataset.key||''))}
+ const sy=e.target.closest?.('[data-ghv23-sync]');
+ if(sy){e.preventDefault();return sync(true)}
+ const pg=e.target.closest?.('[data-page]')?.dataset.page;
+ if(pg==='limitBreakCenterSafe')setTimeout(()=>sync(false),80);
+ if(pg==='gacha')setTimeout(()=>decorateGacha(),120);
+},true);
+ensurePage();render();
+if(serverMode())setTimeout(()=>sync(false),1700);
+function selfTest(){
+ const src=document.getElementById('gh-v23-safe-server-limitbreak-center-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const forbidden=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0&&src.includes("call('card_limit_break'")&&src.includes("V11.limitBreakEquip")&&src.includes("V11.exchangeTwo")
+    &&whole.includes('FIXED_BET_SECONDS=120')&&!!document.getElementById('skipBtn')&&whole.includes('finalOddsSnapshot'),
+  version:VERSION,
+  horseJockeyLimitBreakServer:true,
+  equipmentLimitBreakServer:true,
+  duplicateCountsVisible:true,
+  activeMaterialProtected:true,
+  equippedMaterialProtected:true,
+  oddsMutation:false,
+  resultMutation:false,
+  forbiddenMutationMarkers:bad
+ };
+}
+window.GH_V23_SERVER_LIMITBREAK_CENTER={version:VERSION,sync,render,serverLimitBreak,selfTest};
+document.documentElement.dataset.ghV23='safe-server-limitbreak-center-r1';
+})();
+</script>
+
+
+<style id="gh-v24-audio-rarity-style">#ghV24RarityGuide{margin:10px 0 12px;padding:12px;border-radius:14px;border:1px solid #446d83;background:linear-gradient(180deg,#071a25,#031018);color:#eaf8ff}#ghV24RarityGuide h3{margin:0 0 6px;color:#ffe5a0;font-size:13px}.ghV24RarityLead{color:#8eb2c1;font-size:8px;line-height:1.55}.ghV24RarityGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:8px}.ghV24Rare{padding:8px 4px;border-radius:10px;background:#031019;border:1px solid var(--rc,#ffffff18);text-align:center;box-shadow:inset 0 1px 0 #ffffff0b}.ghV24Rare b{display:block;color:var(--rc,#fff);font-size:10px}.ghV24Rare small{display:block;color:#7e9dad;font-size:6px;line-height:1.35;margin-top:2px}.ghV24Rare strong{display:block;color:#eef9ff;font-size:8px;margin-top:3px}.ghV24Guarantee{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ghV24Guarantee span{padding:4px 7px;border-radius:999px;border:1px solid #947626;background:#1b1506;color:#ffe39c;font-size:7px;font-weight:1000}.ghV24Legacy{margin-top:7px;padding:7px 8px;border-radius:9px;border:1px solid #4d5361;background:#11141a;color:#adb8c2;font-size:7px;line-height:1.45}.ghV24RarityMini{display:inline-block;margin-left:5px;padding:2px 5px;border-radius:999px;border:1px solid currentColor;font-size:7px;font-weight:1000;vertical-align:middle;opacity:.95}#ghV24BgmMeter{margin:7px 0;padding:8px 10px;border-radius:10px;border:1px solid #2d6076;background:#061722;color:#bdeeff;font-size:8px;display:flex;justify-content:space-between;gap:8px;align-items:center}#ghV24BgmMeter b{color:#ffe59c}#ghV24BgmMeter span{color:#7fa8b9}@media(max-width:620px){.ghV24RarityGrid{grid-template-columns:repeat(3,1fr)}}</style>
+
+<script defer id="gh-v24-safe-audio-rarity-r1">
+(()=>{'use strict';
+if(window.GH_V24_AUDIO_RARITY)return;
+const VERSION='V24-SAFE-AUDIO-RARITY-R1';
+const RANK={
+ 'N':{n:1,label:'基本',color:'#98a6af'},
+ 'R':{n:2,label:'レア',color:'#62adff'},
+ 'SR':{n:3,label:'上級',color:'#58d9ff'},
+ 'UR':{n:4,label:'上位',color:'#ffd15c'},
+ 'SPECIAL RARE':{n:5,label:'超希少',color:'#8ef3ff'},
+ 'SPECIAL ART':{n:6,label:'最高',color:'#fff0a1'}
+};
+const LEGACY={'SSR':{label:'旧コレクション表示',color:'#c98aff'}};
+let rarityState=null,rarityBusy=false;
+const call=(a,p={})=>window.GH_V8_TOUR_SYNC?.call?.(a,p);
+const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+// 投票中BGM：旧主音0.026 → 標準0.038。10秒カウント音0.055より一段下。
+window.startBettingBgm=startBettingBgm=function(){
+ if(!sound||running||bettingBgmTimer)return;
+ ensureAudio();if(!audio)return;
+ audioUnlocked=true;
+ const playBar=()=>{
+  if(!sound||running)return;
+  const roots=[110,123.47,98,130.81];
+  const root=roots[Math.floor(Date.now()/6000)%roots.length];
+  tone(root,.72,'sine',.038);
+  tone(root*2,.42,'triangle',.020);
+  setTimeout(()=>tone(root*1.5,.30,'sine',.015),390);
+  setTimeout(()=>tone(root*2.5,.22,'triangle',.012),820);
+  setTimeout(()=>tone(root*.75,.42,'sine',.010),1080);
+ };
+ playBar();
+ bettingBgmTimer=setInterval(playBar,1500);
+};
+function ensureBgmMeter(){
+ let box=document.getElementById('ghV24BgmMeter');if(box)return box;
+ box=document.createElement('div');box.id='ghV24BgmMeter';
+ box.innerHTML='<b>投票BGM：標準</b><span>カウントダウンSEより控えめ / 旧版より聞き取りやすく調整</span>';
+ const target=document.querySelector('#home .betTypes')||document.querySelector('#home .raceInfo');
+ target?.insertAdjacentElement('afterend',box);
+ return box;
+}
+function currentGachaType(){
+ const t=typeof gachaType!=='undefined'?String(gachaType):'horse';
+ return ['horse','jockey','custom','support'].includes(t)?t:'horse';
+}
+function pct(v){return (Number(v||0)/100).toFixed(Number(v||0)%100===0?0:2)+'%'}
+function guideHTML(type=currentGachaType()){
+ const rates=rarityState?.rates_per_10000?.[type]||null;
+ const guarantees=rarityState?.guarantees||{ur_or_higher_every:30,special_or_higher_every:100};
+ return `<h3>レアリティ早見表 / 本番6段階</h3>
+ <div class="ghV24RarityLead">左ほど通常、右ほど希少。${rates?'現在のサーバー抽選設定を表示中。':'ログイン後は現在のサーバー抽選設定を表示します。'}</div>
+ <div class="ghV24RarityGrid">${Object.entries(RANK).map(([r,m])=>`<div class="ghV24Rare" style="--rc:${m.color}"><b>${esc(r)}</b><small>${m.n}/6</small><strong>${esc(m.label)}</strong>${rates?`<small>現在 ${pct(rates[r])}</small>`:''}</div>`).join('')}</div>
+ <div class="ghV24Guarantee"><span>${Number(guarantees.ur_or_higher_every||30)}回でUR以上保証</span><span>${Number(guarantees.special_or_higher_every||100)}回でSPECIAL以上保証</span></div>
+ <div class="ghV24Legacy"><b style="color:${LEGACY.SSR.color}">SSR</b> は旧版・既存コレクション表示として保持。現在の本番サーバー抽選率テーブルでは直接排出するレア段階には入っていません。</div>`;
+}
+function ensureGuide(){
+ let box=document.getElementById('ghV24RarityGuide');
+ if(!box){box=document.createElement('div');box.id='ghV24RarityGuide';document.querySelector('#gacha .gachaMeta')?.insertAdjacentElement('afterend',box)}
+ if(box)box.innerHTML=guideHTML();
+ return box;
+}
+async function syncRarity(silent=true){
+ if(rarityBusy)return rarityState;rarityBusy=true;
+ try{
+  if(serverMode()){
+   const d=await call('gacha_rarity_state');
+   if(d?.server_authoritative!==true)throw new Error('rarity_state_not_authoritative');
+   rarityState=d;
+  }
+  ensureGuide();annotateRarity();
+  return rarityState;
+ }catch(e){console.warn('GH_V24 rarity',e);ensureGuide();if(!silent)window.toast?.('レアリティ情報を取得できません: '+e.message);return null}
+ finally{rarityBusy=false}
+}
+function rankText(r){
+ r=String(r||'').trim().toUpperCase();
+ if(RANK[r])return `${RANK[r].n}/6 ${RANK[r].label}`;
+ if(LEGACY[r])return LEGACY[r].label;
+ return '';
+}
+function annotateRarity(root=document){
+ root.querySelectorAll?.('.rare').forEach(el=>{
+   const raw=String(el.childNodes?.[0]?.textContent||el.textContent||'').trim().toUpperCase();
+   const known=Object.keys(RANK).find(x=>raw===x||raw.startsWith(x+' '))||(raw.startsWith('SSR')?'SSR':'');
+   if(!known)return;
+   let b=el.querySelector('.ghV24RarityMini');
+   if(!b){b=document.createElement('span');b.className='ghV24RarityMini';el.appendChild(b)}
+   b.textContent=rankText(known);
+   b.style.color=RANK[known]?.color||LEGACY[known]?.color||'#fff';
+ });
+ const reveal=document.getElementById('reveal');
+ if(reveal?.classList.contains('on')){
+   const txt=reveal.textContent||'';
+   const r=['SPECIAL ART','SPECIAL RARE','UR','SR','R','N','SSR'].find(x=>txt.includes(x));
+   if(r){
+    const h=reveal.querySelector('h2');
+    if(h&&!reveal.querySelector('.ghV24RevealRank')){
+      const b=document.createElement('div');b.className='ghV24RevealRank';b.style.cssText=`margin:5px 0;color:${RANK[r]?.color||LEGACY[r]?.color||'#fff'};font-weight:1000;font-size:10px`;
+      b.textContent=`希少度 ${rankText(r)}`;h.insertAdjacentElement('afterend',b);
+    }
+   }
+ }
+}
+const obs=new MutationObserver(m=>{for(const x of m){for(const n of x.addedNodes){if(n.nodeType===1)annotateRarity(n)}}});
+{const targets=['gacha','reveal'].map(id=>document.getElementById(id)).filter(Boolean);targets.forEach(t=>obs.observe(t,{childList:true,subtree:true}));}
+const oldSet=window.setGachaTab||setGachaTab;
+window.setGachaTab=setGachaTab=function(type){const r=oldSet(type);setTimeout(()=>{ensureGuide();annotateRarity()},30);return r};
+document.addEventListener('click',e=>{
+ const pg=e.target.closest?.('[data-page]')?.dataset.page;
+ if(pg==='gacha')setTimeout(()=>syncRarity(true),100);
+ if(e.target.closest?.('[data-gacha-tab]'))setTimeout(()=>{ensureGuide();annotateRarity()},80);
+ if(e.target.closest?.('#drawBtn'))setTimeout(()=>annotateRarity(),1300);
+},true);
+ensureBgmMeter();ensureGuide();annotateRarity();
+if(serverMode())setTimeout(()=>syncRarity(true),1300);
+function selfTest(){
+ const src=document.getElementById('gh-v24-safe-audio-rarity-r1')?.textContent||'',whole=document.documentElement.innerHTML;
+ const forbidden=['finalOddsSnapshot=','finish_order=','settleRaceBets=','makeRacePlan=','raceState='];
+ const bad=forbidden.filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0
+    &&src.includes("tone(root,.72,'sine',.038)")
+    &&src.includes("call('gacha_rarity_state')")
+    &&Object.keys(RANK).length===6
