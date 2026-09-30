@@ -1,0 +1,1000 @@
+   voidRefundNoUnlock:true,
+   gachaNoUnlock:true,
+   unlockToast:true,
+   bonusGoldChildPage:true,
+   protectedMutationMarkers:bad
+ };
+}
+window.GH_V33_BONUS_GOLD={version:VERSION,sync,selfTest,get state(){return last}};
+document.documentElement.dataset.ghV33='safe-bonus-gold-conversion-r1';
+})();
+</script>
+
+<script defer id="gh-v34-safe-bonus-source-normal-gold-r1">
+(()=>{'use strict';
+if(window.GH_V34_BONUS_SOURCE)return;
+const VERSION='V34-SAFE-BONUS-SOURCE-NORMAL-GOLD-R1';
+function selfTest(){
+ const h=document.documentElement.innerHTML;
+ const src=document.getElementById('gh-v34-safe-bonus-source-normal-gold-r1')?.textContent||'';
+ const bad=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='].filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0
+   &&h.includes('V32-SAFE-ONBOARDING-45G-ACTIVITY-R1')
+   &&h.includes('GOLD SOURCE ACCOUNTING / SERVER AUTHORITATIVE')
+   &&h.includes('席・店頭Gold')
+   &&h.includes('BET中付与Gold')
+   &&h.includes('race_conversion_history')
+   &&h.includes('FIXED_BET_SECONDS=120')
+   &&!!document.getElementById('skipBtn')
+   &&h.includes('finalOddsSnapshot'),
+  version:VERSION,
+  seatGoldNormalImmediately:true,
+  signupDailyStartBonus:true,
+  exactBetSourceSplit:true,
+  settledWinPayoutNormal:true,
+  settledLossNoRegrant:true,
+  refundReturnsBonus:true,
+  protectedRaceCore:true,
+  protectedMutationMarkers:bad
+ };
+}
+window.GH_V34_BONUS_SOURCE={version:VERSION,selfTest};
+document.documentElement.dataset.ghV34='safe-bonus-source-normal-gold-r1';
+})();
+</script>
+
+
+<script defer id="gh-v35-safe-seat-normal-bypass-r1">
+(()=>{'use strict';
+if(window.GH_V35_SEAT_NORMAL_BYPASS)return;
+const VERSION='V35-SAFE-SEAT-NORMAL-BYPASS-R1';
+function selfTest(){
+ const h=document.documentElement.innerHTML;
+ const s=document.getElementById('gh-v35-safe-seat-normal-bypass-r1')?.textContent||'';
+ const bad=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='].filter(x=>s.includes(x));
+ return {
+   ok:bad.length===0
+    &&h.includes('V34-SAFE-BONUS-SOURCE-NORMAL-GOLD-R1')
+    &&h.includes('3活動日・45G条件を待たず')
+    &&h.includes('seat_normal_available_for_immediate_sweepstakes')
+    &&h.includes('懸賞参加ルートは2つ')
+    &&h.includes('FIXED_BET_SECONDS=120')
+    &&!!document.getElementById('skipBtn')
+    &&h.includes('finalOddsSnapshot'),
+   version:VERSION,
+   seatGoldImmediateSweepstakes:true,
+   bonusRouteStillNeedsActivity45G:true,
+   noRaceRequiredForSeatGold:true,
+   protectedMutationMarkers:bad
+ };
+}
+window.GH_V35_SEAT_NORMAL_BYPASS={version:VERSION,selfTest};
+document.documentElement.dataset.ghV35='safe-seat-normal-bypass-r1';
+})();
+</script>
+
+
+<style id="gh-v36-grant-gold-style">#ghV36GoldRule{margin:8px 12px;padding:11px;border-radius:12px;border:1px solid #9d7a2d;background:linear-gradient(180deg,#1c1607,#06131c);color:#d9f3ff;font-size:8px;line-height:1.65}#ghV36GoldRule b{color:#ffe49e}.ghV36Flow{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.ghV36Flow div{padding:7px 4px;border-radius:9px;border:1px solid #ffffff12;background:#031019;text-align:center}.ghV36Flow b{display:block;font-size:8px;color:#ffe39e}.ghV36Flow small{display:block;font-size:6px;color:#7699a8;margin-top:2px}@media(max-width:540px){.ghV36Flow{grid-template-columns:repeat(2,1fr)}}</style>
+<script defer id="gh-v36-safe-grant-gold-compliance-r1">
+(()=>{'use strict';
+if(window.GH_V36_GRANT_GOLD)return;
+const VERSION='V36-SAFE-GRANT-GOLD-COMPLIANCE-R1';
+function ensureRule(){
+ let x=document.getElementById('ghV36GoldRule');
+ if(!x){
+  x=document.createElement('div');x.id='ghV36GoldRule';
+  const h=document.getElementById('home'),a=document.getElementById('ghV33HomeBonus')||document.getElementById('ghV31HomeProgress')||h?.querySelector('.raceInfo,.betTypes,.menu');
+  if(a)a.insertAdjacentElement('afterend',x);
+ }
+ if(x)x.innerHTML='<b>Goldは2種類</b><div class="ghV36Flow"><div><b>新規50G / 毎日</b><small>付与Gold</small></div><div><b>レース正常決着</b><small>結果で増減</small></div><div><b>的中払戻</b><small>通常Gold</small></div><div><b>懸賞</b><small>通常Goldだけ</small></div></div><div style="margin-top:6px">取消・除外・返還は <b>付与Goldへ戻る</b> → 再度レース正常決着が必要。席・店頭で獲得したGoldは最初から <b>通常Gold</b>。</div>';
+}
+function selfTest(){
+ const h=document.documentElement.innerHTML,s=document.getElementById('gh-v36-safe-grant-gold-compliance-r1')?.textContent||'';
+ const bad=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='].filter(x=>s.includes(x));
+ return {
+   ok:bad.length===0
+    &&h.includes('V35-SAFE-SEAT-NORMAL-BYPASS-R1')
+    &&h.includes('付与Gold')
+    &&h.includes('通常Goldだけ')
+    &&h.includes('利用停止となっています')
+    &&h.includes('FIXED_BET_SECONDS=120')
+    &&!!document.getElementById('skipBtn')
+    &&h.includes('finalOddsSnapshot'),
+   version:VERSION,
+   displayName:'付与Gold',
+   onlyNormalGoldForSweepstakes:true,
+   refundReturnsGrantGold:true,
+   seatGoldNormalImmediately:true,
+   complianceFirstLoginRequired:true,
+   adminDeniedCannotUse:true,
+   protectedMutationMarkers:bad
+ };
+}
+ensureRule();
+document.addEventListener('click',e=>{if(e.target.closest?.('[data-page="home"]'))setTimeout(ensureRule,60)},true);
+window.GH_V36_GRANT_GOLD={version:VERSION,ensureRule,selfTest};
+document.documentElement.dataset.ghV36='safe-grant-gold-compliance-r1';
+})();
+</script>
+
+
+<style id="gh-v37-golden-pulse-hq-style">#ghV29DailyGate{background:radial-gradient(circle at 50% 15%,#18394caa 0 10%,transparent 36%),radial-gradient(circle at 50% 50%,#1b1308 0 8%,#02070bd9 48%,#000 100%)!important}#ghV29DailyCard{position:relative;overflow:hidden;border:1px solid #d7a93d!important;box-shadow:0 0 0 1px #63ddff22,0 30px 100px #000,0 0 60px #ffcf4c18!important}#ghV29DailyCard:before{content:"";position:absolute;inset:-30%;pointer-events:none;background:repeating-conic-gradient(from 0deg,transparent 0 10deg,#ffd45b0b 10.5deg 11deg,transparent 11.5deg 24deg);animation:ghV37HaloSpin 14s linear infinite}#ghV29DailyCard>*{position:relative;z-index:2}#ghV29TicketStage{min-height:310px!important;border:1px solid #6ddfff55!important;background:radial-gradient(circle at 50% 48%,#fff3a41b 0 9%,transparent 21%),radial-gradient(circle at 50% 48%,#0d364a 0 18%,#06131d 48%,#02070b 78%)!important;box-shadow:inset 0 0 55px #000b,0 0 35px #64dfff12!important}.ghV37PulseLayer{position:absolute;inset:0;pointer-events:none;overflow:hidden}.ghV37PulseBeam{position:absolute;left:50%;top:-35%;width:12%;height:170%;transform-origin:50% 70%;background:linear-gradient(180deg,transparent,#fff2a54c 46%,#6ce4ff55 55%,transparent);filter:blur(2px);opacity:.55;animation:ghV37Beam 4.4s ease-in-out infinite}.ghV37PulseBeam.b2{animation-delay:-1.6s;transform:rotate(52deg)}.ghV37PulseBeam.b3{animation-delay:-2.9s;transform:rotate(-56deg)}.ghV37PulseRing{position:absolute;left:50%;top:50%;width:210px;height:210px;border-radius:50%;transform:translate(-50%,-50%);border:1px solid #ffe28488;box-shadow:0 0 30px #ffe17725,inset 0 0 25px #6de5ff18;animation:ghV37Ring 2.8s ease-in-out infinite}.ghV37PulseRing.r2{width:260px;height:260px;border-color:#6ee6ff55;animation-delay:-.9s}.ghV37PulseRing.r3{width:310px;height:310px;border-color:#ffe08428;animation-delay:-1.8s}.ghV37Spark{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff5b8;box-shadow:0 0 10px #ffe06d;opacity:.2;animation:ghV37Spark 2.7s ease-in-out infinite}#ghV29Ticket{position:relative;z-index:5;width:190px!important;height:112px!important;border-radius:18px!important;border:1px solid #fff0aa!important;background:linear-gradient(135deg,#241804 0,#8c6417 28%,#f0ca61 49%,#533807 63%,#171005 100%)!important;box-shadow:0 0 0 1px #5fe3ff33,0 0 36px #ffd75c55,inset 0 0 28px #fff6c226!important;color:#140d02!important;text-shadow:0 1px 0 #fff5bd;font-size:13px!important;letter-spacing:.14em!important;overflow:hidden}#ghV29Ticket:before{content:"GOLDEN PULSE";position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-weight:1000;letter-spacing:.22em;color:#1d1204;background:linear-gradient(110deg,transparent 25%,#fff9cfaa 45%,transparent 63%);transform:translateX(-120%);animation:ghV37TicketSheen 2.3s ease-in-out infinite}#ghV29Ticket:after{content:"DAILY / SERVER DRAW";position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:6px;letter-spacing:.18em;color:#281b08;opacity:.8}#ghV29Ticket.shake{animation:ghV37DrawShake .12s linear infinite!important;box-shadow:0 0 70px #ffe168cc,0 0 120px #6ce6ff66!important}#ghV29TicketStage.ghV37Drawing{animation:ghV37StageCharge .55s ease-in-out infinite alternate}#ghV29TicketResult{z-index:9!important;background:radial-gradient(circle at 50% 45%,#fffbd5 0 4%,#ffd75f 8%,#90610d 17%,#15202a 39%,#02070b 72%)!important}#ghV29TicketResult.on:before{content:"";position:absolute;inset:-35%;background:repeating-conic-gradient(#fff5a000 0 8deg,#fff5a477 9deg 10deg,#fff5a000 11deg 20deg);animation:ghV37ResultSpin 3.2s linear infinite}#ghV29TicketResult>*{position:relative;z-index:2}.ghV29ResultBig{font-size:clamp(42px,12vw,82px)!important;color:#fff8c7!important;text-shadow:0 0 10px #fff,0 0 28px #ffd75c,0 0 58px #ffd75c99!important}.ghV29ResultSmall{font-size:11px!important;color:#c7f4ff!important}body.ghV37PulseWin:before{content:"";position:fixed;inset:0;z-index:1000004;pointer-events:none;background:radial-gradient(circle,#fff9d7cc 0 2%,#ffe16a66 8%,transparent 36%);animation:ghV37ScreenFlash .7s ease-out forwards}.gachaStage.ghV37Premium{background:radial-gradient(circle at 50% 46%,#e9bd3f22 0 12%,transparent 30%),radial-gradient(circle at 50% 45%,#1b3550 0 12%,#111426 31%,#02060b 72%)!important;border-color:#9d7c32!important;box-shadow:inset 0 0 70px #000c,0 0 36px #ffd85a18}.gachaStage.ghV37Premium .ring{border-width:2px!important;box-shadow:0 0 45px #ffd65a55,inset 0 0 35px #ffd65a11!important}.gachaStage.ghV37Premium .ring.r2{border-color:#73e9ff!important;box-shadow:0 0 45px #67e4ff55,inset 0 0 25px #67e4ff15!important}#ghV37GachaFX{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}#ghV37GachaFX .star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff6c9;box-shadow:0 0 8px #ffe270;animation:ghV37GachaStar 3s ease-in-out infinite}#ghV37GachaFX .arc{position:absolute;left:50%;top:50%;width:410px;height:410px;border-radius:50%;border:1px dashed #ffe27733;transform:translate(-50%,-50%);animation:ghV37HaloSpin 9s linear infinite}#ghV37GachaFX .arc.a2{width:470px;height:470px;border-color:#6ee7ff22;animation-direction:reverse;animation-duration:13s}.gachaStage.ghV37Charging #gachaOrb{animation:ghV37OrbCharge .42s ease-in-out infinite alternate!important;filter:saturate(1.25) contrast(1.06)}#reveal.ghV37Reveal{overflow:hidden!important;isolation:isolate}#reveal.ghV37Reveal:before{content:"";position:absolute;inset:-40%;z-index:-1;background:repeating-conic-gradient(transparent 0 13deg,var(--ghRareGlow,#ffe26b55) 14deg 15deg,transparent 16deg 29deg);animation:ghV37ResultSpin 7s linear infinite}#reveal.ghV37Reveal:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 25%,#02070be8 82%)}#reveal[data-gh-rarity="SPECIAL ART"]{--ghRareGlow:#fff5b5aa;border-color:#fff4ad!important;box-shadow:0 0 38px #fff5bd,0 0 90px #ffd95b88!important}#reveal[data-gh-rarity="SPECIAL RARE"]{--ghRareGlow:#d68cff99;border-color:#d997ff!important;box-shadow:0 0 38px #d388ff88,0 0 75px #7930d955!important}#reveal[data-gh-rarity="UR"]{--ghRareGlow:#ffd75c88;border-color:#ffd75f!important;box-shadow:0 0 34px #ffd45b77!important}#reveal[data-gh-rarity="SSR"]{--ghRareGlow:#69e5ff66;border-color:#68dcff!important}#reveal[data-gh-rarity="SR"]{--ghRareGlow:#5ee9ba55;border-color:#58e7b0!important}.gameCard,.collectionMini,.supportCard{backface-visibility:hidden;transform:translateZ(0)}.gameCard .miniArt,.collectionMini .miniArt{filter:saturate(1.08) contrast(1.04)}html.ghV37HQ .gameCard{box-shadow:0 10px 28px #0008,inset 0 0 0 1px #ffffff0c}html.ghV37HQ .gameCard:hover{filter:brightness(1.06)}@keyframes ghV37HaloSpin{to{transform:rotate(360deg)}}@keyframes ghV37Beam{0%,100%{opacity:.15;transform:rotate(-16deg) scaleY(.85)}50%{opacity:.72;transform:rotate(20deg) scaleY(1.08)}}@keyframes ghV37Ring{0%,100%{opacity:.3;transform:translate(-50%,-50%) scale(.92)}50%{opacity:.95;transform:translate(-50%,-50%) scale(1.04)}}@keyframes ghV37Spark{0%,100%{opacity:.1;transform:scale(.7)}50%{opacity:1;transform:scale(1.8)}}@keyframes ghV37TicketSheen{0%,45%{transform:translateX(-130%)}75%,100%{transform:translateX(130%)}}@keyframes ghV37DrawShake{0%{transform:rotate(-1deg) translate(-2px,1px) scale(1.03)}50%{transform:rotate(1deg) translate(2px,-1px) scale(1.07)}100%{transform:rotate(-1deg) translate(-1px,1px) scale(1.04)}}@keyframes ghV37StageCharge{from{filter:brightness(1)}to{filter:brightness(1.5) saturate(1.25)}}@keyframes ghV37ResultSpin{to{transform:rotate(360deg)}}@keyframes ghV37ScreenFlash{0%{opacity:1}100%{opacity:0}}@keyframes ghV37GachaStar{0%,100%{opacity:.1;transform:scale(.7)}50%{opacity:.9;transform:scale(1.8)}}@keyframes ghV37OrbCharge{from{transform:scale(1);box-shadow:0 0 48px #ffd65a66}to{transform:scale(1.08);box-shadow:0 0 90px #ffd65acc,0 0 130px #66e6ff66}}.ghV37LiteFx .ghV37Spark:nth-of-type(even),.ghV37LiteFx #ghV37GachaFX .star:nth-of-type(even){display:none!important}.ghV37LiteFx .ghV37PulseBeam.b3,.ghV37LiteFx #ghV37GachaFX .arc.a2{display:none!important}@media(max-width:560px){#ghV29TicketStage{min-height:270px!important}#ghV29Ticket{width:170px!important;height:102px!important}.gachaStage{min-height:530px!important}}</style>
+
+<script defer id="gh-v37-safe-golden-pulse-hq-art-r1">
+(()=>{'use strict';
+if(window.GH_V37_GOLDEN_PULSE_HQ)return;
+const VERSION='V37-SAFE-GOLDEN-PULSE-HQ-ART-R1';
+document.documentElement.classList.add('ghV37HQ');
+try{
+ const lowMem=Number(navigator.deviceMemory||8)<=4;
+ const lowCpu=Number(navigator.hardwareConcurrency||8)<=4;
+ if(lowMem||lowCpu)document.documentElement.classList.add('ghV37LiteFx');
+}catch(_){}
+const q=(s,r=document)=>r.querySelector(s);
+const qa=(s,r=document)=>[...r.querySelectorAll(s)];
+const vibrate=p=>{try{navigator.vibrate?.(p)}catch(_){}};
+function soundOn(){try{return typeof sound==='undefined'||sound!==false}catch(_){return true}}
+function audioCtx(){
+ try{
+  const C=window.AudioContext||window.webkitAudioContext;
+  if(!C)return null;
+  window.__ghV37Audio=window.__ghV37Audio||new C();
+  if(window.__ghV37Audio.state==='suspended')window.__ghV37Audio.resume();
+  return window.__ghV37Audio;
+ }catch(_){return null}
+}
+function tone(ctx,at,f1,f2,dur=.18,vol=.035,type='sine'){
+ const o=ctx.createOscillator(),g=ctx.createGain();
+ o.type=type;o.frequency.setValueAtTime(Math.max(40,f1),at);o.frequency.exponentialRampToValueAtTime(Math.max(41,f2),at+dur);
+ g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(vol,at+.018);g.gain.exponentialRampToValueAtTime(.0001,at+dur);
+ o.connect(g);g.connect(ctx.destination);o.start(at);o.stop(at+dur+.02);
+}
+function goldenSound(kind,level=1){
+ if(!soundOn())return;
+ const c=audioCtx();if(!c)return;const n=c.currentTime+.015;
+ if(kind==='lottery-draw'){
+  tone(c,n,430,930,.34,.032,'sawtooth');tone(c,n+.12,640,1380,.34,.026,'triangle');tone(c,n+.30,980,1760,.22,.022,'sine');
+ }else if(kind==='lottery-win'){
+  const lift=Math.min(1.8,1+level*.5);
+  [0,.10,.20].forEach((d,i)=>tone(c,n+d,680*(1+i*.23),1180*(1+i*.25)*lift,.27,.03,'triangle'));
+  tone(c,n+.28,1050,2100,.42,.034,'sine');
+ }else if(kind==='gacha'){
+  tone(c,n,280,780,.38,.026,'sawtooth');tone(c,n+.18,620,1350,.36,.022,'triangle');
+ }else if(kind==='rare'){
+  const mult=1+Math.max(0,level-1)*.18;
+  [0,.09,.18,.31].forEach((d,i)=>tone(c,n+d,(520+i*150)*mult,(900+i*240)*mult,.28,.024+(level*.002),'triangle'));
+  if(level>=5)tone(c,n+.26,1200,2600,.55,.032,'sine');
+ }
+}
+function hash(s){let h=2166136261;for(const ch of String(s)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return Math.abs(h>>>0)}
+function safeText(s){return String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function dataSvg(s){return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(s)}
+function horsePortraitHQ(name,coat,glow,mark=''){
+ const id='hq'+hash(name).toString(36),seed=hash(name)%91+7;
+ return dataSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900">
+ <defs>
+  <radialGradient id="${id}bg" cx="55%" cy="34%" r="74%"><stop offset="0" stop-color="${glow}" stop-opacity=".48"/><stop offset=".27" stop-color="#183048"/><stop offset=".68" stop-color="#071019"/><stop offset="1" stop-color="#010407"/></radialGradient>
+  <linearGradient id="${id}coat" x1=".15" y1=".1" x2=".9" y2=".95"><stop stop-color="#080807"/><stop offset=".18" stop-color="${coat}"/><stop offset=".52" stop-color="#c49358"/><stop offset=".73" stop-color="${coat}"/><stop offset="1" stop-color="#090806"/></linearGradient>
+  <linearGradient id="${id}shine" x1="0" x2="1"><stop stop-color="#fff" stop-opacity=".72"/><stop offset=".25" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <filter id="${id}blur"><feGaussianBlur stdDeviation="18"/></filter>
+  <filter id="${id}tex"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="${seed}" result="n"/><feColorMatrix in="n" type="saturate" values="0"/><feBlend in="SourceGraphic" mode="soft-light"/></filter>
+ </defs>
+ <rect width="720" height="900" fill="url(#${id}bg)"/>
+ <g opacity=".7">${Array.from({length:14},(_,i)=>`<circle cx="${60+(hash(name+i)%600)}" cy="${50+(hash(i+name)%610)}" r="${1+(i%3)}" fill="#fff8c8" opacity="${.15+(i%4)*.12}"/>`).join('')}</g>
+ <ellipse cx="425" cy="385" rx="250" ry="230" fill="${glow}" opacity=".13" filter="url(#${id}blur)"/>
+ <g transform="translate(36 118)" filter="url(#${id}tex)">
+  <path d="M111 612 C92 527 111 408 174 325 C225 258 310 227 415 246 C499 261 562 322 574 408 C581 465 555 516 530 558 C514 587 514 636 530 682 C439 726 307 735 190 698 C154 687 126 653 111 612Z" fill="url(#${id}coat)" stroke="#050607" stroke-width="11"/>
+  <path d="M355 306 C391 218 420 105 497 57 C545 27 603 38 626 82 C649 127 621 177 568 198 L516 219 C486 275 464 339 451 408 L357 382Z" fill="url(#${id}coat)" stroke="#050607" stroke-width="10"/>
+  <path d="M481 92 Q495 24 537 56 L532 112Z" fill="#19130d" stroke="#050607" stroke-width="6"/>
+  <path d="M421 260 C430 168 465 87 521 55 C468 157 463 281 478 393 C447 371 423 337 421 260Z" fill="#17100d"/>
+  <path d="M429 272 C441 170 475 96 521 64" fill="none" stroke="${glow}" stroke-width="5" opacity=".38"/>
+  <path d="M176 352 Q260 284 374 274" fill="none" stroke="#fff5d7" stroke-width="7" opacity=".33"/>
+  <path d="M186 419 Q302 361 461 387" fill="none" stroke="url(#${id}shine)" stroke-width="13" opacity=".27"/>
+  <path d="M194 526 Q308 483 492 516" fill="none" stroke="#fff" stroke-width="5" opacity=".10"/>
+  <path d="M125 603 C50 550 3 577 5 640 C54 602 86 621 139 664Z" fill="${coat}" stroke="#050607" stroke-width="8"/>
+  <path d="M514 218 Q552 243 604 229" fill="none" stroke="#e8d1a4" stroke-width="8"/>
+  <path d="M470 181 L532 260 M494 225 Q553 262 586 248" fill="none" stroke="#e8d1a4" stroke-width="6"/>
+  <ellipse cx="568" cy="134" rx="12" ry="9" fill="#050505"/><circle cx="571" cy="132" r="3" fill="#fff7c8"/>
+  <path d="M602 176 Q620 185 632 175" fill="none" stroke="#28180f" stroke-width="5"/>
+  <path d="M251 654 Q269 602 306 578 M409 686 Q405 621 441 578" fill="none" stroke="#08090a" stroke-width="16" opacity=".65"/>
+ </g>
+ <path d="M34 785 H686" stroke="${glow}" stroke-width="2" opacity=".28"/>
+ <text x="38" y="62" fill="${glow}" font-size="22" font-family="sans-serif" font-weight="900" letter-spacing="3">${safeText(mark)}</text>
+ <text x="38" y="100" fill="#b8dce8" font-size="12" font-family="sans-serif" letter-spacing="5">GOLDEN HORSE / CINEMA PORTRAIT</text>
+ <text x="360" y="842" text-anchor="middle" fill="#fff6d0" font-size="39" font-family="sans-serif" font-weight="900">${safeText(name)}</text>
+ <text x="360" y="872" text-anchor="middle" fill="${glow}" opacity=".88" font-size="12" font-family="sans-serif" letter-spacing="5">THOROUGHBRED COLLECTION</text>
+ </svg>`)
+}
+function jockeyPortraitHQ(name,cloth,glow,mark=''){
+ const id='jq'+hash(name).toString(36),seed=hash(name)%83+11;
+ return dataSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900">
+ <defs>
+  <radialGradient id="${id}bg" cx="50%" cy="30%" r="75%"><stop offset="0" stop-color="${glow}" stop-opacity=".4"/><stop offset=".38" stop-color="#13273a"/><stop offset=".72" stop-color="#061019"/><stop offset="1" stop-color="#010406"/></radialGradient>
+  <linearGradient id="${id}suit" x1=".1" y1="0" x2=".9" y2="1"><stop stop-color="${glow}"/><stop offset=".2" stop-color="${cloth}"/><stop offset=".62" stop-color="#11151c"/><stop offset="1" stop-color="${cloth}"/></linearGradient>
+  <radialGradient id="${id}skin" cx="42%" cy="30%" r="78%"><stop stop-color="#efc4a0"/><stop offset=".52" stop-color="#bb7f5d"/><stop offset="1" stop-color="#6f4434"/></radialGradient>
+  <filter id="${id}tex"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="2" seed="${seed}"/><feBlend in="SourceGraphic" mode="soft-light"/></filter>
+ </defs>
+ <rect width="720" height="900" fill="url(#${id}bg)"/>
+ <g transform="translate(70 60)" filter="url(#${id}tex)">
+  <path d="M118 720 C130 548 171 420 228 354 C276 299 411 292 466 358 C524 428 550 558 549 720Z" fill="url(#${id}suit)" stroke="#06090d" stroke-width="11"/>
+  <path d="M132 537 L20 614 L66 692 L212 582Z" fill="${cloth}" stroke="#07090d" stroke-width="10"/>
+  <path d="M459 521 L580 593 L542 681 L398 577Z" fill="${cloth}" stroke="#07090d" stroke-width="10"/>
+  <ellipse cx="344" cy="230" rx="113" ry="138" fill="url(#${id}skin)" stroke="#0b1015" stroke-width="10"/>
+  <path d="M229 222 Q237 70 340 43 Q456 58 472 222 Q427 163 342 151 Q268 159 229 222Z" fill="${cloth}" stroke="#0a0f15" stroke-width="12"/>
+  <path d="M239 142 Q344 94 463 149 L446 200 Q340 165 249 202Z" fill="${glow}" opacity=".9"/>
+  <path d="M236 189 Q345 148 457 190 L424 249 Q337 215 252 249Z" fill="#111922" stroke="${glow}" stroke-width="7"/>
+  <path d="M248 217 Q342 184 440 219" fill="none" stroke="#d8f5ff" stroke-width="6" opacity=".52"/>
+  <path d="M263 262 Q285 248 310 258 M377 258 Q402 246 425 262" fill="none" stroke="#3b261d" stroke-width="6"/>
+  <ellipse cx="291" cy="267" rx="9" ry="7" fill="#1d130f"/><ellipse cx="397" cy="267" rx="9" ry="7" fill="#1d130f"/>
+  <path d="M344 270 L334 316 L357 321" fill="none" stroke="#865b47" stroke-width="5"/>
+  <path d="M305 347 Q344 366 385 343" fill="none" stroke="#704135" stroke-width="6"/>
+  <path d="M262 393 L344 465 L428 393" fill="none" stroke="#fff4c5" stroke-width="10" opacity=".35"/>
+  <path d="M256 418 L343 504 L438 418" fill="none" stroke="${glow}" stroke-width="7" opacity=".72"/>
+  <circle cx="50" cy="683" r="31" fill="#0c1117" stroke="${glow}" stroke-width="5"/><circle cx="554" cy="671" r="31" fill="#0c1117" stroke="${glow}" stroke-width="5"/>
+ </g>
+ <text x="38" y="62" fill="${glow}" font-size="22" font-family="sans-serif" font-weight="900" letter-spacing="3">${safeText(mark)}</text>
+ <text x="38" y="100" fill="#b8dce8" font-size="12" font-family="sans-serif" letter-spacing="5">GOLDEN HORSE / JOCKEY PORTRAIT</text>
+ <text x="360" y="842" text-anchor="middle" fill="#fff6d0" font-size="39" font-family="sans-serif" font-weight="900">${safeText(name)}</text>
+ <text x="360" y="872" text-anchor="middle" fill="${glow}" opacity=".9" font-size="12" font-family="sans-serif" letter-spacing="5">ELITE RIDER COLLECTION</text>
+ </svg>`)
+}
+function equipmentSlot(name,type){
+ if(type==='support')return 'support';
+ if(/ヘルメット|ヘルム|クラウン|メット/.test(name))return 'helmet';
+ if(/ゴーグル|レンズ|サイト|ビジョン|スコープ|バイザー|アイ/.test(name))return 'goggles';
+ if(/ムチ|ウィップ|鞭|ロッド|ブレード|カーボン/.test(name))return 'whip';
+ if(/ブーツ|ソール|ステップ|スプリント|グリップ/.test(name))return 'boots';
+ return 'cloth';
+}
+function cardArtworkHQ(name,type,rare='R'){
+ const slot=equipmentSlot(name,type),id='eq'+hash(name+slot).toString(36);
+ const tier={R:'#73cfff',SR:'#5ff0b8',SSR:'#68e5ff',UR:'#ffd55f','SPECIAL RARE':'#d98cff','SPECIAL ART':'#fff2ae'}[rare]||'#76dfff';
+ const shapes={
+  helmet:`<path d="M194 185 Q218 85 322 70 Q434 88 448 194 L416 225 Q330 190 210 227Z" fill="url(#${id}m)" stroke="#eafaff" stroke-opacity=".32" stroke-width="5"/><path d="M222 164 Q324 120 425 166" fill="none" stroke="${tier}" stroke-width="12"/><path d="M264 97 L320 48 L378 99" fill="none" stroke="#fff2b4" stroke-width="7"/>`,
+  goggles:`<path d="M145 185 Q220 121 305 163 L286 233 Q210 253 151 212Z" fill="#07141e" stroke="${tier}" stroke-width="9"/><path d="M335 163 Q420 121 495 185 L489 212 Q430 253 354 233Z" fill="#07141e" stroke="${tier}" stroke-width="9"/><path d="M287 184 Q320 168 353 184" fill="none" stroke="#e8faff" stroke-width="8"/><path d="M155 178 L103 144 M485 178 L536 144" stroke="#b8d8e8" stroke-width="7"/>`,
+  whip:`<path d="M153 285 Q268 132 390 92" fill="none" stroke="#f6e0ae" stroke-width="14" stroke-linecap="round"/><path d="M390 92 Q500 46 535 135 Q530 206 472 250" fill="none" stroke="${tier}" stroke-width="7"/><rect x="111" y="278" width="70" height="125" rx="22" fill="url(#${id}m)" transform="rotate(38 146 340)"/>`,
+  boots:`<path d="M175 97 H295 L311 260 Q325 317 374 343 L365 395 H170 Q132 354 169 314 L184 280Z" fill="url(#${id}m)" stroke="#e8faff" stroke-opacity=".25" stroke-width="6"/><path d="M354 86 H467 L459 278 Q465 325 510 344 L501 395 H319 Q287 363 319 322 L351 272Z" fill="url(#${id}m)" stroke="#e8faff" stroke-opacity=".25" stroke-width="6"/><path d="M175 287 H305 M350 285 H458" stroke="${tier}" stroke-width="10"/>`,
+  cloth:`<path d="M206 87 L319 135 L434 87 L526 189 L468 257 L449 402 H190 L172 257 L113 189Z" fill="url(#${id}m)" stroke="#e8faff" stroke-opacity=".28" stroke-width="6"/><path d="M319 136 V402 M177 246 H468" stroke="${tier}" stroke-width="10" opacity=".8"/><path d="M260 186 L319 236 L378 186" fill="none" stroke="#fff3bc" stroke-width="7"/>`,
+  support:`<circle cx="320" cy="220" r="142" fill="none" stroke="${tier}" stroke-width="8"/><path d="M320 84 L355 174 L454 177 L376 238 L402 336 L320 279 L238 336 L264 238 L186 177 L285 174Z" fill="url(#${id}m)" stroke="#fff4c3" stroke-opacity=".35" stroke-width="5"/>`
+ }[slot];
+ return dataSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440">
+ <defs><radialGradient id="${id}bg" cx="68%" cy="24%" r="78%"><stop stop-color="${tier}" stop-opacity=".34"/><stop offset=".42" stop-color="#142b3b"/><stop offset="1" stop-color="#03070b"/></radialGradient>
+ <linearGradient id="${id}m" x1=".1" y1=".1" x2=".9" y2=".9"><stop stop-color="#f7fbff"/><stop offset=".16" stop-color="${tier}"/><stop offset=".45" stop-color="#273441"/><stop offset=".78" stop-color="#0c1117"/><stop offset="1" stop-color="${tier}"/></linearGradient></defs>
+ <rect width="640" height="440" rx="28" fill="url(#${id}bg)"/>
+ <g opacity=".35">${Array.from({length:9},(_,i)=>`<circle cx="${50+(hash(name+i)%540)}" cy="${40+(hash(i+name)%300)}" r="${1+i%2}" fill="#fff4bd"/>`).join('')}</g>
+ <g transform="translate(0 5)">${shapes}</g>
+ <rect x="20" y="20" width="600" height="400" rx="20" fill="none" stroke="${tier}" stroke-opacity=".42"/>
+ <text x="34" y="53" fill="${tier}" font-size="18" font-family="sans-serif" font-weight="900" letter-spacing="3">${safeText(rare)}</text>
+ <text x="34" y="397" fill="#fff7df" font-size="30" font-family="sans-serif" font-weight="900">${safeText(name)}</text>
+ <text x="34" y="423" fill="#9dcbdc" font-size="10" font-family="sans-serif" letter-spacing="4">${slot.toUpperCase()} / GOLDEN EQUIPMENT</text>
+ </svg>`)
+}
+function applyHQArt(){
+ try{
+  if(typeof HORSE_GACHA_POOL!=='undefined')HORSE_GACHA_POOL.forEach(x=>{if(x?.[0])x[5]=horsePortraitHQ(x[0],x[2]||'#30251d',x[3]||'#ffd45a',x[4]||'')});
+  if(typeof JOCKEY_GACHA_POOL!=='undefined')JOCKEY_GACHA_POOL.forEach(x=>{if(x?.[0])x[5]=jockeyPortraitHQ(x[0],x[2]||'#202733',x[3]||'#68dcff',x[4]||'')});
+  try{cardArtwork=cardArtworkHQ;window.cardArtwork=cardArtworkHQ}catch(_){}
+  if(typeof state!=='undefined'&&Array.isArray(state.cards)){
+    state.cards.forEach(c=>{if(c?.name)c.img=cardArtworkHQ(c.name,c.type||'support',c.rare||c.rarity||'R')});
+  }
+  try{renderGachaCollection?.();renderCards?.();renderSupport?.()}catch(_){}
+ }catch(e){console.warn('GH V37 HQ art',e)}
+}
+function ensureLotteryFX(){
+ const st=q('#ghV29TicketStage');if(!st||st.dataset.ghV37)return;
+ st.dataset.ghV37='1';
+ const layer=document.createElement('div');layer.className='ghV37PulseLayer';
+ layer.innerHTML='<i class="ghV37PulseBeam"></i><i class="ghV37PulseBeam b2"></i><i class="ghV37PulseBeam b3"></i><i class="ghV37PulseRing"></i><i class="ghV37PulseRing r2"></i><i class="ghV37PulseRing r3"></i>';
+ for(let i=0;i<22;i++){const s=document.createElement('i');s.className='ghV37Spark';s.style.left=`${4+(hash('sx'+i)%92)}%`;s.style.top=`${5+(hash('sy'+i)%88)}%`;s.style.animationDelay=`-${(i%13)*.17}s`;layer.appendChild(s)}
+ st.prepend(layer);
+ const ticket=q('#ghV29Ticket',st),res=q('#ghV29TicketResult',st);
+ if(ticket)new MutationObserver(()=>{
+   const drawing=ticket.classList.contains('shake');
+   st.classList.toggle('ghV37Drawing',drawing);
+   if(drawing&&!ticket.dataset.ghV37Sound){ticket.dataset.ghV37Sound='1';goldenSound('lottery-draw');vibrate([28,22,28,22,45,35,65])}
+   if(!drawing)delete ticket.dataset.ghV37Sound;
+ }).observe(ticket,{attributes:true,attributeFilter:['class']});
+ if(res)new MutationObserver(()=>{
+  if(!res.classList.contains('on')||res.dataset.ghV37Win)return;
+  res.dataset.ghV37Win='1';
+  const amt=parseFloat((res.textContent.match(/\+?([0-9]+(?:\.[0-9]+)?)G/i)||[])[1]||'.1');
+  const lv=Math.max(1,Math.min(10,Math.round(amt*10)));
+  goldenSound('lottery-win',lv/5);vibrate(lv>=8?[40,25,55,25,80,35,130]:[35,28,45,28,70]);
+  document.body.classList.add('ghV37PulseWin');setTimeout(()=>document.body.classList.remove('ghV37PulseWin'),800);
+ }).observe(res,{attributes:true,childList:true,subtree:true,attributeFilter:['class']});
+}
+function rarityLevel(r){
+ return {'N':1,'R':1,'SR':2,'SSR':3,'UR':4,'SPECIAL RARE':5,'SPECIAL ART':6}[String(r).toUpperCase()]||2
+}
+function detectRarity(reveal){
+ const txt=reveal.textContent||'';
+ return ['SPECIAL ART','SPECIAL RARE','SSR','UR','SR','R'].find(r=>txt.includes(r))||'R'
+}
+function ensureGachaFX(){
+ const st=q('.gachaStage');if(!st)return;
+ st.classList.add('ghV37Premium');
+ if(!q('#ghV37GachaFX',st)){
+   const fx=document.createElement('div');fx.id='ghV37GachaFX';fx.innerHTML='<i class="arc"></i><i class="arc a2"></i>';
+   for(let i=0;i<28;i++){const s=document.createElement('i');s.className='star';s.style.left=`${3+(hash('gx'+i)%94)}%`;s.style.top=`${4+(hash('gy'+i)%90)}%`;s.style.animationDelay=`-${(i%17)*.14}s`;fx.appendChild(s)}
+   st.prepend(fx);
+ }
+ const draw=q('#drawBtn');if(draw&&!draw.dataset.ghV37){
+   draw.dataset.ghV37='1';
+   draw.addEventListener('click',()=>{st.classList.add('ghV37Charging');goldenSound('gacha');vibrate([24,18,28,18,42]);setTimeout(()=>st.classList.remove('ghV37Charging'),1150)},true);
+ }
+ const reveal=q('#reveal');if(reveal&&!reveal.dataset.ghV37Obs){
+   reveal.dataset.ghV37Obs='1';
+   new MutationObserver(()=>{
+    if(!reveal.classList.contains('on')){delete reveal.dataset.ghV37Done;return}
+    if(reveal.dataset.ghV37Done)return;reveal.dataset.ghV37Done='1';
+    const rare=detectRarity(reveal),lv=rarityLevel(rare);
+    reveal.classList.add('ghV37Reveal');reveal.dataset.ghRarity=rare;
+    goldenSound('rare',lv);
+    vibrate(lv>=6?[45,25,65,25,90,30,140]:lv>=4?[35,25,50,25,85]:[24,20,38]);
+   }).observe(reveal,{attributes:true,childList:true,subtree:true,attributeFilter:['class']});
+ }
+}
+function scrubPremiumEmoji(){
+ const tabs=q('#gachaTabs');if(tabs)qa('button',tabs).forEach(b=>{const text=b.textContent.replace(/🐎|🏇|🛡️|💠/g,'').trim();if(text!==b.textContent)b.textContent=text});
+ const orb=q('#gachaOrb');if(orb&&/^[🐎🏇🛡️💠]+$/.test(orb.textContent.trim()))orb.textContent='';
+}
+function selfTest(){
+ const horses=typeof HORSE_GACHA_POOL!=='undefined'?HORSE_GACHA_POOL:[];
+ const jockeys=typeof JOCKEY_GACHA_POOL!=='undefined'?JOCKEY_GACHA_POOL:[];
+ const hMissing=horses.filter(x=>!String(x?.[5]||'').startsWith('data:image/svg+xml')).length;
+ const jMissing=jockeys.filter(x=>!String(x?.[5]||'').startsWith('data:image/svg+xml')).length;
+ const whole=document.documentElement.innerHTML,src=q('#gh-v37-safe-golden-pulse-hq-art-r1')?.textContent||'';
+ const bad=['finalOddsSnapshot=','finish_order=','settleRaceBets=','startRace=','makeRacePlan='].filter(x=>src.includes(x));
+ return {
+  ok:bad.length===0&&hMissing===0&&jMissing===0&&whole.includes('V36-SAFE-GRANT-GOLD-COMPLIANCE-R1')
+   &&whole.includes('FIXED_BET_SECONDS=120')&&!!q('#skipBtn')&&whole.includes('finalOddsSnapshot'),
+  version:VERSION,originalAudioSynthesis:true,noSampledAudio:true,
+  goldenPulseLottery:true,rarityGachaFx:true,hqHorseArt:true,hqJockeyArt:true,hqEquipmentArt:true,
+  horseImagesMissing:hMissing,jockeyImagesMissing:jMissing,
+  secureDrawUntouched:true,protectedMutationMarkers:bad
+ };
+}
+applyHQArt();ensureGachaFX();scrubPremiumEmoji();
+const boot=()=>{ensureLotteryFX();ensureGachaFX();scrubPremiumEmoji()};document.addEventListener('gh:v50:refresh',boot);
+document.addEventListener('click',e=>{const pg=e.target.closest?.('[data-page]')?.dataset.page;if(pg==='gacha'||pg==='home')setTimeout(boot,90)},true);
+setTimeout(boot,800);
+window.GH_V37_GOLDEN_PULSE_HQ={version:VERSION,applyHQArt,ensureLotteryFX,ensureGachaFX,selfTest};
+document.documentElement.dataset.ghV37='safe-golden-pulse-hq-art-r1';
+})();
+</script>
+
+
+<style id="gh-v38-safe-special-art-cinema-r1-style">.ghV38Cinema{position:fixed;inset:0;z-index:9999;display:none;place-items:center;background:radial-gradient(circle at 50% 45%,rgba(250,208,76,.18),rgba(3,8,13,.94) 42%,rgba(1,4,8,.985) 72%,#000 100%);backdrop-filter:blur(4px);overflow:hidden}.ghV38Cinema.on{display:grid;animation:ghV38Fade .34s ease-out}@keyframes ghV38Fade{from{opacity:0}to{opacity:1}}.ghV38Cinema *{box-sizing:border-box}.ghV38Layer,.ghV38Back,.ghV38Front{position:absolute;inset:0;pointer-events:none}.ghV38Back:before,.ghV38Back:after{content:"";position:absolute;inset:-18%;background:conic-gradient(from 0deg,transparent 0 18deg,rgba(255,214,90,.08) 20deg 33deg,transparent 35deg 58deg,rgba(82,219,255,.08) 60deg 73deg,transparent 75deg 100deg);animation:ghV38Spin 16s linear infinite}.ghV38Back:after{filter:blur(18px);opacity:.65;animation-duration:8s;animation-direction:reverse}@keyframes ghV38Spin{to{transform:rotate(360deg)}}.ghV38Particles i,.ghV38Beams i,.ghV38GateBars i,.ghV38Metal i,.ghV38Hoof i{position:absolute;display:block}.ghV38Particles i{width:5px;height:5px;border-radius:50%;background:rgba(255,240,170,.9);box-shadow:0 0 14px rgba(255,214,90,.85);animation:ghV38Twinkle 2.4s linear infinite}@keyframes ghV38Twinkle{0%,100%{transform:scale(.55);opacity:.25}50%{transform:scale(1.45);opacity:1}}.ghV38Beams i{left:50%;top:50%;width:2px;height:68vh;transform-origin:50% 100%;background:linear-gradient(180deg,rgba(255,255,255,.0),rgba(255,230,120,.95),rgba(255,230,120,.0));filter:blur(.2px);opacity:.35;animation:ghV38Pulse 2.6s ease-in-out infinite}@keyframes ghV38Pulse{0%,100%{opacity:.16}50%{opacity:.8}}.ghV38Card{position:relative;z-index:3;width:min(92vw,720px);min-height:min(82vh,760px);display:grid;align-content:center;justify-items:center;padding:34px 26px 28px;border-radius:36px;border:1px solid rgba(255,224,128,.34);background:linear-gradient(180deg,rgba(9,18,29,.6),rgba(6,11,18,.32));box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 0 60px rgba(255,197,61,.16),0 35px 80px rgba(0,0,0,.55)}.ghV38Tag{padding:7px 14px;border-radius:999px;border:1px solid rgba(255,227,128,.55);background:linear-gradient(180deg,rgba(98,62,12,.92),rgba(52,33,7,.96));color:#ffe8a6;font-weight:1000;letter-spacing:.18em;font-size:12px;box-shadow:0 0 22px rgba(255,197,61,.22)}.ghV38Headline{margin-top:18px;text-align:center}.ghV38Headline h2{margin:0;font-size:clamp(34px,7.6vw,68px);line-height:.94;letter-spacing:.03em;color:#fff3c0;text-shadow:0 0 24px rgba(255,205,88,.35)}.ghV38Headline p{margin:8px 0 0;color:#bfeeff;font-weight:900;letter-spacing:.18em;font-size:12px}.ghV38Frame{position:relative;margin-top:18px;width:min(74vw,420px);height:min(74vw,420px);border-radius:30px;overflow:hidden;border:2px solid rgba(255,219,104,.95);box-shadow:0 0 0 3px rgba(255,255,255,.06) inset,0 0 46px rgba(255,207,97,.3);background:radial-gradient(circle at 50% 28%,rgba(255,245,187,.26),rgba(34,28,21,.26) 30%,rgba(2,6,10,.95) 72%)}.ghV38Frame:before{content:"";position:absolute;inset:-16%;background:linear-gradient(120deg,transparent 25%,rgba(255,255,255,.08) 32%,rgba(255,255,255,.42) 38%,rgba(255,255,255,.08) 45%,transparent 54%);transform:translateX(-115%) rotate(12deg);animation:ghV38Sweep 2.6s ease-in-out infinite}@keyframes ghV38Sweep{0%,18%{transform:translateX(-115%) rotate(12deg)}45%,100%{transform:translateX(115%) rotate(12deg)}}.ghV38Art{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;filter:saturate(1.08) contrast(1.02)}.ghV38Halo{position:absolute;inset:-18%;background:radial-gradient(circle at 50% 38%,rgba(255,240,174,.65),rgba(255,212,92,.18) 24%,rgba(255,212,92,0) 58%);mix-blend-mode:screen;animation:ghV38Halo 2.2s ease-in-out infinite}@keyframes ghV38Halo{0%,100%{transform:scale(.92);opacity:.6}50%{transform:scale(1.06);opacity:1}}.ghV38Silhouette{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0) 25%),radial-gradient(circle at 50% 46%,rgba(255,255,255,.18),rgba(255,255,255,0) 42%),linear-gradient(180deg,rgba(3,8,15,.06),rgba(3,8,15,.45));mix-blend-mode:screen}.ghV38Shadow{position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,rgba(255,216,100,.0),rgba(0,0,0,.0) 36%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.8));}.ghV38Subcopy{margin-top:18px;text-align:center;color:#e8f8ff;max-width:560px;line-height:1.75;font-size:15px}.ghV38Prompt{margin-top:18px;padding:10px 14px;border-radius:999px;border:1px solid rgba(103,228,255,.34);background:rgba(4,26,41,.68);color:#aaf5ff;font-weight:1000;letter-spacing:.1em;opacity:0;transform:translateY(12px);transition:.28s ease}.ghV38Cinema.ready .ghV38Prompt{opacity:1;transform:translateY(0)}.ghV38Actions{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(92vw,520px);opacity:0;transform:translateY(12px);transition:.28s ease}.ghV38Cinema.ready .ghV38Actions{opacity:1;transform:translateY(0)}.ghV38Actions button{height:52px;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(4,20,33,.78);color:#fff;font-weight:1000;font-size:15px}.ghV38Actions .main{border-color:rgba(255,213,95,.82);background:linear-gradient(180deg,rgba(98,62,12,.98),rgba(49,31,5,.98));color:#ffe8a8;box-shadow:0 0 22px rgba(255,197,61,.16)}.ghV38Cinema.theme-horse .ghV38Frame{border-color:#ffd55f;box-shadow:0 0 0 3px rgba(255,255,255,.06) inset,0 0 55px rgba(255,201,74,.36)}.ghV38Cinema.theme-jockey .ghV38Frame{border-color:#72e3ff;box-shadow:0 0 0 3px rgba(255,255,255,.06) inset,0 0 55px rgba(106,228,255,.28)}.ghV38Cinema.theme-custom .ghV38Frame,.ghV38Cinema.theme-support .ghV38Frame{border-color:#fff0b3;box-shadow:0 0 0 3px rgba(255,255,255,.06) inset,0 0 55px rgba(255,221,135,.3)}.ghV38GateBars i{top:16%;bottom:16%;width:16px;border-radius:9px;background:linear-gradient(180deg,rgba(88,226,255,.1),rgba(110,239,255,.95),rgba(88,226,255,.08));box-shadow:0 0 18px rgba(104,236,255,.42);animation:ghV38Gate 1.9s ease-in-out infinite}@keyframes ghV38Gate{0%,100%{transform:scaleY(.78);opacity:.45}50%{transform:scaleY(1.06);opacity:1}}.ghV38Metal i{width:140%;height:24px;left:-20%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.86),rgba(255,246,197,.55),rgba(255,255,255,0));filter:blur(1px);transform:rotate(-16deg);animation:ghV38Metal 2.1s linear infinite}@keyframes ghV38Metal{from{transform:translateX(-30%) rotate(-16deg)}to{transform:translateX(30%) rotate(-16deg)}}.ghV38Hoof i{bottom:10%;width:54px;height:54px;border-radius:50%;border:2px solid rgba(255,214,93,.72);box-shadow:0 0 24px rgba(255,214,93,.34), inset 0 0 18px rgba(255,214,93,.12);animation:ghV38Hoof 1.12s ease-in-out infinite}@keyframes ghV38Hoof{0%,100%{transform:translateY(0) scale(.88);opacity:.55}50%{transform:translateY(-28px) scale(1.06);opacity:1}}.ghV38Cinema.theme-horse .ghV38Subcopy strong{color:#ffe49a}.ghV38Cinema.theme-jockey .ghV38Subcopy strong{color:#9ef3ff}.ghV38Cinema.theme-custom .ghV38Subcopy strong,.ghV38Cinema.theme-support .ghV38Subcopy strong{color:#fff0b0}@media(max-width:640px){.ghV38Card{padding:28px 18px 22px;min-height:100dvh;border-radius:0;width:100vw;max-width:none}.ghV38Frame{width:min(84vw,360px);height:min(84vw,360px)}.ghV38Actions{grid-template-columns:1fr}.ghV38Subcopy{font-size:14px}}</style>
+<script defer id="gh-v38-safe-special-art-cinema-r1">
+(()=>{'use strict';
+ if(window.GH_V38_SAFE_SPECIAL_ART_CINEMA)return;
+ const BUILD='V38-SAFE-SPECIAL-ART-CINEMA-R1';
+ const doc=document;
+ const q=(s,p=doc)=>p.querySelector(s);
+ const qa=(s,p=doc)=>Array.from(p.querySelectorAll(s));
+ const prefersReduced=()=>window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const state={lastSig:'',open:false,audio:null};
+ function currentType(){return q('#gachaTabs [data-gacha-tab].on')?.dataset.gachaTab||'horse'}
+ function detectRarity(){const rank=q('#reveal')?.firstElementChild?.firstElementChild?.textContent?.trim()||'';return ['SPECIAL ART','SPECIAL RARE','UR','SSR','SR','R','N'].includes(rank)?rank:'R'}
+ function revealName(){return q('#reveal h2')?.textContent?.trim()||''}
+ function revealArt(){const bg=getComputedStyle(q('#reveal')).backgroundImage||'';const m=bg.match(/url\(["']?(.*?)["']?\)/);return m?m[1]:''}
+ function vibrate(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+ function ensureAudio(){
+   if(state.audio||prefersReduced())return state.audio;
+   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
+   try{state.audio=new AC();}catch(e){return null}return state.audio;
+ }
+ function tone(freq=440,dur=.12,type='sine',gain=.03,delay=0){
+   const ac=ensureAudio(); if(!ac) return; const t0=ac.currentTime+delay;
+   const o=ac.createOscillator(),g=ac.createGain(); o.type=type; o.frequency.setValueAtTime(freq,t0); g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(gain,t0+.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur); o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0+dur+.05);
+ }
+ function playTheme(type){
+   const ac=ensureAudio(); if(ac&&ac.state==='suspended') ac.resume().catch(()=>{});
+   if(type==='horse'){
+     [0,.18,.36,.64].forEach((d,i)=>tone(90+i*8,.09,'triangle',.028,d));
+     tone(330,.24,'sawtooth',.022,.72); tone(550,.32,'triangle',.018,.9);
+   }else if(type==='jockey'){
+     tone(260,.16,'triangle',.018,0); tone(390,.18,'triangle',.02,.14); tone(520,.2,'triangle',.022,.28); tone(700,.34,'sine',.018,.54);
+   }else{
+     tone(210,.16,'square',.018,0); tone(420,.13,'square',.014,.13); tone(680,.13,'triangle',.018,.24); tone(920,.3,'sine',.016,.48);
+   }
+ }
+ function ensureRoot(){
+   let root=q('#ghV38Cinema');
+   if(root) return root;
+   root=doc.createElement('div'); root.id='ghV38Cinema'; root.className='ghV38Cinema';
+   root.innerHTML='<div class="ghV38Back ghV38Layer"><div class="ghV38Particles"></div><div class="ghV38Beams"></div><div class="ghV38GateBars"></div><div class="ghV38Metal"></div><div class="ghV38Hoof"></div></div><div class="ghV38Card"><div class="ghV38Tag">SPECIAL ART CINEMA</div><div class="ghV38Headline"><h2>覚醒演出</h2><p>FULL SCREEN REVEAL MOVIE</p></div><div class="ghV38Frame"><div class="ghV38Art"></div><div class="ghV38Halo"></div><div class="ghV38Silhouette"></div><div class="ghV38Shadow"></div></div><div class="ghV38Subcopy"></div><div class="ghV38Prompt">演出進行中…</div><div class="ghV38Actions"><button type="button" data-v38-skip>演出を短縮</button><button type="button" class="main" data-v38-confirm>カード確定</button></div></div><div class="ghV38Front ghV38Layer"></div>';
+   doc.body.appendChild(root);
+   const particles=q('.ghV38Particles',root),beams=q('.ghV38Beams',root),gates=q('.ghV38GateBars',root),metal=q('.ghV38Metal',root),hoof=q('.ghV38Hoof',root);
+   for(let i=0;i<38;i++){const n=doc.createElement('i');n.style.left=((i*17)%97)+'%';n.style.top=((i*23)%94)+'%';n.style.animationDelay='-'+((i%9)*.23)+'s';particles.appendChild(n)}
+   for(let i=0;i<16;i++){const n=doc.createElement('i');n.style.transform='translate(-50%,-100%) rotate('+(i*22.5)+'deg)';n.style.animationDelay='-'+((i%7)*.18)+'s';beams.appendChild(n)}
+   for(let i=0;i<6;i++){const n=doc.createElement('i');n.style.left=(12+i*14)+'%';n.style.animationDelay='-'+(i*.12)+'s';gates.appendChild(n)}
+   for(let i=0;i<5;i++){const n=doc.createElement('i');n.style.top=(20+i*14)+'%';n.style.animationDelay='-'+(i*.22)+'s';metal.appendChild(n)}
+   for(let i=0;i<4;i++){const n=doc.createElement('i');n.style.left=(22+i*16)+'%';n.style.animationDelay='-'+(i*.15)+'s';hoof.appendChild(n)}
+   q('[data-v38-skip]',root).addEventListener('click',()=>ready(root));
+   q('[data-v38-confirm]',root).addEventListener('click',()=>close(root));
+   root.addEventListener('click',e=>{ if(e.target===root && root.classList.contains('ready')) close(root) });
+   return root;
+ }
+ function themeData(type,name){
+   if(type==='horse') return {title:name||'SPECIAL ART HORSE', kicker:'BACKLIGHT / HOOF IMPACT', copy:'<strong>蹄音と逆光</strong>で主役を引き上げる、馬専用の全画面登場ムービー。最後にカードが確定して通常リザルトへ接続。'};
+   if(type==='jockey') return {title:name||'SPECIAL ART JOCKEY', kicker:'GATE LIGHT / SPOT DRIVE', copy:'<strong>ゲート照明</strong>が走路のように流れ、騎手を主役化。SPECIAL ARTだけの登場感を全画面で強調。'};
+   if(type==='custom') return {title:name||'SPECIAL ART EQUIPMENT', kicker:'METAL REFLECTION / EDGE SHINE', copy:'<strong>金属反射</strong>とエッジ光で装備の格を演出。確定ボタンでカード確定へ進み、既存機能はそのまま保持。'};
+   return {title:name||'SPECIAL ART SUPPORT', kicker:'AURA LAYER / GOLDEN SCRIPT', copy:'SPECIAL ARTサポート用の<Strong>黄金オーラ演出</strong>。既存の結果表示を壊さず、全画面ムービーだけを追加。'};
+ }
+ function open(type,name,art){
+   const root=ensureRoot(), data=themeData(type,name);
+   root.className='ghV38Cinema on theme-'+type; root.classList.remove('ready'); root.dataset.type=type;
+   q('.ghV38Headline h2',root).textContent=data.title;
+   q('.ghV38Headline p',root).textContent=data.kicker;
+   q('.ghV38Subcopy',root).innerHTML=data.copy;
+   q('.ghV38Art',root).style.backgroundImage=art?`url("${art.replace(/"/g,'\\"')}")`:'';
+   q('.ghV38Prompt',root).textContent='演出進行中…';
+   qa('.ghV38GateBars,.ghV38Metal,.ghV38Hoof',root).forEach(el=>el.style.display='none');
+   if(type==='horse') q('.ghV38Hoof',root).style.display='block';
+   else if(type==='jockey') q('.ghV38GateBars',root).style.display='block';
+   else if(type==='custom') q('.ghV38Metal',root).style.display='block';
+   playTheme(type);
+   vibrate(type==='horse'?[36,24,52,24,86]:type==='jockey'?[26,18,30,18,60]:[18,14,18,14,36,20,70]);
+   state.open=true;
+   clearTimeout(root._t1); clearTimeout(root._t2);
+   const d1=prefersReduced()?350:2100, d2=prefersReduced()?550:3300;
+   root._t1=setTimeout(()=>{q('.ghV38Prompt',root).textContent='まもなくカード確定…';},d1);
+   root._t2=setTimeout(()=>ready(root),d2);
+ }
+ function ready(root){
+   if(!root||!root.classList.contains('on')) return;
+   root.classList.add('ready');
+   q('.ghV38Prompt',root).textContent='タップまたは「カード確定」で結果へ';
+   vibrate([22,18,42]);
+   tone(740,.12,'sine',.015,0); tone(980,.18,'sine',.013,.12);
+ }
+ function close(root){
+   root=root||q('#ghV38Cinema'); if(!root) return;
+   root.classList.remove('on','ready'); state.open=false; clearTimeout(root._t1); clearTimeout(root._t2);
+ }
+ function maybeTrigger(){
+   const reveal=q('#reveal'); if(!reveal||!reveal.classList.contains('on')){ if(state.open) close(); return; }
+   const rarity=detectRarity(); if(rarity!=='SPECIAL ART') return;
+   const name=revealName(); if(!name) return;
+   const type=currentType(); const art=revealArt(); const sig=type+'|'+name+'|'+art;
+   if(sig===state.lastSig && state.open) return;
+   state.lastSig=sig; open(type,name,art);
+   const flag='SPECIAL ART / FULL SCREEN MOVIE';
+   if(!q('.ghV38Badge',reveal)){
+     const b=doc.createElement('div'); b.className='ghV38Badge';
+     b.style.cssText='margin:8px auto 0;display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #ffe07d;background:#3a2607;color:#ffe7a8;font-weight:1000;font-size:11px;letter-spacing:.08em'; b.textContent=flag;
+     const h=q('h2',reveal); if(h&&h.parentNode) h.parentNode.insertBefore(b,h.nextSibling);
+   }
+ }
+ function boot(){
+   const reveal=q('#reveal'); if(!reveal||reveal.dataset.ghV38Obs) return; reveal.dataset.ghV38Obs='1';
+   new MutationObserver(()=>setTimeout(maybeTrigger,40)).observe(reveal,{attributes:true,attributeFilter:['class','style'],childList:true,subtree:true});
+   doc.addEventListener('click',e=>{ if(e.target.closest('[data-close-reveal]')||e.target.closest('[data-redraw]')||e.target.closest('[data-v10-custom-redraw]')) close(); },true);
+ }
+ boot(); doc.addEventListener('gh:v50:refresh',boot);
+ window.GH_V38_SAFE_SPECIAL_ART_CINEMA={build:BUILD,boot,open,close};
+ doc.documentElement.dataset.ghV38='safe-special-art-cinema-r1';
+})();
+</script>
+
+
+<style id="gh-v39-safe-special-art-evolution-r1-style">#ghV38Cinema{--gh39Accent:#ffd76a;--gh39Accent2:#7be7ff}#ghV38Cinema.theme-flame{--gh39Accent:#ffb85e;--gh39Accent2:#ff6b4f}#ghV38Cinema.theme-shadow{--gh39Accent:#ffe6a4;--gh39Accent2:#7e89ff}#ghV38Cinema.theme-holy{--gh39Accent:#fff1bb;--gh39Accent2:#8ef0ff}#ghV38Cinema.theme-royal{--gh39Accent:#ffd76a;--gh39Accent2:#64e6ff}#ghV38Cinema.theme-speed{--gh39Accent:#b6fff3;--gh39Accent2:#61e9c5}#ghV38Cinema .ghV38Tag{border-color:color-mix(in srgb,var(--gh39Accent) 80%,white 20%);color:var(--gh39Accent);box-shadow:0 0 24px color-mix(in srgb,var(--gh39Accent) 35%,transparent)}#ghV38Cinema .ghV38Headline h2{color:color-mix(in srgb,var(--gh39Accent) 84%,white 16%);text-shadow:0 0 24px color-mix(in srgb,var(--gh39Accent) 45%,transparent)}#ghV38Cinema .ghV38Headline p{color:var(--gh39Accent2)}.ghV39CinemaInfo{margin-top:14px;width:min(92vw,560px);display:grid;gap:10px}.ghV39CinemaBadges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.ghV39CinemaBadges span{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:1000;letter-spacing:.08em;border:1px solid rgba(255,255,255,.15);background:rgba(6,19,31,.72);color:#dff9ff}.ghV39CinemaBadges span.gold{border-color:rgba(255,215,107,.72);color:#ffe7a8;background:rgba(59,39,8,.76)}.ghV39CinemaBadges span.aqua{border-color:rgba(100,233,255,.52);color:#b7f6ff;background:rgba(4,28,43,.76)}.ghV39CinemaGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.ghV39CinemaGrid .cell{padding:10px 8px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(7,17,28,.92),rgba(3,10,17,.88));box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}.ghV39CinemaGrid small{display:block;color:#8eb5c7;font-size:10px;letter-spacing:.08em;margin-bottom:4px}.ghV39CinemaGrid b{font-size:15px;color:#fff7ce}.ghV39RevealInfo{margin-top:10px;padding:10px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(3,12,20,.7)}.ghV39RevealInfo .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px}.ghV39RevealInfo .pill{padding:6px 9px;border-radius:999px;font-size:11px;font-weight:1000;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#e9f8ff}.ghV39RevealInfo .pill.gold{border-color:#ffd56c;color:#ffe4a3;background:#3d2808}.ghV39RevealInfo .note{font-size:12px;line-height:1.55;color:#b9dbe7}#ghV28Burst.ghV39Burst::after{opacity:.72;filter:blur(18px)}#ghV28Burst.ghV39Burst #ghV28BurstCore{padding:30px 22px 26px;border-radius:28px;background:linear-gradient(180deg,rgba(10,21,32,.18),rgba(5,10,17,.18))}.ghV39LBMeta{margin:14px auto 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:760px}.ghV39LBMeta .cell{padding:11px 8px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(7,15,25,.58)}.ghV39LBMeta small{display:block;color:#9ec9d9;font-size:10px;letter-spacing:.09em;margin-bottom:4px}.ghV39LBMeta b{color:#fff6c6;font-size:15px}.ghV39LBLore{margin-top:12px;color:#d9f4ff;line-height:1.7;font-size:14px}@media(max-width:640px){.ghV39CinemaGrid,.ghV39LBMeta{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>
+<script defer id="gh-v39-safe-special-art-evolution-r1">
+(()=>{'use strict';
+ if(window.GH_V39_SAFE_SPECIAL_ART_EVOLUTION)return;
+ const BUILD='V39-SAFE-SPECIAL-ART-EVOLUTION-R1';
+ const q=(s,p=document)=>p.querySelector(s); const qa=(s,p=document)=>Array.from(p.querySelectorAll(s));
+ const esc=s=>String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+ function col(){try{return window.GH_MASTER_V9_SAFE?.collection?.()||{horse:{},jockey:{},equip:{}}}catch(e){return {horse:{},jockey:{},equip:{}}}}
+ function primary(r){return (r?.copies||[]).find(x=>!x.used)||r?.copies?.[0]||null}
+ function liveCount(r){return (r?.copies||[]).filter(x=>!x.used).length}
+ function dupeCount(r){return Math.max(0,liveCount(r)-1)}
+ function recordByName(type,name){const group=(col()?.[type]||{});return Object.values(group).find(r=>String(r?.name||'')===String(name||''))||null}
+ function currentType(){return q('#gachaTabs [data-gacha-tab].on')?.dataset.gachaTab||'horse'}
+ function slotsByRare(rare){const t=String(rare||'').toUpperCase();return t==='SPECIAL ART'?4:t==='SPECIAL RARE'?3:t==='UR'?2:1}
+ function nextNeed(r){const d=dupeCount(r),lb=Number(primary(r)?.limitBreak||0);if(lb>=10)return 'LB MAX'; return d>=1?'今すぐ突破可':'重複あと1枚';}
+ function specialArtPartner(type){
+   const c=col();
+   const horse=Object.values(c.horse||{}).find(r=>String(r.rare||'').toUpperCase()==='SPECIAL ART'&&liveCount(r));
+   const jockey=Object.values(c.jockey||{}).find(r=>String(r.rare||'').toUpperCase()==='SPECIAL ART'&&liveCount(r));
+   if(type==='horse'&&jockey)return jockey.name;
+   if(type==='jockey'&&horse)return horse.name;
+   return horse&&jockey ? (type==='custom'||type==='support' ? `${horse.name} × ${jockey.name}` : '') : '';
+ }
+ function flavor(type,name){
+   const n=String(name||'');
+   if(type==='horse'){
+     if(/ブラック|シャドウ|ノワール|ナイト/i.test(n))return {theme:'shadow',kicker:'SHADOW BACKLIGHT / EMPEROR STEP',copy:'漆黒の残光を引きながら登場。<strong>逆光と蹄音</strong>で主役感を最大化するSPECIAL ART専用ムービー。'};
+     if(/クイーン|プリンセス|ホワイト|シルバー|ムーン/i.test(n))return {theme:'holy',kicker:'MOON HALO / WHITE SHINE',copy:'白金の光輪が広がり、気品あるシネマでカード確定へ。<strong>上質さと神秘感</strong>を強く見せる演出。'};
+     if(/ブレイズ|フレア|ファイア|サン|ブラスト/i.test(n))return {theme:'flame',kicker:'BLAZE BACKLIGHT / IMPACT RUN',copy:'燃える残光が画面を走り、着地のたびに蹄音が響く。<strong>爆発力</strong>を押し出す全画面登場。'};
+     return {theme:'royal',kicker:'ROYAL BACKLIGHT / THRONE RUN',copy:'黄金の逆光が主役を包み、最後は堂々とカード確定。<strong>高級感重視</strong>のSPECIAL ARTシネマ。'};
+   }
+   if(type==='jockey'){
+     if(/ライト|スピード|スカイ|ウィング/i.test(n))return {theme:'speed',kicker:'TRACK LIGHT / SPEED LINE',copy:'走路を切り裂く光線とともに登場。<strong>ゲート照明</strong>を軸にスピード感を高めたSPECIAL ART演出。'};
+     if(/クイーン|プリンセス|エンプレス/i.test(n))return {theme:'holy',kicker:'CROWN LIGHT / STAGE GATE',copy:'気品ある照明が勝負服を引き立て、最後は王者のようにカード確定。<strong>華やかさ重視</strong>の騎手専用ムービー。'};
+     return {theme:'royal',kicker:'GATE LIGHT / SPOT DRIVE',copy:'ゲート照明が段階的に点灯し、シルエットから全身へ。<strong>騎手の存在感</strong>を一気に押し上げる全画面演出。'};
+   }
+   if(type==='custom')return {theme:'royal',kicker:'METAL REFLECTION / EDGE SHINE',copy:'装備の輪郭へ光が走り、<strong>金属反射とエッジの輝き</strong>で希少価値を強調。SPECIAL ART装備だけの確定ムービー。'};
+   return {theme:'holy',kicker:'AURA LAYER / GOLDEN SCRIPT',copy:'黄金のオーラが積み重なり、コレクション価値を濃く見せる。<strong>サポート専用</strong>のSPECIAL ART演出。'};
+ }
+ function ensureCinemaInfo(root){
+   let box=q('.ghV39CinemaInfo',root); if(box) return box;
+   box=document.createElement('div'); box.className='ghV39CinemaInfo';
+   box.innerHTML='<div class="ghV39CinemaBadges"></div><div class="ghV39CinemaGrid"></div>';
+   q('.ghV38Subcopy',root)?.after(box); return box;
+ }
+ function injectCinema(){
+   const root=q('#ghV38Cinema'); if(!root||!root.classList.contains('on')) return;
+   const type=root.dataset.type||currentType(); const name=q('.ghV38Headline h2',root)?.textContent?.trim()||q('#reveal h2')?.textContent?.trim()||'';
+   const f=flavor(type,name); ['theme-flame','theme-shadow','theme-holy','theme-royal','theme-speed'].forEach(c=>root.classList.remove(c)); root.classList.add('theme-'+f.theme);
+   const hp=q('.ghV38Headline p',root), sub=q('.ghV38Subcopy',root); if(hp) hp.textContent=f.kicker; if(sub) sub.innerHTML=f.copy;
+   const info=ensureCinemaInfo(root), badges=q('.ghV39CinemaBadges',info), grid=q('.ghV39CinemaGrid',info);
+   const typeKey=type==='custom'||type==='support'?'equip':type; const r=recordByName(typeKey,name); const p=primary(r);
+   const partner=specialArtPartner(type);
+   const isNew=(q('#reveal')?.textContent||'').includes('NEW');
+   badges.innerHTML='';
+   const b1=document.createElement('span'); b1.className='gold'; b1.textContent='SPECIAL ART CINEMA'; badges.appendChild(b1);
+   const b2=document.createElement('span'); b2.className='aqua'; b2.textContent=isNew?'図鑑 NEW 登録':'コレクション反映'; badges.appendChild(b2);
+   if(partner){const b3=document.createElement('span'); b3.className='gold'; b3.textContent='PAIR AURA READY / '+partner; badges.appendChild(b3)}
+   grid.innerHTML='';
+   const cells=[
+     ['所持総数', r ? `${r.copies?.length||0}枚` : '初獲得候補'],
+     ['重複', r ? `${dupeCount(r)}枚` : '0枚'],
+     ['限界突破', r ? `+${Number(p?.limitBreak||0)}/10` : '+0/10'],
+     ['スキル枠', `${slotsByRare((r?.rare)||'SPECIAL ART')}枠`],
+   ];
+   cells.forEach(([a,b])=>{const d=document.createElement('div'); d.className='cell'; d.innerHTML=`<small>${esc(a)}</small><b>${esc(b)}</b>`; grid.appendChild(d)});
+ }
+ function ensureRevealInfo(){
+   const r=q('#reveal'); if(!r||!r.classList.contains('on')||q('.ghV39RevealInfo',r)) return;
+   const name=q('h2',r)?.textContent?.trim()||''; if(!name) return;
+   const type=currentType(); const typeKey=type==='custom'||type==='support'?'equip':type; const rec=recordByName(typeKey,name); const prim=primary(rec);
+   const info=document.createElement('div'); info.className='ghV39RevealInfo';
+   const row=document.createElement('div'); row.className='row';
+   const pills=[];
+   pills.push(['gold', (r.textContent||'').includes('NEW')?'図鑑 NEW':'コレクション済']);
+   pills.push(['', rec?`所持 ${rec.copies?.length||0}枚`:'初獲得']);
+   pills.push(['', rec?`重複 ${dupeCount(rec)}枚`:'重複 0枚']);
+   pills.push(['', rec?`LB +${Number(prim?.limitBreak||0)}/10`:'LB +0/10']);
+   for(const [cls,txt] of pills){const s=document.createElement('span');s.className='pill'+(cls?' '+cls:'');s.textContent=txt;row.appendChild(s)}
+   const note=document.createElement('div'); note.className='note';
+   const rare=((q('div',r)?.textContent)||'').trim(); const slots=slotsByRare(rare);
+   note.innerHTML=`次の目安： <b>${esc(nextNeed(rec))}</b> / ${esc(rare)} は <b>${slots}スキル枠</b>。SPECIAL ART は全画面シネマ、重複は限界突破と見た目進化へ接続。`;
+   info.appendChild(row); info.appendChild(note); q('.revealActions',r)?.before(info);
+ }
+ function identifyTypeByName(name){
+   const c=col();
+   if(Object.values(c.horse||{}).some(r=>r.name===name)) return 'horse';
+   if(Object.values(c.jockey||{}).some(r=>r.name===name)) return 'jockey';
+   if(Object.values(c.equip||{}).some(r=>r.name===name)) return 'equip';
+   return currentType()==='custom'||currentType()==='support'?'equip':currentType();
+ }
+ function enhanceBurst(){
+   const burst=q('#ghV28Burst'); const core=q('#ghV28BurstCore'); if(!burst||!core||!burst.classList.contains('on')||q('.ghV39LBMeta',core)) return;
+   burst.classList.add('ghV39Burst');
+   const name=q('.name',core)?.textContent?.trim()||''; const type=identifyTypeByName(name); const group=type==='equip'?'equip':type; const rec=recordByName(group,name); const p=primary(rec); const rare=rec?.rare||'SPECIAL';
+   const title=q('h2',core)?.textContent||''; const lbMatch=title.match(/\+(\d+)/); const lb=lbMatch?Number(lbMatch[1]):Number(p?.limitBreak||0); const maxOldText=q('#ghV28LevelChange .old',core)?.textContent||''; const maxNewText=q('#ghV28LevelChange .new',core)?.textContent||'';
+   const panel=document.createElement('div'); panel.className='ghV39LBMeta';
+   const evolution=lb>=10?'AURA MAX':lb>=7?'ULTRA FORM':lb>=4?'ADVANCED FORM':'BASE FORM+';
+   const rows=[['レアリティ', rare],['スキル枠', `${slotsByRare(rare)}枠`],['外観進化', evolution],['次の素材', lb>=10?'不要':(dupeCount(rec)>=1?'準備OK':'重複あと1枚')]];
+   rows.forEach(([a,b])=>{const d=document.createElement('div'); d.className='cell'; d.innerHTML=`<small>${esc(a)}</small><b>${esc(b)}</b>`; panel.appendChild(d)});
+   const lore=document.createElement('div'); lore.className='ghV39LBLore';
+   lore.innerHTML=`<b>${esc(name)}</b> の進化段階が上昇。 ${esc(maxOldText)} → ${esc(maxNewText)} へ変化し、見た目演出・育成価値・コレクション価値がさらに上がりました。`;
+   const btn=q('[data-ghv28-burst-close]',core); if(btn) btn.before(panel,lore); else core.append(panel,lore);
+ }
+ function boot(){
+   const reveal=q('#reveal'); if(reveal && !reveal.dataset.ghV39Obs){
+     reveal.dataset.ghV39Obs='1';
+     new MutationObserver(()=>setTimeout(()=>{ensureRevealInfo();injectCinema()},80)).observe(reveal,{attributes:true,attributeFilter:['class','style'],childList:true,subtree:true});
+   }
+   const cinema=q('#ghV38Cinema'); if(cinema && !cinema.dataset.ghV39Obs){
+     cinema.dataset.ghV39Obs='1';
+     new MutationObserver(()=>setTimeout(injectCinema,60)).observe(cinema,{attributes:true,attributeFilter:['class']});
+   }
+   const burst=q('#ghV28Burst'); if(burst && !burst.dataset.ghV39Obs){
+     burst.dataset.ghV39Obs='1';
+     new MutationObserver(()=>setTimeout(enhanceBurst,40)).observe(burst,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
+   }
+   document.addEventListener('click',e=>{ if(e.target.closest('[data-page],[data-gacha-tab],[data-redraw],[data-v10-custom-redraw],[data-close-reveal]')) setTimeout(()=>{ensureRevealInfo();injectCinema();enhanceBurst()},120) },true);
+ }
+ boot(); document.addEventListener('gh:v50:refresh',boot);
+ window.GH_V39_SAFE_SPECIAL_ART_EVOLUTION={build:BUILD,boot,injectCinema,ensureRevealInfo,enhanceBurst};
+ document.documentElement.dataset.ghV39='safe-special-art-evolution-r1';
+})();
+</script>
+
+
+<style id="gh-v40-safe-gacha-growth-flow-r1-style">.ghV40Flow{margin-top:10px;display:grid;gap:8px}.ghV40FlowSteps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.ghV40Step{padding:9px 6px;border-radius:13px;border:1px solid rgba(255,255,255,.1);background:rgba(4,14,23,.72);text-align:center;opacity:.6}.ghV40Step.on{opacity:1;border-color:#d5a83f;background:linear-gradient(180deg,#251c08,#07121c);box-shadow:0 0 18px rgba(255,205,78,.12)}.ghV40Step.done{opacity:.9;border-color:#4ac997;background:#06251b}.ghV40Step small{display:block;color:#86a9b8;font-size:8px;margin-bottom:3px}.ghV40Step b{font-size:11px;color:#fff1bc}.ghV40Actions{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}.ghV40Actions button{padding:10px 13px;border-radius:11px;border:1px solid #315d73;background:#071722;color:#eaf6fb;font-weight:900}.ghV40Actions button.gold{border-color:#bd9132;color:#ffe59a;background:#241a06}.ghV40Actions button:disabled{opacity:.38}.ghV40Evolution{position:absolute;right:9px;top:9px;padding:5px 8px;border-radius:999px;font-size:8px;font-weight:1000;letter-spacing:.08em;border:1px solid rgba(255,255,255,.18);background:rgba(2,8,13,.72);color:#d8edf5;z-index:5}.ghV40Evolution.e1{border-color:#6fd8ff;color:#aeeeff}.ghV40Evolution.e2{border-color:#ffd76a;color:#ffe39c;box-shadow:0 0 14px #ffd45a22}.ghV40Evolution.e3{border-color:#e08dff;color:#efbdff;box-shadow:0 0 18px #c86fff33}.ghV40Evolution.e4{border-color:#fff2b2;color:#fff6d8;box-shadow:0 0 24px #fff2b255}.ghV40Aura1{box-shadow:0 0 14px rgba(106,220,255,.12)!important}.ghV40Aura2{box-shadow:0 0 20px rgba(255,211,90,.2)!important}.ghV40Aura3{box-shadow:0 0 24px rgba(204,112,255,.26)!important}.ghV40Aura4{box-shadow:0 0 32px rgba(255,239,175,.34)!important}#ghV40PairAura{margin:8px 12px;padding:10px 12px;border-radius:13px;border:1px solid #cf9f36;background:radial-gradient(circle at 50% 0,#3a2a09,#07131c 70%);color:#eaf8ff;font-size:9px;line-height:1.55}#ghV40PairAura b{color:#ffe49b}@media(max-width:540px){.ghV40FlowSteps{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>
+<script defer id="gh-v40-safe-gacha-growth-flow-r1">
+(()=>{'use strict';
+ if(window.GH_V40_SAFE_GACHA_GROWTH_FLOW)return;
+ const BUILD='V40-SAFE-GACHA-GROWTH-FLOW-R1';
+ const q=(s,p=document)=>p.querySelector(s), qa=(s,p=document)=>Array.from(p.querySelectorAll(s));
+ const esc=s=>String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+ function c(){try{return window.GH_MASTER_V9_SAFE?.collection?.()||{horse:{},jockey:{},equip:{}}}catch(_){return {horse:{},jockey:{},equip:{}}}}
+ function currentType(){return q('#gachaTabs [data-gacha-tab].on')?.dataset.gachaTab||'horse'}
+ function typeKey(t){return t==='custom'||t==='support'?'equip':t}
+ function record(t,name){return Object.values(c()?.[typeKey(t)]||{}).find(r=>String(r?.name||'')===String(name||''))||null}
+ function primary(r){return (r?.copies||[]).find(x=>!x.used)||r?.copies?.[0]||null}
+ function live(r){return (r?.copies||[]).filter(x=>!x.used).length}
+ function dupes(r){return Math.max(0,live(r)-1)}
+ function evo(lb){lb=Number(lb||0);return lb>=10?4:lb>=7?3:lb>=4?2:lb>=1?1:0}
+ function evoLabel(lb){return ['BASE','FORM I','FORM II','FORM III','AURA MAX'][evo(lb)]}
+ function ensureRevealFlow(){
+   const reveal=q('#reveal'); if(!reveal||!reveal.classList.contains('on')||q('.ghV40Flow',reveal))return;
+   const name=q('h2',reveal)?.textContent?.trim()||''; if(!name)return; const t=currentType(), r=record(t,name), p=primary(r), d=dupes(r), lb=Number(p?.limitBreak||0);
+   const box=document.createElement('div');box.className='ghV40Flow';
+   const isNew=(reveal.textContent||'').includes('NEW'); const steps=[
+     ['① 獲得',isNew?'NEW登録':'所持更新',true],
+     ['② 図鑑',r?'反映済み':'同期待ち',!!r],
+     ['③ 重複',d?`${d}枚`:'なし',d>0],
+     ['④ 限界突破',lb>=10?'MAX':d>0?'実行可能':`LB+${lb}`,lb>=10||d>0]
+   ];
+   box.innerHTML='<div class="ghV40FlowSteps">'+steps.map((s,i)=>`<div class="ghV40Step ${s[2]?'done':i===0?'on':''}"><small>${esc(s[0])}</small><b>${esc(s[1])}</b></div>`).join('')+'</div><div class="ghV40Actions"><button data-v40-dex>図鑑を見る</button><button class="gold" data-v40-lb '+(d>0&&lb<10?'':'disabled')+'>重複・限界突破へ</button></div>';
+   q('.revealActions',reveal)?.before(box);
+   q('[data-v40-dex]',box)?.addEventListener('click',()=>{reveal.classList.remove('on');window.__gh2330RescuePage?.('rarityDexSafe');setTimeout(()=>document.querySelector('[data-page="rarityDexSafe"]')?.click(),20)});
+   q('[data-v40-lb]',box)?.addEventListener('click',()=>{reveal.classList.remove('on');window.__gh2330RescuePage?.('limitBreakCenterSafe');setTimeout(()=>{document.querySelector('[data-page="limitBreakCenterSafe"]')?.click();window.GH_V23_SERVER_LIMITBREAK_CENTER?.sync?.(false)},20)});
+ }
+ function decorateEvolution(){
+   const maps=[['horse','.ghV9CollectionCard'],['jockey','.ghV9CollectionCard']];
+   qa('.ghV9CollectionCard').forEach(card=>{
+     const name=q('.title b',card)?.textContent?.trim()||''; if(!name)return;
+     let r=record('horse',name)||record('jockey',name)||record('equip',name); if(!r)return; const lb=Number(primary(r)?.limitBreak||0),level=evo(lb);
+     card.classList.remove('ghV40Aura1','ghV40Aura2','ghV40Aura3','ghV40Aura4'); if(level)card.classList.add('ghV40Aura'+level);
+     let b=q('.ghV40Evolution',card); if(!b){b=document.createElement('span');b.className='ghV40Evolution';card.style.position='relative';card.appendChild(b)}
+     b.className='ghV40Evolution e'+level;b.textContent=evoLabel(lb);
+   });
+ }
+ function pairAura(){
+   let host=q('#ghV40PairAura'); if(!host){host=document.createElement('div');host.id='ghV40PairAura';const a=q('#ghV36GoldRule')||q('#ghV33HomeBonus')||q('#home .raceInfo');a?.insertAdjacentElement('afterend',host)}
+   const cc=c(), h=Object.values(cc.horse||{}).find(r=>String(r.rare||'').toUpperCase()==='SPECIAL ART'&&live(r)), j=Object.values(cc.jockey||{}).find(r=>String(r.rare||'').toUpperCase()==='SPECIAL ART'&&live(r));
+   if(!host)return; if(h&&j){host.style.display='block';host.innerHTML=`<b>SPECIAL ART PAIR AURA</b><br>${esc(h.name)} × ${esc(j.name)} が成立。人馬ペア専用オーラ・専用カメラ演出候補として解放。`}else{host.style.display='none'}
+ }
+ function enhanceBurst(){
+   const core=q('#ghV28BurstCore'); if(!core||!q('#ghV28Burst')?.classList.contains('on'))return; const name=q('.name',core)?.textContent?.trim()||''; if(!name)return;
+   const r=record('horse',name)||record('jockey',name)||record('equip',name); const lb=Number(primary(r)?.limitBreak||0); const lore=q('.ghV39LBLore',core); if(lore&&!lore.dataset.v40){lore.dataset.v40='1';lore.innerHTML+=`<br><b>見た目進化：</b> ${esc(evoLabel(lb))}。LB+4 / +7 / +10でカード枠・オーラを段階強化。`}
+ }
+ function boot(){ensureRevealFlow();decorateEvolution();pairAura();enhanceBurst()}
+ let timer=0;const schedule=(delay=120)=>{clearTimeout(timer);timer=setTimeout(boot,delay)};
+ document.addEventListener('click',e=>{
+   const t=e.target.closest('[data-page],[data-gacha-tab],#drawBtn,[data-redraw],[data-v10-custom-redraw],[data-ghv23-lb],[data-ghv28-confirm],[data-ghv28-burst-close]');
+   if(!t)return;
+   const isDraw=!!t.closest?.('#drawBtn,[data-redraw],[data-v10-custom-redraw]');
+   schedule(isDraw?1650:140);
+   if(isDraw)setTimeout(()=>schedule(80),2350);
+ },true);
+ document.addEventListener('gh:v50:refresh',()=>schedule(80));
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule(120)});
+ setTimeout(boot,900);
+ window.GH_V40_SAFE_GACHA_GROWTH_FLOW={build:BUILD,boot,schedule}; document.documentElement.dataset.ghV40='safe-gacha-growth-flow-r1';
+})();
+</script>
+
+
+<style id="gh-v41-safe-jp-evolution-clarity-r1-style">#ghV41EvolutionGuide{margin:10px 12px;padding:12px;border-radius:16px;border:1px solid #c89a34;background:linear-gradient(180deg,#1b1406,#06111a);color:#d9f3ff;box-shadow:0 14px 36px #0007}#ghV41EvolutionGuide h3{margin:0 0 6px;color:#ffe6a4;font-size:15px}#ghV41EvolutionGuide p{margin:0;color:#9ec2d1;font-size:9px;line-height:1.7}.ghV41Stages{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.ghV41Stage{padding:8px 5px;border-radius:11px;border:1px solid #ffffff12;background:#031019;text-align:center}.ghV41Stage small{display:block;color:#7595a4;font-size:7px}.ghV41Stage b{display:block;color:#e9f8ff;font-size:9px;margin-top:3px}.ghV41Stage.s1{border-color:#69dfff66}.ghV41Stage.s1 b{color:#b9f4ff}.ghV41Stage.s2{border-color:#ffd76188}.ghV41Stage.s2 b{color:#ffe7a1}.ghV41Stage.s3{border-color:#d98cff88}.ghV41Stage.s3 b{color:#efc6ff}.ghV41Stage.s4{border-color:#fff3b5aa;box-shadow:0 0 22px #fff0a825}.ghV41Stage.s4 b{color:#fff6d3}.ghV41Evo1{position:relative;box-shadow:0 0 18px #6edfff22,inset 0 0 0 1px #6edfff18!important}.ghV41Evo2{position:relative;box-shadow:0 0 26px #ffd45a30,inset 0 0 0 1px #ffd45a2c!important}.ghV41Evo3{position:relative;box-shadow:0 0 34px #d06eff44,inset 0 0 0 1px #d06eff3b!important}.ghV41Evo4{position:relative;box-shadow:0 0 46px #fff1a968,0 0 84px #ffd95a28,inset 0 0 0 1px #fff5cf55!important;animation:ghV41MaxPulse 2.2s ease-in-out infinite}.ghV41Evo1:before,.ghV41Evo2:before,.ghV41Evo3:before,.ghV41Evo4:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1}.ghV41Evo1:before{background:linear-gradient(120deg,transparent 60%,#77e5ff18)}.ghV41Evo2:before{background:linear-gradient(120deg,transparent 52%,#ffd45a24)}.ghV41Evo3:before{background:radial-gradient(circle at 85% 15%,#d575ff36,transparent 28%),linear-gradient(120deg,transparent 48%,#d575ff20)}.ghV41Evo4:before{background:radial-gradient(circle at 50% 0,#fff6c24c,transparent 34%),linear-gradient(120deg,transparent 40%,#fff2ab2e)}@keyframes ghV41MaxPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.11)}}#ghV38Cinema.ghV41CinemaEvo1 .ghV38Frame{box-shadow:0 0 48px #6fe4ff33!important}#ghV38Cinema.ghV41CinemaEvo2 .ghV38Frame{box-shadow:0 0 64px #ffd65a55!important}#ghV38Cinema.ghV41CinemaEvo3 .ghV38Frame{box-shadow:0 0 78px #d37aff66,0 0 120px #8e4bff22!important}#ghV38Cinema.ghV41CinemaEvo4 .ghV38Frame{box-shadow:0 0 85px #fff4bdcc,0 0 150px #ffd75a55!important;animation:ghV41MaxFrame 1.8s ease-in-out infinite}@keyframes ghV41MaxFrame{0%,100%{transform:scale(1)}50%{transform:scale(1.018)}}.ghV41CinemaStage{display:inline-flex;margin:8px auto 0;padding:6px 10px;border-radius:999px;border:1px solid #ffffff20;background:#061520;color:#dff7ff;font-size:9px;font-weight:1000;letter-spacing:.08em}.ghV41CinemaStage.max{border-color:#fff0a8;color:#fff4c5;background:#3a2b08;box-shadow:0 0 18px #ffe17030}.ghV41Label{display:inline-flex;align-items:center;gap:4px;margin-left:5px;padding:3px 6px;border-radius:999px;border:1px solid #ffffff16;background:#04111a;color:#b9dce8;font-size:7px;font-weight:1000}.ghV41Label.max{border-color:#ffe79a;color:#fff1b8;background:#392907}@media(max-width:540px){.ghV41Stages{grid-template-columns:repeat(2,1fr)}}</style>
+<script defer id="gh-v41-safe-jp-evolution-clarity-r1">
+(()=>{'use strict';
+ if(window.GH_V41_SAFE_JP_EVOLUTION)return;
+ const BUILD='V41-SAFE-JP-EVOLUTION-CLARITY-R1';
+ const q=(s,p=document)=>p.querySelector(s),qa=(s,p=document)=>Array.from(p.querySelectorAll(s));
+ function collection(){try{return window.GH_MASTER_V9_SAFE?.collection?.()||{horse:{},jockey:{},equip:{}}}catch(_){return {horse:{},jockey:{},equip:{}}}}
+ function primary(r){return (r?.copies||[]).find(x=>!x.used)||r?.copies?.[0]||null}
+ function recordByName(name){const c=collection();for(const g of ['horse','jockey','equip']){const r=Object.values(c[g]||{}).find(x=>String(x?.name||'')===String(name||''));if(r)return r}return null}
+ function stage(lb){lb=Number(lb||0);return lb>=10?4:lb>=7?3:lb>=4?2:lb>=1?1:0}
+ function stageName(lb){return ['通常','外観進化Ⅰ','外観進化Ⅱ','外観進化Ⅲ','極・AURA MAX'][stage(lb)]}
+ function stageRange(s){return s===1?'限界突破1〜3回':s===2?'限界突破4〜6回':s===3?'限界突破7〜9回':s===4?'限界突破10回':'限界突破0回'}
+ function ensureGuide(){
+   let host=q('#ghV41EvolutionGuide');if(host)return host;
+   const page=q('#limitBreakCenterSafe #ghV23LBBody')||q('#limitBreakCenterSafe');if(!page)return null;
+   host=document.createElement('div');host.id='ghV41EvolutionGuide';
+   host.innerHTML='<h3>限界突破と外観進化の意味</h3><p><b style="color:#ffe39c">自動では進みません。</b> 同じカードの重複を使い、本人が「限界突破を実行」を押した時だけ進みます。最大Lv・既存能力補正は限界突破側のルール、外観進化はその到達状況を見た目で分かるようにする演出段階です。</p><div class="ghV41Stages"><div class="ghV41Stage s1"><small>限界突破 1〜3回</small><b>外観進化Ⅰ</b></div><div class="ghV41Stage s2"><small>限界突破 4〜6回</small><b>外観進化Ⅱ</b></div><div class="ghV41Stage s3"><small>限界突破 7〜9回</small><b>外観進化Ⅲ</b></div><div class="ghV41Stage s4"><small>限界突破 10回</small><b>極・AURA MAX</b></div></div>';
+   page.prepend(host);return host;
+ }
+ function translateText(root=document.body){
+   if(!root)return;
+   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+   for(const n of nodes){
+     if(n.parentElement?.closest('script,style,textarea,input'))continue;
+     let x=n.nodeValue||'',y=x;
+     y=y.replace(/\bLB\s*MAX\b/g,'限界突破 MAX');
+     y=y.replace(/\bLB\+(\d+)(?:\/10)?/g,'限界突破 +$1/10');
+     y=y.replace(/\bLB\s*\+(\d+)(?:\/10)?/g,'限界突破 +$1/10');
+     y=y.replace(/\bFORM I\b/g,'外観進化Ⅰ').replace(/\bFORM II\b/g,'外観進化Ⅱ').replace(/\bFORM III\b/g,'外観進化Ⅲ');
+     y=y.replace(/\bBASE FORM\+?\b/g,'外観進化Ⅰ').replace(/\bADVANCED FORM\b/g,'外観進化Ⅱ').replace(/\bULTRA FORM\b/g,'外観進化Ⅲ');
+     y=y.replace(/AURA MAX/g,'極・AURA MAX');
+     if(y!==x)n.nodeValue=y;
+   }
+ }
+ function decorateCards(){
+   qa('.ghV9CollectionCard,.collectionMini,.gameCard').forEach(card=>{
+     const name=q('.title b',card)?.textContent?.trim()||q('b',card)?.textContent?.trim()||'';if(!name)return;
+     const r=recordByName(name);if(!r)return;const lb=Number(primary(r)?.limitBreak||0),s=stage(lb);
+     card.classList.remove('ghV41Evo1','ghV41Evo2','ghV41Evo3','ghV41Evo4');if(s)card.classList.add('ghV41Evo'+s);
+     let label=q('.ghV41Label',card);if(!label){label=document.createElement('span');label.className='ghV41Label';const title=q('.title',card)||q('b',card)?.parentElement;if(title)title.appendChild(label)}
+     if(label){label.className='ghV41Label'+(s===4?' max':'');label.textContent=stageName(lb)}
+     const old=q('.ghV40Evolution',card);if(old){old.textContent=stageName(lb);old.title=stageRange(s)}
+   });
+ }
+ function decorateCinema(){
+   const root=q('#ghV38Cinema');if(!root||!root.classList.contains('on'))return;
+   const name=q('.ghV38Headline h2',root)?.textContent?.trim()||'';const r=recordByName(name);const lb=Number(primary(r)?.limitBreak||0),s=stage(lb);
+   root.classList.remove('ghV41CinemaEvo1','ghV41CinemaEvo2','ghV41CinemaEvo3','ghV41CinemaEvo4');if(s)root.classList.add('ghV41CinemaEvo'+s);
+   let tag=q('.ghV41CinemaStage',root);if(!tag){tag=document.createElement('div');tag.className='ghV41CinemaStage';q('.ghV39CinemaInfo',root)?.before(tag)}
+   if(tag){tag.className='ghV41CinemaStage'+(s===4?' max':'');tag.textContent=`${stageName(lb)} / 限界突破 +${lb}/10`}
+ }
+ function decorateBurst(){
+   const core=q('#ghV28BurstCore');if(!core||!q('#ghV28Burst')?.classList.contains('on'))return;
+   const name=q('.name',core)?.textContent?.trim()||'';const r=recordByName(name);const lb=Number(primary(r)?.limitBreak||0),s=stage(lb);
+   const lore=q('.ghV39LBLore',core);if(lore&&!lore.dataset.v41){lore.dataset.v41='1';lore.innerHTML+=`<br><b>外観進化：</b> ${stageName(lb)}（${stageRange(s)}）。自動進化ではなく、今回の手動限界突破結果を見た目へ反映しています。`}
+ }
+ function replaceFlowLabels(){
+   qa('.ghV40Evolution').forEach(el=>{
+     const card=el.closest('.ghV9CollectionCard,.collectionMini,.gameCard');const name=q('.title b',card)?.textContent?.trim()||q('b',card)?.textContent?.trim()||'';const r=recordByName(name);if(r){const lb=Number(primary(r)?.limitBreak||0);el.textContent=stageName(lb)}
+   });
+ }
+ function boot(){ensureGuide();translateText(document.body);decorateCards();decorateCinema();decorateBurst();replaceFlowLabels()}
+ let queued=false,timer=0;const schedule=(delay=100)=>{clearTimeout(timer);timer=setTimeout(()=>{queued=false;boot()},delay);queued=true};
+ document.addEventListener('click',e=>{
+   const t=e.target.closest('[data-page],[data-gacha-tab],#drawBtn,[data-redraw],[data-v10-custom-redraw],[data-ghv23-lb],[data-ghv28-confirm],[data-ghv28-burst-close],[data-v40-lb]');
+   if(!t)return;const isDraw=!!t.closest?.('#drawBtn,[data-redraw],[data-v10-custom-redraw]');schedule(isDraw?1750:120);
+ },true);
+ document.addEventListener('gh:v50:refresh',()=>schedule(90));
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule(140)});
+ setTimeout(boot,700);
+ window.GH_V41_SAFE_JP_EVOLUTION={build:BUILD,boot,stage,stageName};
+ document.documentElement.dataset.ghV41='safe-jp-evolution-clarity-r1';
+})();
+</script>
+
+
+<style id="gh-v42-safe-evolution-preview-r1-style">#ghV42EvolutionPreview{margin:10px 12px;padding:13px;border-radius:17px;border:1px solid #4e8197;background:linear-gradient(180deg,#071824,#041019);color:#dff6ff;box-shadow:0 14px 38px #0007}#ghV42EvolutionPreview h3{margin:0 0 7px;color:#baf1ff;font-size:14px}.ghV42Compare{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch;margin-top:9px}.ghV42Compare .side{padding:10px;border-radius:14px;border:1px solid #ffffff12;background:#031019;text-align:center}.ghV42Compare .side.current{border-color:#68dbff55}.ghV42Compare .side.next{border-color:#ffd66677;background:linear-gradient(180deg,#1b1406,#07121b)}.ghV42Compare small{display:block;color:#7fa3b2;font-size:8px}.ghV42Compare b{display:block;margin-top:4px;color:#fff2bd;font-size:13px}.ghV42Compare .arrow{align-self:center;color:#ffe39b;font-size:22px;font-weight:1000}.ghV42MiniGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.ghV42MiniGrid div{padding:8px 5px;border-radius:10px;background:#06141d;border:1px solid #ffffff0e;text-align:center}.ghV42MiniGrid small{display:block;color:#7699a9;font-size:7px}.ghV42MiniGrid b{display:block;color:#ecfbff;font-size:10px;margin-top:3px}.ghV42Note{margin-top:8px;color:#8fb2c1;font-size:8px;line-height:1.6}.ghV42Note strong{color:#ffe39b}.ghV42PairSafety{margin:8px 12px;padding:9px 11px;border-radius:12px;border:1px solid #6a8fa0;background:#061720;color:#bfe9f7;font-size:8px;line-height:1.6}.ghV42PairSafety b{color:#ffe39a}@media(max-width:540px){.ghV42MiniGrid{grid-template-columns:repeat(2,1fr)}}</style>
+<script defer id="gh-v42-safe-evolution-preview-r1">
+(()=>{'use strict';
+ if(window.GH_V42_SAFE_EVOLUTION_PREVIEW)return;
+ const BUILD='V42-SAFE-EVOLUTION-PREVIEW-R1';
+ const q=(s,p=document)=>p.querySelector(s),qa=(s,p=document)=>Array.from(p.querySelectorAll(s));
+ function collection(){try{return window.GH_MASTER_V9_SAFE?.collection?.()||{horse:{},jockey:{},equip:{}}}catch(_){return {horse:{},jockey:{},equip:{}}}}
+ function primary(r){return (r?.copies||[]).find(x=>!x.used)||r?.copies?.[0]||null}
+ function dupes(r){return Math.max(0,(r?.copies||[]).filter(x=>!x.used).length-1)}
+ function stage(lb){lb=Number(lb||0);return lb>=10?4:lb>=7?3:lb>=4?2:lb>=1?1:0}
+ function label(lb){return ['通常','外観進化Ⅰ','外観進化Ⅱ','外観進化Ⅲ','極・AURA MAX'][stage(lb)]}
+ function nextThreshold(lb){lb=Number(lb||0);return lb>=10?10:lb<1?1:lb<4?4:lb<7?7:10}
+ function nextStage(lb){const th=nextThreshold(lb);return lb>=10?'MAX':label(th)}
+ function findRecord(name){const c=collection();for(const g of ['horse','jockey','equip']){const r=Object.values(c[g]||{}).find(x=>String(x?.name||'')===String(name||''));if(r)return r}return null}
+ function maxLevel(r,p){try{return typeof currentCap==='function'?currentCap(r,p):Number(p?.level||1)}catch(_){return Number(p?.level||1)}}
+ function targetMax(r,p){const now=maxLevel(r,p);return Number(p?.limitBreak||0)>=10?now:now+1}
+ function selectedName(){
+   const btn=q('#limitBreakCenterSafe [data-ghv23-lb]:not([disabled]),#limitBreakCenterSafe [data-key].selected');
+   const card=btn?.closest('.ghV23LBCard,.ghV23LBItem,.ghV23Card');
+   return q('.ghV23LBHead b',card)?.textContent?.split('/')[0]?.trim()||q('.ghV23LBHead b')?.textContent?.split('/')[0]?.trim()||'';
+ }
+ function activeCandidate(){
+   const cards=qa('#limitBreakCenterSafe [data-ghv23-lb]');
+   const enabled=cards.find(b=>!b.disabled)||cards[0];
+   const card=enabled?.closest('.ghV23LBCard,.ghV23LBItem,.ghV23Card')||enabled?.parentElement?.parentElement;
+   const name=q('.ghV23LBHead b',card)?.textContent?.split('/')[0]?.trim()||'';
+   return {name,button:enabled,card};
+ }
+ function renderPreview(){
+   const page=q('#limitBreakCenterSafe #ghV23LBBody');if(!page)return;
+   let host=q('#ghV42EvolutionPreview');if(!host){host=document.createElement('div');host.id='ghV42EvolutionPreview';const guide=q('#ghV41EvolutionGuide');guide?.after(host)}
+   const a=activeCandidate();const r=findRecord(a.name);const p=primary(r);if(!r||!p){host.innerHTML='<h3>次の外観進化プレビュー</h3><div class="ghV42Note">限界突破できるカードを選ぶと、現在→次の外観進化をここに表示します。</div>';return}
+   const lb=Number(p.limitBreak||0),th=nextThreshold(lb),remain=Math.max(0,th-lb),d=dupes(r),cur=label(lb),nxt=lb>=10?'極・AURA MAX':label(th),oldMax=maxLevel(r,p),newMax=targetMax(r,p);
+   host.innerHTML=`<h3>${r.name} / 進化プレビュー</h3><div class="ghV42Compare"><div class="side current"><small>現在</small><b>${cur}</b></div><div class="arrow">→</div><div class="side next"><small>次の外観段階</small><b>${nxt}</b></div></div><div class="ghV42MiniGrid"><div><small>現在の限界突破</small><b>+${lb}/10</b></div><div><small>次段階まで</small><b>${lb>=10?'到達済み':`あと${remain}回`}</b></div><div><small>今回の最大Lv</small><b>${oldMax} → ${newMax}</b></div><div><small>未使用重複</small><b>${d}枚</b></div></div><div class="ghV42Note"><strong>自動では実行しません。</strong> 下の「限界突破を実行」を本人が押し、サーバー処理が成功した時だけ最大Lvと外観段階が更新されます。SPECIAL ARTは段階が上がるほどカード枠・オーラ・全画面シネマの光量を強化します。</div>`;
+ }
+ function pairSafety(){
+   const p=q('#ghV40PairAura');if(!p)return;let n=q('#ghV42PairSafety');if(!n){n=document.createElement('div');n.id='ghV42PairSafety';n.className='ghV42PairSafety';p.after(n)}
+   n.innerHTML='<b>PAIR AURAについて：</b> 現在はSPECIAL ART馬×騎手をそろえた時の専用演出・専用カメラ解放表示です。これだけで勝敗・着順・オッズを勝手に変更しません。能力やオッズへ反映する場合は、既存のサーバー能力計算ルールに明示的に接続した時だけ有効にします。';
+ }
+ function markLimitButtons(){
+   qa('#limitBreakCenterSafe [data-ghv23-lb]').forEach(btn=>{if(btn.dataset.v42)return;btn.dataset.v42='1';btn.addEventListener('click',()=>setTimeout(renderPreview,80),true)});
+ }
+ function boot(){renderPreview();pairSafety();markLimitButtons()}
+ let queued=false,timer=0;const schedule=(delay=100)=>{clearTimeout(timer);timer=setTimeout(()=>{queued=false;boot()},delay);queued=true};
+ document.addEventListener('click',e=>{if(e.target.closest('[data-page="limitBreakCenterSafe"],[data-ghv23-lb],[data-ghv28-confirm],[data-ghv28-burst-close],[data-v40-lb]'))schedule(110)},true);
+ document.addEventListener('gh:v50:limitbreak-refresh',()=>schedule(80));
+ document.addEventListener('gh:v50:refresh',()=>{if(q('#limitBreakCenterSafe')?.classList.contains('on'))schedule(100)});
+ setTimeout(boot,800);
+ window.GH_V42_SAFE_EVOLUTION_PREVIEW={build:BUILD,boot,renderPreview};document.documentElement.dataset.ghV42='safe-evolution-preview-r1';
+})();
+</script>
+
+
+<style id="gh-v43-safe-visual-evolution-r1-style">.ghV43EvoArt{position:relative;overflow:hidden;isolation:isolate}.ghV43EvoArt:after{content:"";position:absolute;inset:-24%;pointer-events:none;z-index:4;opacity:0;transition:.25s ease}.ghV43EvoArt .miniArt,.ghV43EvoArt::before{transition:filter .25s ease,transform .25s ease}.ghV43HorseE1 .miniArt{filter:saturate(1.12) contrast(1.05) brightness(1.03)}.ghV43HorseE2 .miniArt{filter:saturate(1.18) contrast(1.08) brightness(1.07)}.ghV43HorseE3 .miniArt{filter:saturate(1.25) contrast(1.10) brightness(1.10)}.ghV43HorseE4 .miniArt{filter:saturate(1.32) contrast(1.12) brightness(1.14)}.ghV43HorseE1:after{opacity:.35;background:radial-gradient(circle at 52% 82%,#6de6ff3f 0 3%,transparent 23%)}.ghV43HorseE2:after{opacity:.55;background:radial-gradient(circle at 50% 78%,#ffd85a44 0 4%,transparent 24%),linear-gradient(110deg,transparent 40%,#fff4ad22 52%,transparent 64%);animation:ghV43Sweep 4.8s ease-in-out infinite}.ghV43HorseE3:after{opacity:.7;background:radial-gradient(circle at 50% 76%,#d477ff50 0 5%,transparent 28%),repeating-conic-gradient(from 0deg,transparent 0 22deg,#d477ff18 23deg 24deg,transparent 25deg 48deg);animation:ghV43Spin 12s linear infinite}.ghV43HorseE4:after{opacity:.85;background:radial-gradient(circle at 50% 70%,#fff4b866 0 5%,transparent 30%),repeating-conic-gradient(from 0deg,transparent 0 16deg,#fff1a52d 17deg 18deg,transparent 19deg 36deg);animation:ghV43Spin 7s linear infinite}.ghV43JockeyE1:after{opacity:.30;background:linear-gradient(100deg,transparent 10%,#6fe9ff22 28%,transparent 46%)}.ghV43JockeyE2:after{opacity:.55;background:repeating-linear-gradient(100deg,transparent 0 14%,#6de8ff25 15% 16%,transparent 17% 28%);animation:ghV43GateFlow 4.6s linear infinite}.ghV43JockeyE3:after{opacity:.72;background:repeating-linear-gradient(100deg,transparent 0 10%,#d788ff2f 11% 12%,transparent 13% 22%);animation:ghV43GateFlow 3.5s linear infinite}.ghV43JockeyE4:after{opacity:.9;background:repeating-linear-gradient(100deg,transparent 0 8%,#fff0a338 9% 10%,transparent 11% 19%);animation:ghV43GateFlow 2.8s linear infinite}.ghV43EquipE1:after{opacity:.32;background:linear-gradient(118deg,transparent 30%,#d8f7ff30 45%,transparent 60%)}.ghV43EquipE2:after{opacity:.56;background:linear-gradient(118deg,transparent 28%,#fff4bd48 44%,transparent 61%);animation:ghV43Metal 3.8s ease-in-out infinite}.ghV43EquipE3:after{opacity:.72;background:linear-gradient(118deg,transparent 24%,#e39aff55 43%,transparent 62%);animation:ghV43Metal 3s ease-in-out infinite}.ghV43EquipE4:after{opacity:.88;background:linear-gradient(118deg,transparent 20%,#fff9d866 41%,#fff0a844 48%,transparent 66%);animation:ghV43Metal 2.3s ease-in-out infinite}.ghV43EvoCrest{position:absolute;left:8px;bottom:8px;z-index:7;display:flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;border:1px solid #ffffff17;background:#02080dcc;backdrop-filter:blur(6px);font-size:7px;font-weight:1000;letter-spacing:.06em;color:#dff5ff}.ghV43EvoCrest i{width:7px;height:7px;border-radius:50%;box-shadow:0 0 10px currentColor;background:currentColor}.ghV43EvoCrest.s1{color:#8eeaff;border-color:#70e3ff55}.ghV43EvoCrest.s2{color:#ffe18d;border-color:#ffd15e66}.ghV43EvoCrest.s3{color:#e8a8ff;border-color:#d778ff77}.ghV43EvoCrest.s4{color:#fff4c4;border-color:#fff0ac99;box-shadow:0 0 18px #ffe07025}.ghV43StageRibbon{display:inline-flex;margin-left:6px;padding:3px 6px;border-radius:999px;border:1px solid #ffffff17;background:#04111a;color:#c5e9f4;font-size:7px;font-weight:1000}.ghV43StageRibbon.s4{border-color:#ffe49a;color:#fff0b2;background:#3c2b08;box-shadow:0 0 15px #ffd95a28}#ghV38Cinema.ghV43Stage1 .ghV38Particles{opacity:.55}#ghV38Cinema.ghV43Stage2 .ghV38Particles{opacity:.75}#ghV38Cinema.ghV43Stage2 .ghV38Beams{filter:saturate(1.15) brightness(1.12)}#ghV38Cinema.ghV43Stage3 .ghV38Particles{opacity:.92}#ghV38Cinema.ghV43Stage3 .ghV38Beams{filter:saturate(1.25) brightness(1.22)}#ghV38Cinema.ghV43Stage3 .ghV38Back{animation:ghV43CinemaBreath 2.2s ease-in-out infinite}#ghV38Cinema.ghV43Stage4 .ghV38Particles{opacity:1}#ghV38Cinema.ghV43Stage4 .ghV38Beams{filter:saturate(1.35) brightness(1.32)}#ghV38Cinema.ghV43Stage4 .ghV38Back{animation:ghV43CinemaBreath 1.45s ease-in-out infinite}#ghV38Cinema.ghV43Stage4 .ghV38Tag{box-shadow:0 0 26px #fff0a955,0 0 55px #ffd65a22}.ghV43CinemaCrown{display:none;margin:6px auto 0;width:max-content;padding:5px 9px;border-radius:999px;border:1px solid #fff0ac8a;background:#3b2a08;color:#fff3c0;font-size:8px;font-weight:1000;letter-spacing:.12em;box-shadow:0 0 18px #ffd96628}#ghV38Cinema.ghV43Stage4 .ghV43CinemaCrown{display:block}@keyframes ghV43Sweep{0%,25%{transform:translateX(-40%) rotate(0)}70%,100%{transform:translateX(40%) rotate(0)}}@keyframes ghV43Spin{to{transform:rotate(360deg)}}@keyframes ghV43GateFlow{from{transform:translateX(-20%)}to{transform:translateX(20%)}}@keyframes ghV43Metal{0%,20%{transform:translateX(-40%)}70%,100%{transform:translateX(40%)}}@keyframes ghV43CinemaBreath{0%,100%{filter:brightness(1)}50%{filter:brightness(1.13)}}@media(max-width:540px){.ghV43EvoCrest{font-size:6px;padding:3px 5px}}</style>
+<script defer id="gh-v43-safe-visual-evolution-r1">
+(()=>{'use strict';
+ if(window.GH_V43_SAFE_VISUAL_EVOLUTION)return;
+ const BUILD='V43-SAFE-VISUAL-EVOLUTION-R1';
+ const q=(s,p=document)=>p.querySelector(s),qa=(s,p=document)=>Array.from(p.querySelectorAll(s));
+ function coll(){try{return window.GH_MASTER_V9_SAFE?.collection?.()||{horse:{},jockey:{},equip:{}}}catch(_){return {horse:{},jockey:{},equip:{}}}}
+ function primary(r){return (r?.copies||[]).find(x=>!x.used)||r?.copies?.[0]||null}
+ function stage(lb){lb=Number(lb||0);return lb>=10?4:lb>=7?3:lb>=4?2:lb>=1?1:0}
+ function label(s){return ['通常','外観進化Ⅰ','外観進化Ⅱ','外観進化Ⅲ','極・AURA MAX'][s]||'通常'}
+ function findRecord(name){const c=coll();for(const [type,g] of Object.entries(c)){for(const r of Object.values(g||{}))if(String(r?.name||'')===String(name||''))return {type:type==='equip'?'equip':type,r}}return null}
+ function typeClass(type,s){return type==='horse'?`ghV43HorseE${s}`:type==='jockey'?`ghV43JockeyE${s}`:`ghV43EquipE${s}`}
+ function nameFromCard(card){return q('.title b',card)?.textContent?.trim()||q('.miniName',card)?.textContent?.trim()||q('b',card)?.textContent?.trim()||''}
+ function decorateCard(card){
+   const name=nameFromCard(card); if(!name||name==='？？？')return;
+   const hit=findRecord(name); if(!hit)return; const lb=Number(primary(hit.r)?.limitBreak||0),s=stage(lb);
+   card.classList.add('ghV43EvoArt');
+   for(let i=1;i<=4;i++){card.classList.remove(`ghV43HorseE${i}`,`ghV43JockeyE${i}`,`ghV43EquipE${i}`)}
+   if(s)card.classList.add(typeClass(hit.type,s));
+   let badge=q('.ghV43EvoCrest',card); if(!badge){badge=document.createElement('span');badge.className='ghV43EvoCrest';badge.innerHTML='<i></i><span></span>';card.appendChild(badge)}
+   badge.style.display=s?'flex':'none'; if(s){badge.className='ghV43EvoCrest s'+s;q('span',badge).textContent=`${label(s)} / 限界突破 +${lb}`}
+ }
+ function decorateDetails(){
+   qa('.ghV9CollectionCard').forEach(card=>{
+     const name=nameFromCard(card),hit=findRecord(name);if(!hit)return;const lb=Number(primary(hit.r)?.limitBreak||0),s=stage(lb);
+     let r=q('.ghV43StageRibbon',card);if(!r){r=document.createElement('span');r.className='ghV43StageRibbon';q('.title',card)?.appendChild(r)}
+     if(r){r.className='ghV43StageRibbon'+(s===4?' s4':'');r.textContent=`${label(s)} / 限界突破 +${lb}/10`}
+   })
+ }
+ function decorateCinema(){
+   const root=q('#ghV38Cinema');if(!root||!root.classList.contains('on'))return;
+   for(let i=1;i<=4;i++)root.classList.remove('ghV43Stage'+i);
+   const name=q('.ghV38Headline h2',root)?.textContent?.trim()||'';const hit=findRecord(name);const lb=Number(primary(hit?.r)?.limitBreak||0),s=stage(lb);
+   if(s)root.classList.add('ghV43Stage'+s);
+   let crown=q('.ghV43CinemaCrown',root);if(!crown){crown=document.createElement('div');crown.className='ghV43CinemaCrown';crown.textContent='極・AURA MAX / CINEMA OVERDRIVE';q('.ghV38Headline',root)?.appendChild(crown)}
+ }
+ function refresh(){qa('.gameCard,.collectionMini,.ghV9CollectionCard').forEach(decorateCard);decorateDetails();decorateCinema()}
+ let timer=0;function schedule(delay=120){clearTimeout(timer);timer=setTimeout(refresh,delay)}
+ function boot(){
+   refresh();
+   document.addEventListener('click',e=>{
+     const t=e.target.closest('[data-page],[data-gacha-tab],[data-card],[data-v9safe-detail],#drawBtn,[data-ghv28-burst-close],[data-redraw],[data-v10-custom-redraw],[data-v44-cinema]');
+     if(!t)return;const isDraw=!!t.closest?.('#drawBtn,[data-redraw],[data-v10-custom-redraw]');schedule(isDraw?1700:120);
+     if(isDraw)setTimeout(()=>schedule(50),2450);
+   },true);
+   document.addEventListener('gh:v50:cinema-refresh',()=>schedule(60));
+   document.addEventListener('gh:v50:refresh',()=>schedule(90));
+ }
+ boot();
+ window.GH_V43_SAFE_VISUAL_EVOLUTION={build:BUILD,refresh};
+ document.documentElement.dataset.ghV43='safe-visual-evolution-r1';
+})();
+</script>
+
+
+<style id="gh-v44-safe-evolution-gallery-r1-style">#evolutionGallerySafe{background:radial-gradient(circle at 50% 0,#142c39 0,#061019 35%,#020609 100%)}#ghV44GalleryBody{padding:10px 12px 26px}.ghV44Hero{padding:14px;border-radius:18px;border:1px solid #9a792d;background:linear-gradient(180deg,#181205,#06131b);box-shadow:0 16px 44px #0008}.ghV44Hero h2{margin:5px 0;color:#ffe9aa;font-size:20px}.ghV44Hero p{margin:0;color:#93b8c6;font-size:9px;line-height:1.7}.ghV44Filters{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.ghV44Filters button{padding:8px 11px;border-radius:999px;border:1px solid #315e75;background:#061722;color:#dff5ff;font-weight:900;font-size:9px}.ghV44Filters button.on{border-color:#d0a13b;background:#2b1f07;color:#ffe59d}.ghV44Grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.ghV44Card{position:relative;overflow:hidden;border-radius:18px;border:1px solid #ffffff13;background:linear-gradient(180deg,#071824,#031019);box-shadow:0 14px 30px #0007}.ghV44Art{height:160px;background-position:center;background-size:cover;position:relative}.ghV44Art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,#031019 100%)}.ghV44Info{padding:10px}.ghV44Info h3{margin:0;color:#eefbff;font-size:13px}.ghV44Meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.ghV44Pill{padding:5px 7px;border-radius:999px;border:1px solid #ffffff12;background:#07141d;color:#b8dbe8;font-size:7px;font-weight:1000}.ghV44Pill.gold{border-color:#ffd35f66;color:#ffe39c;background:#241906}.ghV44Pill.max{border-color:#fff0a99c;color:#fff5d3;background:#3c2b08;box-shadow:0 0 15px #ffe07125}.ghV44Progress{margin-top:8px;height:7px;border-radius:999px;background:#02070b;overflow:hidden;border:1px solid #ffffff0a}.ghV44Progress i{display:block;height:100%;background:linear-gradient(90deg,#65e6ff,#ffd65f);box-shadow:0 0 13px #ffd85a55}.ghV44Next{margin-top:7px;color:#86aab8;font-size:8px;line-height:1.55}.ghV44Next b{color:#ffe29b}.ghV44Actions{display:flex;gap:6px;margin-top:9px}.ghV44Actions button{flex:1;padding:9px 7px;border-radius:10px;border:1px solid #2f6177;background:#061824;color:#e9f8ff;font-weight:900;font-size:8px}.ghV44Actions button.gold{border-color:#b88d30;background:#261b06;color:#ffe29a}.ghV44Empty{margin-top:10px;padding:18px;border-radius:15px;border:1px solid #ffffff12;background:#06131b;color:#8eafbc;text-align:center;font-size:9px;line-height:1.7}#ghV44HomeBadge{margin:8px 12px;padding:9px 11px;border-radius:12px;border:1px solid #9b762b;background:linear-gradient(180deg,#181205,#06131b);font-size:8px;color:#badce7;line-height:1.55}#ghV44HomeBadge b{color:#ffe39b}@media(max-width:540px){.ghV44Grid{grid-template-columns:1fr}.ghV44Art{height:190px}}</style>
+<script defer id="gh-v44-safe-evolution-gallery-r1">
+(()=>{'use strict';
+ if(window.GH_V44_SAFE_EVOLUTION_GALLERY)return;
+ const BUILD='V44-SAFE-EVOLUTION-GALLERY-R1';
+ const q=(s,p=document)=>p.querySelector(s),qa=(s,p=document)=>Array.from(p.querySelectorAll(s));
+ const esc=s=>String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+ let filter='all';
+ function coll(){try{return window.GH_MASTER_V9_SAFE?.collection?.()||{horse:{},jockey:{},equip:{}}}catch(_){return {horse:{},jockey:{},equip:{}}}}
+ function primary(r){return (r?.copies||[]).find(x=>!x.used)||r?.copies?.[0]||null}
+ function stage(lb){lb=Number(lb||0);return lb>=10?4:lb>=7?3:lb>=4?2:lb>=1?1:0}
+ function label(s){return ['通常','外観進化Ⅰ','外観進化Ⅱ','外観進化Ⅲ','極・AURA MAX'][s]||'通常'}
+ function stageRange(s){return ['0回','1〜3回','4〜6回','7〜9回','10回'][s]||'0回'}
+ function nextNeed(lb){lb=Number(lb||0);if(lb>=10)return '外観進化は最高段階';const t=lb<1?1:lb<4?4:lb<7?7:10;return `次段階まであと ${Math.max(0,t-lb)}回`}
+ function live(r){return (r?.copies||[]).filter(x=>!x.used).length}
+ function dupes(r){return Math.max(0,live(r)-1)}
+ function art(r){return r?.art||''}
+ function entries(){const c=coll(),arr=[];for(const [type,g] of Object.entries(c))for(const r of Object.values(g||{})){if(!r?.copies?.length)continue;arr.push({type,r})}return arr}
+ function ensurePage(){
+   const app=q('.app');if(!app)return null;let p=q('#evolutionGallerySafe');
+   if(!p){p=document.createElement('section');p.id='evolutionGallerySafe';p.className='screen subpage';p.innerHTML='<div class="header"><button class="back" data-page="home">← 戻る</button><h1>進化ギャラリー</h1></div><div id="ghV44GalleryBody"></div>';app.appendChild(p)}
+   const menu=q('#home .menu');if(menu&&!q('[data-page="evolutionGallerySafe"]',menu)){const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page='evolutionGallerySafe';b.innerHTML='<span class="ico">✦</span>進化ギャラリー';menu.appendChild(b)}
+   return p;
+ }
+ function ensureHome(){let x=q('#ghV44HomeBadge');if(!x){x=document.createElement('div');x.id='ghV44HomeBadge';const a=q('#ghV36GoldRule')||q('#ghV33HomeBonus')||q('#home .menu');a?.insertAdjacentElement('afterend',x)}return x}
+ function renderHome(){const all=entries(),max=all.filter(x=>stage(Number(primary(x.r)?.limitBreak||0))===4).length,sa=all.filter(x=>String(x.r.rare||'').toUpperCase()==='SPECIAL ART').length;const h=ensureHome();if(h)h.innerHTML=`進化ギャラリー：所持 <b>${all.length}</b>種 / SPECIAL ART <b>${sa}</b>種 / 極・AURA MAX <b>${max}</b>種。カードの進化状況と次に必要な重複をまとめて確認できます。`}
+ function render(){
+   ensurePage();const body=q('#ghV44GalleryBody');if(!body)return;const all=entries();const list=all.filter(x=>filter==='all'||x.type===filter||filter==='special'&&String(x.r.rare||'').toUpperCase()==='SPECIAL ART');
+   body.innerHTML=`<div class="ghV44Hero"><small style="color:#65e7ff;font-weight:1000;letter-spacing:.12em">COLLECTION / EVOLUTION SHOWCASE</small><h2>育てた見た目を一覧で確認</h2><p>限界突破の結果を外観進化として見える化。能力・着順・オッズを勝手に変更する機能ではありません。</p><div class="ghV44Filters"><button data-v44-filter="all">全部</button><button data-v44-filter="horse">馬</button><button data-v44-filter="jockey">騎手</button><button data-v44-filter="equip">装備</button><button data-v44-filter="special">SPECIAL ART</button></div></div>`;
+   const f=q('.ghV44Filters',body);qa('button',f).forEach(b=>{b.classList.toggle('on',b.dataset.v44Filter===filter);b.onclick=()=>{filter=b.dataset.v44Filter;render()}});
+   if(!list.length){body.insertAdjacentHTML('beforeend','<div class="ghV44Empty">この条件で表示できる所持カードはまだありません。<br>ガチャで獲得するとここへ追加されます。</div>');renderHome();return}
+   const grid=document.createElement('div');grid.className='ghV44Grid';
+   list.sort((a,b)=>{const sa=stage(Number(primary(a.r)?.limitBreak||0)),sb=stage(Number(primary(b.r)?.limitBreak||0));return sb-sa||String(a.r.name).localeCompare(String(b.r.name),'ja')});
+   for(const x of list){const p=primary(x.r),lb=Number(p?.limitBreak||0),s=stage(lb),d=dupes(x.r),rare=String(x.r.rare||''),special=rare.toUpperCase()==='SPECIAL ART';const c=document.createElement('div');c.className='ghV44Card';c.innerHTML=`<div class="ghV44Art" style="background-image:url('${esc(art(x.r))}')"></div><div class="ghV44Info"><h3>${esc(x.r.name)}</h3><div class="ghV44Meta"><span class="ghV44Pill gold">${esc(rare)}</span><span class="ghV44Pill ${s===4?'max':''}">${label(s)}</span><span class="ghV44Pill">限界突破 +${lb}/10</span><span class="ghV44Pill">重複 ${d}枚</span></div><div class="ghV44Progress"><i style="width:${Math.max(4,lb*10)}%"></i></div><div class="ghV44Next"><b>${nextNeed(lb)}</b> / 現在 ${stageRange(s)}。${d>0&&lb<10?' 未使用重複があるので限界突破候補です。':' 次の重複獲得を待ちます。'}</div><div class="ghV44Actions"><button data-v44-detail>カード詳細</button>${special?'<button class="gold" data-v44-cinema>SPECIAL ARTシネマ</button>':''}</div></div>`;
+     q('[data-v44-detail]',c).onclick=()=>{try{window.GH_MASTER_V9_SAFE?.selectHorse&&x.type==='horse'&&window.GH_MASTER_V9_SAFE.selectHorse(x.r.key);window.GH_MASTER_V9_SAFE?.selectJockey&&x.type==='jockey'&&window.GH_MASTER_V9_SAFE.selectJockey(x.r.key)}catch(_){ } const pg=x.type==='horse'?'horse':x.type==='jockey'?'jockey':'cards';window.page?.(pg)};
+     const cin=q('[data-v44-cinema]',c);if(cin)cin.onclick=()=>{const t=x.type==='equip'?'custom':x.type;try{window.GH_V38_SAFE_SPECIAL_ART_CINEMA?.open?.(t,x.r.name,art(x.r))}catch(_){window.toast?.('SPECIAL ARTシネマを開けませんでした')}};
+     grid.appendChild(c)
+   }
+   body.appendChild(grid);renderHome();
+ }
+ function boot(){ensurePage();renderHome();document.addEventListener('click',e=>{const pg=e.target.closest?.('[data-page]')?.dataset.page;if(pg==='evolutionGallerySafe')setTimeout(render,70);if(['gacha','cards','horse','jockey','limitBreakCenterSafe','home'].includes(pg))setTimeout(renderHome,100)},true)}
+ boot();window.GH_V44_SAFE_EVOLUTION_GALLERY={build:BUILD,render};document.documentElement.dataset.ghV44='safe-evolution-gallery-r1';
+})();
+</script>
+
+
+<style id="gh-v45-safe-gacha-result-intelligence-r1-style">.ghV45ResultIntel{margin-top:9px;padding:10px;border-radius:16px;border:1px solid #ffffff13;background:linear-gradient(180deg,#061720,#031019);box-shadow:inset 0 0 0 1px #ffffff03}.ghV45Headline{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}.ghV45Tag{padding:5px 8px;border-radius:999px;border:1px solid #ffffff14;background:#07141d;color:#c6e8f3;font-size:8px;font-weight:1000}.ghV45Tag.new{border-color:#5be8b888;color:#abffd7;background:#06231a}.ghV45Tag.dup{border-color:#ffd45f88;color:#ffe29c;background:#281c06}.ghV45Tag.max{border-color:#fff0aeaa;color:#fff5d0;background:#392908;box-shadow:0 0 16px #ffe16e25}.ghV45Stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}.ghV45Stats div{padding:8px 5px;border-radius:11px;background:#04121b;border:1px solid #ffffff0e;text-align:center}.ghV45Stats small{display:block;color:#7599a8;font-size:7px}.ghV45Stats b{display:block;color:#eefbff;font-size:10px;margin-top:3px}.ghV45Stats b.gold{color:#ffe299}.ghV45Advice{margin-top:8px;padding:8px 9px;border-radius:10px;border:1px solid #315e71;background:#061720;color:#9ec4d2;font-size:8px;line-height:1.6}.ghV45Advice b{color:#ffe39b}.ghV45Collection{margin-top:8px}.ghV45CollectionLine{display:flex;align-items:center;justify-content:space-between;color:#88aab8;font-size:7px;margin-bottom:4px}.ghV45CollectionBar{height:7px;border-radius:999px;background:#02070b;overflow:hidden;border:1px solid #ffffff0b}.ghV45CollectionBar i{display:block;height:100%;background:linear-gradient(90deg,#5ddfb8,#69e4ff,#ffd55d);box-shadow:0 0 12px #66e4ff44}@media(max-width:540px){.ghV45Stats{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>
+<script defer id="gh-v45-safe-gacha-result-intelligence-r1">
+(()=>{'use strict';
+ if(window.GH_V45_SAFE_GACHA_RESULT_INTELLIGENCE)return;
+ const BUILD='V45-SAFE-GACHA-RESULT-INTELLIGENCE-R1';
+ const q=(s,p=document)=>p.querySelector(s),qa=(s,p=document)=>Array.from(p.querySelectorAll(s));
+ const esc=s=>String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+ function coll(){try{return window.GH_MASTER_V9_SAFE?.collection?.()||{horse:{},jockey:{},equip:{}}}catch(_){return {horse:{},jockey:{},equip:{}}}}
+ function primary(r){return (r?.copies||[]).find(x=>!x.used)||r?.copies?.[0]||null}
+ function currentType(){return q('#gachaTabs [data-gacha-tab].on')?.dataset.gachaTab||'horse'}
+ function group(type){return type==='custom'||type==='support'?'equip':type}
+ function findRecord(type,name){return Object.values(coll()?.[group(type)]||{}).find(r=>String(r?.name||'')===String(name||''))||null}
+ function live(r){return (r?.copies||[]).filter(x=>!x.used).length}
+ function dupes(r){return Math.max(0,live(r)-1)}
+ function stage(lb){lb=Number(lb||0);return lb>=10?4:lb>=7?3:lb>=4?2:lb>=1?1:0}
+ function stageLabel(s){return ['通常','外観進化Ⅰ','外観進化Ⅱ','外観進化Ⅲ','極・AURA MAX'][s]||'通常'}
+ function catalogStats(type){
+   const c=coll(),g=c[group(type)]||{},owned=Object.values(g).filter(r=>r?.copies?.length).length;
+   let total=0;
+   if(type==='horse')try{total=HORSE_GACHA_POOL.length}catch(_){total=100}
+   else if(type==='jockey')try{total=JOCKEY_GACHA_POOL.length}catch(_){total=100}
+   else if(type==='custom')try{total=window.GH_V10_SAFE_CUSTOM_GACHA?.catalog?.length||100}catch(_){total=100}
+   else total=Math.max(owned,100);
+   return {owned,total:Math.max(total,owned,1),pct:Math.min(100,Math.round(owned/Math.max(total,1)*100))};
+ }
+ function pity(type){try{return window.GH_V27_CLEAN_NAME_PITY?.pity?.[type]||window.GH_V30_GACHA_SKILL_ODDS?.pity?.[type]||{}}catch(_){return {}}}
+ function advice(isNew,d,lb){if(isNew)return 'NEWカード。<b>図鑑登録済み</b>。まずカード詳細を確認して、育成・編成候補にできます。';if(lb>=10)return '重複カード。限界突破は最高段階なので、<b>交換ポイント・素材救済</b>の確認がおすすめです。';if(d>0)return `重複 ${d}枚。<b>手動限界突破の素材候補</b>があります。自動消費はしません。`;return '既所持カード。次の重複で限界突破素材候補になります。'}
+ function render(){
+   const reveal=q('#reveal');if(!reveal||!reveal.classList.contains('on'))return;
+   let box=q('.ghV45ResultIntel',reveal);if(box)box.remove();
+   const name=q('h2',reveal)?.textContent?.trim()||'';if(!name)return;const type=currentType(),r=findRecord(type,name),p=primary(r),lb=Number(p?.limitBreak||0),d=dupes(r),s=stage(lb),cat=catalogStats(type),ps=pity(type);
+   const newFlag=(q('.ghV39RevealInfo',reveal)?.textContent||reveal.textContent||'').includes('図鑑 NEW') || (r?.copies?.length||0)<=1;
+   box=document.createElement('div');box.className='ghV45ResultIntel';
+   const next150=Number(ps.next_selector150_in??(150-(Number(ps.cycle_position||0)%150)||150));
+   const points=Number(ps.exchange_points||0),mats=Number(ps.lb_materials||0),tickets=Number(ps.selector_tickets||0),pulls=Number(ps.pull_count||0);
+   box.innerHTML=`<div class="ghV45Headline"><span class="ghV45Tag ${newFlag?'new':'dup'}">${newFlag?'NEW / 図鑑登録':'DUPLICATE / 重複'}</span><span class="ghV45Tag ${s===4?'max':''}">${stageLabel(s)}</span><span class="ghV45Tag">限界突破 +${lb}/10</span></div><div class="ghV45Stats"><div><small>所持</small><b>${Number(r?.copies?.length||1)}枚</b></div><div><small>未使用重複</small><b class="gold">${d}枚</b></div><div><small>総ガチャ回数</small><b>${pulls||'-'}</b></div><div><small>150回選択まで</small><b class="gold">${Number.isFinite(next150)?next150:'-'}回</b></div><div><small>交換ポイント</small><b>${points}pt</b></div><div><small>限界突破素材</small><b>${mats}</b></div><div><small>ART選択券</small><b>${tickets}</b></div><div><small>図鑑</small><b>${cat.owned}/${cat.total}</b></div></div><div class="ghV45Advice">${advice(newFlag,d,lb)}</div><div class="ghV45Collection"><div class="ghV45CollectionLine"><span>このガチャの図鑑進行</span><b>${cat.pct}%</b></div><div class="ghV45CollectionBar"><i style="width:${cat.pct}%"></i></div></div>`;
+   const actions=q('.revealActions',reveal);if(actions)actions.before(box);else reveal.appendChild(box);
+ }
+ function boot(){
+   let timer=0;const schedule=(delay=1700)=>{clearTimeout(timer);timer=setTimeout(render,delay)};
+   document.addEventListener('click',e=>{
+     const t=e.target.closest('#drawBtn,[data-redraw],[data-v10-custom-redraw],[data-gacha-tab]');if(!t)return;
+     schedule(t.matches?.('[data-gacha-tab]')?160:1700);
+   },true);
+   document.addEventListener('gh:v50:gacha-result',()=>schedule(80));
+   document.addEventListener('gh:v50:refresh',()=>{if(q('#reveal')?.classList.contains('on'))schedule(90)});
+ }
+ boot();window.GH_V45_SAFE_GACHA_RESULT_INTELLIGENCE={build:BUILD,render};document.documentElement.dataset.ghV45='safe-gacha-result-intelligence-r1';
+})();
+</script>
+
+
+<style id="gh-v46-safe-cinema-quality-r1-style">#ghV46Quality{margin:8px 12px;padding:10px;border-radius:13px;border:1px solid #48758a;background:linear-gradient(180deg,#071824,#041019);color:#cdebf6;font-size:8px;line-height:1.55}#ghV46Quality b{color:#ffe39c}.ghV46Btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.ghV46Btns button{padding:7px 10px;border-radius:999px;border:1px solid #315d72;background:#061722;color:#dff5ff;font-size:8px;font-weight:1000}.ghV46Btns button.on{border-color:#d0a03a;background:#2a1e07;color:#ffe39a}html.ghV46Lite .ghV37Spark:nth-of-type(2n),html.ghV46Lite #ghV37GachaFX .star:nth-of-type(2n),html.ghV46Lite .ghV38Particles i:nth-of-type(2n){display:none!important}html.ghV46Lite .ghV37PulseBeam.b3,html.ghV46Lite #ghV37GachaFX .arc.a2,html.ghV46Lite .ghV38Beams i:nth-of-type(2n){display:none!important}html.ghV46Lite .ghV41Evo4,html.ghV46Lite #ghV38Cinema.ghV43Stage4 .ghV38Back{animation-duration:3.5s!important}html.ghV46High .ghV38Particles,html.ghV46High #ghV37GachaFX,html.ghV46High .ghV37PulseLayer{filter:saturate(1.08)}html.ghV46High #ghV38Cinema.ghV43Stage4 .ghV38Frame{filter:saturate(1.10) contrast(1.03)}</style>
+<script defer id="gh-v46-safe-cinema-quality-r1">
+(()=>{'use strict';
+ if(window.GH_V46_SAFE_CINEMA_QUALITY)return;
+ const BUILD='V46-SAFE-CINEMA-QUALITY-R1',KEY='gh_v46_cinema_quality';
+ const q=(s,p=document)=>p.querySelector(s);let mode=localStorage.getItem(KEY)||'auto';
+ function autoMode(){try{const mem=Number(navigator.deviceMemory||8),cpu=Number(navigator.hardwareConcurrency||8);return mem<=4||cpu<=4?'lite':'high'}catch(_){return 'high'}}
+ function actual(){return mode==='auto'?autoMode():mode}
+ function apply(){const a=actual(),h=document.documentElement;h.classList.remove('ghV46Lite','ghV46High');h.classList.add(a==='lite'?'ghV46Lite':'ghV46High');render();return a}
+ function ensure(){let x=q('#ghV46Quality');if(!x){x=document.createElement('div');x.id='ghV46Quality';const a=q('#ghV44HomeBadge')||q('#ghV36GoldRule')||q('#home .menu');a?.insertAdjacentElement('afterend',x)}return x}
+ function render(){const x=ensure();if(!x)return;const a=actual();x.innerHTML=`演出品質：<b>${a==='high'?'CINEMA HIGH':'軽量安定'}</b> / 設定 ${mode==='auto'?'自動':mode==='high'?'HIGH':'軽量'}。画質素材そのものは維持し、軽量時は背景の粒子・光線だけ減らします。<div class="ghV46Btns"><button data-v46-q="auto">自動</button><button data-v46-q="high">CINEMA HIGH</button><button data-v46-q="lite">軽量安定</button></div>`;x.querySelectorAll('[data-v46-q]').forEach(b=>{b.classList.toggle('on',b.dataset.v46Q===mode);b.onclick=()=>{mode=b.dataset.v46Q;localStorage.setItem(KEY,mode);apply()}})}
+ function boot(){ensure();apply();document.addEventListener('visibilitychange',()=>{if(!document.hidden&&mode==='auto')apply()})}
+ boot();window.GH_V46_SAFE_CINEMA_QUALITY={build:BUILD,apply,get mode(){return mode},get actual(){return actual()}};document.documentElement.dataset.ghV46='safe-cinema-quality-r1';
+})();
+</script>
+
+
+<style id="gh-v47-safe-runtime-diagnostics-r1-style">#runtimeDiagnosticsSafe{background:radial-gradient(circle at 50% 0,#15303d 0,#061019 36%,#020609 100%)}#ghV47DiagBody{padding:10px 12px 26px}.ghV47Hero{padding:14px;border-radius:18px;border:1px solid #4b7e93;background:linear-gradient(180deg,#071b27,#041019);box-shadow:0 16px 42px #0008}.ghV47Hero h2{margin:5px 0;color:#c8f4ff;font-size:19px}.ghV47Hero p{margin:0;color:#8eb2c1;font-size:9px;line-height:1.65}.ghV47Grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.ghV47Check{padding:10px;border-radius:13px;border:1px solid #ffffff10;background:#06141d}.ghV47Check b{display:block;color:#edfaff;font-size:10px}.ghV47Check small{display:block;color:#7699a8;font-size:7px;margin-top:3px;line-height:1.45}.ghV47Check.ok{border-color:#45c99066;background:#06231a}.ghV47Check.ok b{color:#adffd4}.ghV47Check.warn{border-color:#d4a23d66;background:#211806}.ghV47Check.warn b{color:#ffe1a0}.ghV47Check.bad{border-color:#d94b4b66;background:#260909}.ghV47Check.bad b{color:#ffb4b4}.ghV47Errors{margin-top:10px;padding:10px;border-radius:14px;border:1px solid #ffffff10;background:#041019}.ghV47Errors h3{margin:0 0 6px;color:#ffe3a0}.ghV47Err{padding:7px 8px;margin-top:5px;border-radius:9px;background:#0a131a;color:#a8c5d0;font-size:7px;word-break:break-word}.ghV47Actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.ghV47Actions button{padding:9px 12px;border-radius:11px;border:1px solid #315f76;background:#061722;color:#e7f8ff;font-weight:900;font-size:8px}.ghV47Actions button.gold{border-color:#bd9233;background:#281d07;color:#ffe39c}@media(max-width:540px){.ghV47Grid{grid-template-columns:1fr}}</style>
+<script defer id="gh-v47-safe-runtime-diagnostics-r1">
+(()=>{'use strict';
+ if(window.GH_V47_SAFE_RUNTIME_DIAGNOSTICS)return;
+ const BUILD='V47-SAFE-RUNTIME-DIAGNOSTICS-R1',errors=[];const q=(s,p=document)=>p.querySelector(s);
+ function pushError(kind,msg){errors.push({at:new Date().toISOString(),kind,msg:String(msg||'').slice(0,500)});if(errors.length>20)errors.shift()}
+ window.addEventListener('error',e=>pushError('error',e.message||e.error?.message));window.addEventListener('unhandledrejection',e=>pushError('promise',e.reason?.message||e.reason));
+ function lsTest(){try{const k='gh_v47_test';localStorage.setItem(k,'1');const ok=localStorage.getItem(k)==='1';localStorage.removeItem(k);return ok}catch(_){return false}}
+ function check(){
+   const h=document.documentElement.innerHTML;let audio=false;try{audio=!!(window.AudioContext||window.webkitAudioContext)}catch(_){}
+   const arr=[
+    ['JavaScript','ok','この診断画面が動いているので実行中'],
+    ['保存機能',lsTest()?'ok':'bad',lsTest()?'localStorage 読み書きOK':'端末・ブラウザ側で保存が制限'],
+    ['Web Audio',audio?'ok':'warn',audio?'抽選・ガチャの合成音に対応':'音演出は簡易動作になる可能性'],
+    ['振動','vibrate' in navigator?'ok':'warn','vibrate' in navigator?'振動API対応':'端末/ブラウザ非対応。ゲーム進行には影響なし'],
+    ['暗号機能',window.crypto?.subtle?'ok':'warn',window.crypto?.subtle?'Web Crypto利用可能':'一部安全機能で制限の可能性'],
+    ['通信',navigator.onLine?'ok':'warn',navigator.onLine?'オンライン':'オフライン判定'],
+    ['安全な接続',window.isSecureContext?'ok':'warn',window.isSecureContext?'HTTPS / secure context':'一部ブラウザ機能が制限される可能性'],
+    ['BET120秒',h.includes('FIXED_BET_SECONDS=120')?'ok':'bad',h.includes('FIXED_BET_SECONDS=120')?'保護マーカー確認':'保護マーカーが見つからない'],
+    ['SKIP',q('#skipBtn')?'ok':'bad',q('#skipBtn')?'SKIPボタン確認':'SKIPボタンが見つからない'],
+    ['購入時オッズ固定',h.includes('finalOddsSnapshot')?'ok':'bad',h.includes('finalOddsSnapshot')?'固定処理マーカー確認':'固定処理マーカーが見つからない'],
+    ['サーバー結果同期',h.includes('SERVER AUTHORITATIVE BET / RACE SYNC')?'ok':'warn',h.includes('SERVER AUTHORITATIVE BET / RACE SYNC')?'サーバー権威マーカー確認':'マーカー未確認'],
+    ['演出品質',window.GH_V46_SAFE_CINEMA_QUALITY?'ok':'warn',window.GH_V46_SAFE_CINEMA_QUALITY?`現在 ${window.GH_V46_SAFE_CINEMA_QUALITY.actual}`:'品質管理未初期化'],
+   ];return arr
+ }
+ function ensurePage(){const app=q('.app');if(!app)return null;let p=q('#runtimeDiagnosticsSafe');if(!p){p=document.createElement('section');p.id='runtimeDiagnosticsSafe';p.className='screen subpage';p.innerHTML='<div class="header"><button class="back" data-page="home">← 戻る</button><h1>動作チェック</h1></div><div id="ghV47DiagBody"></div>';app.appendChild(p)}const menu=q('#home .menu');if(menu&&!q('[data-page="runtimeDiagnosticsSafe"]',menu)){const b=document.createElement('button');b.className='fusionMenuBtn';b.dataset.page='runtimeDiagnosticsSafe';b.innerHTML='<span class="ico">✓</span>動作チェック';menu.appendChild(b)}return p}
