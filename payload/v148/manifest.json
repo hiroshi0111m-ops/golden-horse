@@ -1,0 +1,10 @@
+{
+  "version":"V148",
+  "branch":"test/v148-replit",
+  "parts":12,
+  "gzip_size":756865,
+  "gzip_sha256":"650bbe0278dda1545260aefcde60d538798caac0d5fbcd43b8bfc787447565be",
+  "source_size":1815459,
+  "source_sha256":"a6da3925e6f843d4e70b5dc3760d75781b0452861a8ea922e986503b4f249711",
+  "raw_base":"https://raw.githubusercontent.com/hiroshi0111m-ops/golden-horse/test/v148-replit/payload/v148/"
+}
