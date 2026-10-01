@@ -1,0 +1,31 @@
+{
+  "checkpoint": "V152_RECOVERY_BASELINE",
+  "version": "V152_SEVEN_HORSE_FANFARE_600_SYNC_DEV",
+  "file_name": "index.html",
+  "bytes": 2032334,
+  "sha256": "cdc7d414a432ac31567695754690e75a79c2510424f0f754e4187aa113fc028c",
+  "source": "https://github.com/hiroshi0111m-ops/golden-horse/blob/280925a546bbed9d4f2b08a035753b6638601c82/index.html",
+  "verified_at_utc": "2026-10-01T00:16:29.857Z",
+  "source_commit": "280925a546bbed9d4f2b08a035753b6638601c82",
+  "branch": "gh-v152-runtime-test",
+  "git_blob": "14d9db8cf6f47c15d0f7c9eff06dc51f78be173d",
+  "original_changed": 0,
+  "production_changed": 0,
+  "supabase_production_changed": 0,
+  "github_size_and_blob_match": true,
+  "markers": {
+    "GOLDEN HORSE": true,
+    "7頭": true,
+    "BET": true,
+    "SKIP": true,
+    "600m": true,
+    "400m": true,
+    "200m": true,
+    "PHOTO": true,
+    "RESULT": true,
+    "GOAL": true
+  },
+  "html_end_present": true,
+  "final_nonwhitespace": "rk,{once:true});else mark()})();</script>\n<!-- GH_V151_CHECKPOINT_MARKER_END -->",
+  "runtime_status": "NOT_CREDITED_BY_STATIC_CHECKS"
+}
