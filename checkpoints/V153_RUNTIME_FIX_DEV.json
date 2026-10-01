@@ -2,17 +2,18 @@
   "build": "V153_RUNTIME_FIX_DEV",
   "baseBranch": "gh-v152-runtime-test",
   "baseIndexBlob": "14d9db8cf6f47c15d0f7c9eff06dc51f78be173d",
-  "v153IndexBlob": "8f6154c91043b7926ae199631fe389518ab6db9e",
+  "v153IndexBlob": "c29668add6eba846c132f6eb3fee6d7210c05569",
   "v153Commit": "c4cb7f024e4d389a52f0ef88239deb601878235b",
   "purpose": "Preserve V152 gameplay while restoring the fixed five-tab navigation and coherent build identity.",
   "changes": [
     "Bottom navigation fixed to ホーム / レース / マイホース / 特典 / マイページ",
     "Existing points/status screen reused as マイページ to avoid deleting or replacing working subsystems",
     "Build identity updated from stale V107/V142 labels to V153_RUNTIME_FIX_DEV",
-    "No race-core, odds, payout, Supabase production, or security logic intentionally changed"
+    "No race-core, odds, payout, Supabase production, or security logic intentionally changed",
+    "Moved 383,934 bytes of appended V118–V151 style/script blocks from after </html> to immediately before </body>, preserving order and eliminating invalid post-document content"
   ],
   "validation": {
-    "bytes": 1962960,
+    "bytes": 1963047,
     "inlineScripts": 187,
     "scriptSyntaxFailures": 0,
     "fixedTabLabels": [
@@ -24,7 +25,10 @@
     ],
     "v152SevenHorseCodePresent": true,
     "photoFinishCodePresent": true,
-    "bet120TextPresent": true
+    "bet120TextPresent": true,
+    "bodyCloseCount": 1,
+    "htmlCloseCount": 1,
+    "bytesAfterFinalHtml": 0
   },
   "deployment": {
     "vercel": "UNAVAILABLE: connected account returned 0 teams",
@@ -37,5 +41,6 @@
     "Perform browser runtime verification on a deployable HTTPS route",
     "Only after runtime PASS create V153_RUNTIME_PASS_DEV checkpoint",
     "Do not merge to main or overwrite production before mobile verification"
-  ]
+  ],
+  "latestCommit": "f509afaa0778cbf908d018ab6ce1369a20aec707"
 }
