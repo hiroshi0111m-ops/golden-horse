@@ -1,0 +1,37 @@
+{
+  "checkpoint": "CP-URL-01",
+  "status": "PENDING_INTERACTION_VERIFY",
+  "createdAt": "2026-10-01T16:52:00+09:00",
+  "adoptedVersion": "V153_RUNTIME_FIX_DEV",
+  "sourceBranch": "v153-runtime-fix-dev",
+  "sourceCommit": "47f7290662f8e747bec5ff12a1d7f699e3ddb972",
+  "sourceIndexBlob": "c29668add6eba846c132f6eb3fee6d7210c05569",
+  "deployment": {
+    "provider": "PageShare DEV",
+    "siteId": "site_b068e4d0318441a5922b4d77d910a7a3",
+    "versionId": "ver_0c8e86df692b4a098f858a10db64f727",
+    "versionNumber": 9,
+    "httpsUrl": "https://misty-horizon-1435.hosted.pageshare.ai",
+    "published": true
+  },
+  "checks": {
+    "httpsLiveFetch": "PASS",
+    "title": "PASS: GOLDEN HORSE｜友達用 V153 DEV",
+    "initialRender": "PASS: non-blank live rendered content",
+    "guestEntry": "PASS: ゲストでレースを体験 / 1,000G",
+    "sevenHorse": "PASS: live rendered 頭数 7 and 七頭が駆ける",
+    "betUiPresent": "PASS: live rendered BET120秒 / オッズ・出走馬 / 購入Gold / MY BET",
+    "mobileViewportMeta": "PASS: width=device-width,initial-scale=1,viewport-fit=cover",
+    "interactiveClickThrough": "UNVERIFIED: browser automation session closed unexpectedly before completion"
+  },
+  "browserAutomation": {
+    "provider": "TinyFish",
+    "runId": "6c744b5d-6d03-4b14-be28-09087d377042",
+    "result": "FAILED_EXTERNAL_BROWSER_SESSION",
+    "error": "Browser session closed unexpectedly after retries; no game failure established"
+  },
+  "originalChanged": 0,
+  "productionChanged": 0,
+  "supabaseProductionChanged": 0,
+  "next": "Repeat only the interaction check. Mark CP-URL-01 PASS only after guest/start navigation reaches BET screen in a live browser."
+}
