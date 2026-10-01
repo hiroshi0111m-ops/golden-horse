@@ -1,0 +1,25 @@
+{
+  "checkpoint": "CP-V153-URL-PENDING",
+  "version": "V153_RUNTIME_FIX_DEV",
+  "dev_url": "https://misty-horizon-1435.hosted.pageshare.ai",
+  "pageshare_version": "ver_dea47f60646a42e48e0c540f2fed653e",
+  "deploy_status": "ACTIVE",
+  "rendered_fetch": {
+    "initial_display": "PASS",
+    "nonblank": "PASS",
+    "guest_entry_present": "PASS",
+    "seven_horse_text_present": "PASS",
+    "bet_ui_present": "PASS",
+    "page_title": "GOLDEN HORSE｜友達用 V153 DEV",
+    "build_meta": "V153-RUNTIME-FIX-DEV",
+    "viewport_meta": "width=device-width,initial-scale=1,viewport-fit=cover"
+  },
+  "interactive_browser": {
+    "status": "PENDING",
+    "reason": "Browser automation system failure: session closed unexpectedly before click-path verification completed.",
+    "required_next": "Open DEV URL in browser and click guest entry -> verify BET reachable and 7 runners visible."
+  },
+  "original_game_file_changed": false,
+  "production_changed": false,
+  "supabase_production_changed": false
+}
