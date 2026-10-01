@@ -1,0 +1,30 @@
+{
+  "checkpoint": "CP-URL-V153-PENDING",
+  "version": "V153_RUNTIME_FIX_DEV",
+  "branch": "v153-runtime-fix-dev",
+  "devHost": "PageShare existing DEV",
+  "httpsUrl": "https://misty-horizon-1435.hosted.pageshare.ai",
+  "deployedVersionId": "ver_1c4f7524efb94bba966acfddc1d6daa4",
+  "deployedBytes": 2032435,
+  "checks": {
+    "initialRender": "PASS",
+    "notBlank": "PASS",
+    "mobileViewportMeta": "PASS",
+    "guestEntryRendered": "PASS",
+    "sevenHorseRendered": "PASS",
+    "betUiRendered": "PASS",
+    "interactiveGuestToBetClick": "PENDING"
+  },
+  "evidence": {
+    "renderedTitle": "GOLDEN HORSE｜友達用 V153 DEV",
+    "renderedGuestText": "ゲストでレースを体験 / 1,000G",
+    "renderedHorseCount": 7,
+    "renderedBetText": "投票締切まで 120秒 / 購入Gold / MY BET",
+    "interactiveBrowserRun": "495afebc-a642-47f7-9cc4-8275b9669242",
+    "interactiveBrowserResult": "SYSTEM_FAILURE: Browser session closed unexpectedly"
+  },
+  "sourceModified": false,
+  "productionModified": false,
+  "supabaseProductionModified": false,
+  "next": "Re-run only the interactive guest->BET browser click validation. If it passes, save CP-URL-V153-PASS without changing index.html."
+}
