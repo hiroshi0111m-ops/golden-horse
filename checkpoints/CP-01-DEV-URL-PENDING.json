@@ -1,0 +1,40 @@
+{
+  "checkpoint": "CP-01-DEV-URL-PENDING",
+  "checked_date_jst": "2026-10-02",
+  "adopted_base": "V152_SEVEN_HORSE_FANFARE_600_SYNC_DEV",
+  "v152_baseline_commit": "280925a546bbed9d4f2b08a035753b6638601c82",
+  "baseline_branch": "GOLDEN_HORSE_RUNTIME_BASELINE",
+  "dev_branch": "gh-cp01-dev-url",
+  "dev_head_commit": "11e2d8d8d470b1972d9af271af535dea1f11c389",
+  "dev_blob": "ec40221165b904e3d2e27646c0f56c3165f0f41e",
+  "pageshare_site_id": "site_b068e4d0318441a5922b4d77d910a7a3",
+  "pageshare_version": 21,
+  "https_dev_url": "https://misty-horizon-1435.hosted.pageshare.ai",
+  "static_served": {
+    "initial": "PASS",
+    "guest_entry_present": "PASS",
+    "seven_horse_text": "PASS",
+    "bet_ui_present": "PASS"
+  },
+  "runtime_interaction": {
+    "initial": "PENDING",
+    "guest": "PENDING",
+    "seven": "PENDING",
+    "bet": "PENDING",
+    "reason": "Connected live browser sessions (lite and stealth) terminated before interaction with Browser session closed unexpectedly."
+  },
+  "version_selection": {
+    "v154": "REJECTED_FOR_CP01_LOCAL_MOBILE_RENDER_TIMEOUT",
+    "v153": "REJECTED_FOR_CP01_ANDROID_FREEZE_OBSERVED",
+    "v152": "SELECTED_BASELINE"
+  },
+  "dev_runtime_fixes": [
+    "Throttle five inactive requestAnimationFrame loops to 500ms while race screen is off; restore normal RAF during race.",
+    "Batch MutationObserver callbacks outside race at 80ms; race callbacks remain immediate.",
+    "Query-gated cp01 self-test added; normal URL does not trigger it."
+  ],
+  "original_modified": 0,
+  "main_modified": 0,
+  "production_modified": 0,
+  "production_db_modified": 0
+}
