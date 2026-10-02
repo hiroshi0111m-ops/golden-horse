@@ -1,0 +1,37 @@
+name: CP02 Race 1Pass
+on:
+  push:
+    branches:
+      - cp02-race-1pass-test
+  workflow_dispatch:
+
+jobs:
+  race-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Run CP-02 race test
+        env:
+          GH_DEV_URL: https://misty-horizon-1435.hosted.pageshare.ai
+        run: node .github/cp02-race-test.cjs
+
+      - name: Upload CP-02 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cp02-race-evidence
+          path: |
+            cp02-result.json
+            cp02-*.png
+          if-no-files-found: warn
