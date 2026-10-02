@@ -855,7 +855,7 @@ function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clea
 function page(id){if(GH_DEMO&&id==='startPage')id='home';const target=$('#'+id);if(!target){toast('画面を読み込めませんでした');return false}try{window.__gh2330RescuePage?window.__gh2330RescuePage(id):($$('.screen').forEach(s=>s.classList.remove('active')),target.classList.add('active'),scrollTo(0,0))}catch(e){$$('.screen').forEach(s=>s.classList.remove('active'));target.classList.add('active')}try{if(id==='horse')renderHorse();else if(id==='jockey')renderJockey();else if(id==='gacha')renderGachaCollection();else if(id==='cards')renderCards();else if(id==='support')renderSupport();else if(id==='seat')renderSeats();else if(id==='ranking')renderRanking();else if(id==='campaign')renderCampaign();else if(id==='how')renderHow();else if(id==='rules')renderRules();else if(id==='home')renderHome()}catch(e){console.error('page render',id,e);toast('画面の一部を再読み込みしました')}return true}
 function ensureAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!audio)audio=new C();audio.resume?.()}catch(e){}}
 document.addEventListener('pointerdown',ensureAudio,{passive:true});
-function tone(f,d=.12,type='sine',v=.035){if(!sound)return;ensureAudio();if(!audio)return;const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(audio.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+d);o.stop(audio.currentTime+d)}
+function tone(f,d=.12,type='sine',v=.035){if(!sound)return;ensureAudio();if(!audio)return;const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(audio.destination);o.onended=()=>{try{o.disconnect()}catch(_){}try{g.disconnect()}catch(_){}};o.start();g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+d);o.stop(audio.currentTime+d)}
 let bettingBgmTimer=0,gallopTimer=0,audioUnlocked=false;
 function startBettingBgm(){
  if(!sound||running||bettingBgmTimer)return;ensureAudio();if(!audio)return;
@@ -978,7 +978,7 @@ function startCanvasRace(){
 }
 function stopCanvasRace(){raceCanvasOn=false;cancelAnimationFrame(raceRAF);raceParticles=[];if(raceCtx)raceCtx.clearRect(0,0,innerWidth,innerHeight)}
 function canvasImpact(power=7){shakePower=Math.max(shakePower,power)}
-function noise(ms=380,v=.02){if(!sound)return;ensureAudio();if(!audio)return;const n=Math.floor(audio.sampleRate*ms/1000),b=audio.createBuffer(1,n,audio.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const s=audio.createBufferSource(),g=audio.createGain();s.buffer=b;g.gain.value=v;s.connect(g);g.connect(audio.destination);s.start()}
+function noise(ms=380,v=.02){if(!sound)return;ensureAudio();if(!audio)return;const n=Math.floor(audio.sampleRate*ms/1000),b=audio.createBuffer(1,n,audio.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const s=audio.createBufferSource(),g=audio.createGain();s.buffer=b;g.gain.value=v;s.connect(g);g.connect(audio.destination);s.onended=()=>{try{s.disconnect()}catch(_){}try{g.disconnect()}catch(_){}};s.start()}
 function speak(t,cut=true){
  if(!sound||!('speechSynthesis'in window))return;
  try{
@@ -4886,21 +4886,26 @@ const serverMode=()=>!!localStorage.getItem('gh_session_token')&&!!call;
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 // 投票中BGM：旧主音0.026 → 標準0.038。10秒カウント音0.055より一段下。
 window.startBettingBgm=startBettingBgm=function(){
- if(!sound||running||bettingBgmTimer)return;
+ if(!sound||running||bettingBgmTimer||document.hidden)return;
  ensureAudio();if(!audio)return;
  audioUnlocked=true;
+ const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');
  const playBar=()=>{
-  if(!sound||running)return;
+  if(!sound||running||document.hidden)return;
   const roots=[110,123.47,98,130.81];
   const root=roots[Math.floor(Date.now()/6000)%roots.length];
-  tone(root,.72,'sine',.038);
-  tone(root*2,.42,'triangle',.020);
-  setTimeout(()=>tone(root*1.5,.30,'sine',.015),390);
-  setTimeout(()=>tone(root*2.5,.22,'triangle',.012),820);
-  setTimeout(()=>tone(root*.75,.42,'sine',.010),1080);
+  tone(root,.72,'sine',mobile?.030:.038);
+  tone(root*2,.42,'triangle',mobile?.015:.020);
+  if(!mobile){
+   setTimeout(()=>tone(root*1.5,.30,'sine',.015),390);
+   setTimeout(()=>tone(root*2.5,.22,'triangle',.012),820);
+   setTimeout(()=>tone(root*.75,.42,'sine',.010),1080);
+  }else{
+   setTimeout(()=>tone(root*1.5,.24,'sine',.010),720);
+  }
  };
  playBar();
- bettingBgmTimer=setInterval(playBar,1500);
+ bettingBgmTimer=setInterval(playBar,mobile?3000:1500);
 };
 function ensureBgmMeter(){
  let box=document.getElementById('ghV24BgmMeter');if(box)return box;
@@ -9476,6 +9481,23 @@ document.documentElement.dataset.ghIntegrated='34-targeted-phase-observer';})();
 <script id="gh-v152-seven-horse-fanfare-600-sync-dev">
 (()=>{'use strict';const audit=()=>{const snap=window.GH_V126?.snapshot||{};const order=Array.isArray(snap.order)?snap.order.map(Number):[];const runners=document.querySelectorAll('#runners .runner').length;const dots=document.querySelectorAll('#mapDots .mapDot').length;return{build:'V152_SEVEN_HORSE_FANFARE_600_SYNC_DEV',seven:runners===7&&dots===7&&(order.length===0||(order.length===7&&new Set(order).size===7)),runners,dots,order,distance:Number(snap.distance100),scratch:raceState?.scratch??null,fanfareEvent:true,silenceMs:700,productionModified:false}};window.GH_V152_DEV=Object.freeze({audit});document.documentElement.dataset.ghV152Dev='seven-fanfare-600-sync';})();
 </script>
+
+<!-- GH_V155_RUNTIME_FIX_ANDROID_R1_BEGIN -->
+<style id="gh-v155-android-runtime-style">
+@media(max-width:600px){
+ #home .raceCard,#home .odds,#home .betPanel,#home .betSlipsPanel,#home .menu,#home .gh-v64-home-meta{content-visibility:auto;contain-intrinsic-size:auto 420px}
+}
+</style>
+<script id="gh-v155-android-runtime-fix-r1">(()=>{'use strict';
+ const mobile=/Android|Mobile/i.test(navigator.userAgent||'');
+ if(!mobile)return;
+ document.documentElement.dataset.ghV155Runtime='android-r1';
+ const stopIdleBgm=()=>{try{if(document.hidden&&typeof stopBettingBgm==='function')stopBettingBgm()}catch(_){}};
+ document.addEventListener('visibilitychange',stopIdleBgm,{passive:true});
+ window.addEventListener('pagehide',()=>{try{if(typeof stopBettingBgm==='function')stopBettingBgm()}catch(_){}},{capture:true});
+ window.GH_V155_RUNTIME_FIX=Object.freeze({build:'V155_RUNTIME_FIX_ANDROID_R1',scope:'Android HOME/BET runtime only',betLogicUntouched:true,raceLogicUntouched:true,oddsUntouched:true,settlementUntouched:true,sevenHorseUntouched:true});
+})();</script>
+<!-- GH_V155_RUNTIME_FIX_ANDROID_R1_END -->
 </body></html>
 <!-- GH V118 MOBILE/LINE RACE SAFE-LAYOUT DX -->
 <style id="gh-v118-mobile-safe-layout">
