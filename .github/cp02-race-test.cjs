@@ -36,11 +36,22 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   R.initial=(resp?.ok()&&/Golden Horse/i.test(title)&&bodyLen>1000)?'PASS':'FAIL';
   await page.screenshot({path:'cp02-01-initial.png'});
 
-  const startBtn=page.locator('[data-page="startPage"]').filter({visible:true}).first();
-  if(await startBtn.count() && await startBtn.isVisible()) await startBtn.click();
-  else await page.evaluate(()=>document.querySelector('[data-page="startPage"]')?.click());
-  await page.waitForFunction(()=>document.querySelector('#startPage')?.classList.contains('active'),null,{timeout:20000});
-  await page.locator('#ghGuestRace').click();
+  const startBtn=page.locator('[data-page="startPage"]').first();
+  await startBtn.scrollIntoViewIfNeeded();
+  await startBtn.click();
+  const entryMode=await Promise.race([
+    page.waitForFunction(()=>document.querySelector('#ghFix9Entry')?.classList.contains('on'),null,{timeout:8000}).then(()=> 'fix9').catch(()=>null),
+    page.waitForFunction(()=>document.querySelector('#startPage')?.classList.contains('active'),null,{timeout:8000}).then(()=> 'startPage').catch(()=>null)
+  ]);
+  R.details.entry_mode=entryMode;
+  if(entryMode==='fix9'){
+    await page.locator('#ghFix9Go').click();
+    await page.waitForFunction(()=>document.documentElement.dataset.ghFix9Entry==='bet-ready',null,{timeout:20000});
+  }else if(entryMode==='startPage'){
+    await page.locator('#ghGuestRace').click();
+  }else{
+    throw new Error('GUEST入口がFIX9モーダルにもstartPageにも到達しません');
+  }
   await page.waitForFunction(()=>document.querySelector('#home')?.classList.contains('active'),null,{timeout:20000});
   R.guest='PASS';
   await sleep(600);
