@@ -74,6 +74,12 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const chip5=page.locator('#chips .chip').filter({hasText:'5G'}).first();
   if(await chip5.count())await chip5.click();
   await page.locator('#betBtn').click();
+  const confirmShown=await page.locator('#gh-v141-confirm').evaluate(e=>e.classList.contains('on')).catch(()=>false);
+  R.details.bet_confirmation=confirmShown?'V141':'none';
+  if(confirmShown){
+    await sleep(700);
+    await page.locator('#gh-v141-ok').click();
+  }
   await page.waitForFunction(()=>document.querySelectorAll('#betSlips .betSlip').length>=1,null,{timeout:15000});
   R.bet=(await page.locator('#betSlips .betSlip').count())>=1?'PASS':'FAIL';
   const postBetGoldText=await page.locator('#homeGold').innerText();
