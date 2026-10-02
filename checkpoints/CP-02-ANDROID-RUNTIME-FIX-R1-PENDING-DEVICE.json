@@ -1,0 +1,39 @@
+{
+  "checkpoint": "CP-02-ANDROID-RUNTIME-FIX-R1-PENDING-DEVICE",
+  "base_version": "V152_SEVEN_HORSE_FANFARE_600_SYNC_DEV",
+  "runtime_fix": "V155_RUNTIME_FIX_ANDROID_R1",
+  "base_commit": "280925a546bbed9d4f2b08a035753b6638601c82",
+  "fix_commit": "2fe6f7411e3b0af5a14a12d5a1b38f0b6ce1e499",
+  "branch": "gh-v155-runtime-fix-android-r1",
+  "pageshare_site_id": "site_b068e4d0318441a5922b4d77d910a7a3",
+  "pageshare_version": 24,
+  "https_url": "https://misty-horizon-1435.hosted.pageshare.ai",
+  "pageshare_status": "active",
+  "pageshare_bytes": 2033828,
+  "externally_rendered": true,
+  "externally_rendered_markers": [
+    "GOLDEN HORSE",
+    "GUEST",
+    "初期1,000G",
+    "頭数7",
+    "BET",
+    "120秒"
+  ],
+  "observed_device_failure_before_fix": "Android page not responding after confirmed 3連複 7-6-5 / 10G BET",
+  "fix_scope": [
+    "AudioContext oscillator/gain cleanup",
+    "mobile betting BGM load reduction",
+    "offscreen HOME/BET content-visibility",
+    "hidden/pagehide BGM cleanup"
+  ],
+  "untouched": [
+    "V152 original",
+    "BET rules",
+    "odds calculation/lock",
+    "7 horse race logic",
+    "settlement",
+    "production DB",
+    "production URL"
+  ],
+  "device_retest": "PENDING"
+}
