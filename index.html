@@ -10666,3 +10666,43 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:214748
 <!-- GH_V151_CHECKPOINT_MARKER_BEGIN -->
 <script id="gh-v151-checkpoint-marker">(()=>{'use strict';const mark=()=>{document.documentElement.dataset.ghBuild='V151-MOBILE-NAV-STABILITY-CINEMA-GOLD';window.GH_V151_CHECKPOINT=Object.freeze({build:'V151-MOBILE-NAV-STABILITY-CINEMA-GOLD-CHECKPOINT01',baseline:'V150',fix8NavPort:true,fix7ObserverPort:true,fix9GuestEntryPort:true,coreRulesUntouched:true,productionModified:false})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mark,{once:true});else mark()})();</script>
 <!-- GH_V151_CHECKPOINT_MARKER_END -->
+
+
+<!-- GH_V155_RUNTIME_FIX_ANDROID_R1_BEGIN -->
+<style id="gh-v155-android-bet-stability-style">
+@media(max-width:600px){
+#home .oddsHorseCard,#home .gh-v64-home-meta>*,#home .fusionLog,#home .ghV36Flow>div{
+content-visibility:auto;contain:layout paint style;contain-intrinsic-size:160px}
+#home .oddsHorseCard{contain-intrinsic-size:178px}
+}
+</style>
+<script id="gh-v155-android-bet-stability-script">
+(()=>{'use strict';
+const BUILD='V155-RUNTIME-FIX-ANDROID-BET-STABILITY-R1';
+const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');
+if(!mobile){window.GH_V155_RUNTIME_FIX=Object.freeze({build:BUILD,mobile:false});return}
+try{
+if(typeof tone==='function')tone=function(f,d=.12,type='sine',v=.035){
+if(!sound)return;ensureAudio();if(!audio)return;
+const o=audio.createOscillator(),g=audio.createGain();let done=false;
+const clean=()=>{if(done)return;done=true;try{o.disconnect()}catch(_){}try{g.disconnect()}catch(_){}};
+o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(audio.destination);o.onended=clean;o.start();
+g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+d);o.stop(audio.currentTime+d);setTimeout(clean,Math.max(500,Math.ceil(d*1000)+350))};
+if(typeof noise==='function')noise=function(ms=380,v=.02){
+if(!sound)return;ensureAudio();if(!audio)return;
+const n=Math.floor(audio.sampleRate*ms/1000),b=audio.createBuffer(1,n,audio.sampleRate),a=b.getChannelData(0);
+for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);
+const s=audio.createBufferSource(),g=audio.createGain();let done=false;
+const clean=()=>{if(done)return;done=true;try{s.disconnect()}catch(_){}try{g.disconnect()}catch(_){}};
+s.buffer=b;g.gain.value=v;s.connect(g);g.connect(audio.destination);s.onended=clean;s.start();setTimeout(clean,Math.max(700,ms+350))};
+if(typeof startBettingBgm==='function')startBettingBgm=function(){
+if(!sound||running||bettingBgmTimer)return;ensureAudio();if(!audio)return;audioUnlocked=true;
+const playBar=()=>{if(!sound||running)return;const roots=[110,123.47,98,130.81],root=roots[Math.floor(Date.now()/7000)%roots.length];
+tone(root,.52,'sine',.024);tone(root*2,.30,'triangle',.013);setTimeout(()=>tone(root*1.5,.20,'sine',.010),520)};
+playBar();bettingBgmTimer=setInterval(playBar,2200)};
+}catch(_){}
+document.documentElement.dataset.ghV155AndroidBetStability='1';
+window.GH_V155_RUNTIME_FIX=Object.freeze({build:BUILD,mobile:true,scope:'android-home-bet-performance-only',betLogicUntouched:true,oddsUntouched:true,raceLogicUntouched:true,settlementUntouched:true,sevenHorseUntouched:true,productionModified:false});
+})();
+</script>
+<!-- GH_V155_RUNTIME_FIX_ANDROID_R1_END -->
