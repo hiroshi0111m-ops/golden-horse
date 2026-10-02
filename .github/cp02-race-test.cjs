@@ -3,7 +3,7 @@ const fs = require('fs');
 const URL = process.env.GH_DEV_URL || 'https://misty-horizon-1435.hosted.pageshare.ai';
 
 (async()=>{
-  const out={url:URL,stage:'initial-load-diagnosis',scriptCount:0,tests:[],culprit:null,disableOnly:null,errors:[]};
+  const out={url:URL,stage:'initial-load-multi-blocker-diagnosis',scriptCount:0,blockers:[],tests:[],errors:[]};
   let browser;
   try{
     const res=await fetch(URL,{cache:'no-store'});
@@ -16,60 +16,60 @@ const URL = process.env.GH_DEV_URL || 'https://misty-horizon-1435.hosted.pagesha
     out.scriptCount=blocks.length;
     browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage','--no-sandbox']});
 
-    function variant(prefix, disableOnly=-1){
+    function variant(prefix,disabled){
       let i=0;
       return raw.replace(re,b=>{
-        const keep = disableOnly>=0 ? i!==disableOnly : i<prefix;
         const n=i++;
-        return keep?b:'<!-- CP02 disabled script '+n+' -->';
+        return (n<prefix && !disabled.has(n))?b:'<!-- CP02 disabled script '+n+' -->';
       });
     }
-    async function test(name,html,timeout=7000){
+    async function test(name,html,timeout=3000){
       const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-      const rec={name,ok:false,ms:null,ready:null,title:null,bodyLen:null,errors:[]};
-      page.on('pageerror',e=>{ if(rec.errors.length<8)rec.errors.push(String(e)); });
+      const rec={name,ok:false,ms:null,errors:[]};
+      page.on('pageerror',e=>{if(rec.errors.length<5)rec.errors.push(String(e));});
       const t=Date.now();
       try{
         await page.setContent(html,{waitUntil:'domcontentloaded',timeout});
         rec.ms=Date.now()-t;
-        rec.ready=await page.evaluate(()=>document.readyState);
-        rec.title=await page.title();
-        rec.bodyLen=(await page.locator('body').innerText()).length;
         rec.ok=true;
       }catch(e){
         rec.ms=Date.now()-t;
-        rec.errors.push(String(e).slice(0,500));
+        rec.errors.push(String(e).slice(0,300));
       }
       try{await page.close({runBeforeUnload:false});}catch{}
       out.tests.push(rec);
       return rec.ok;
     }
 
-    const zero=await test('prefix-0',variant(0),5000);
-    const all=await test('prefix-all',variant(blocks.length),9000);
-    out.zeroLoads=zero;
-    out.allLoads=all;
+    const disabled=new Set();
+    if(!await test('prefix-0',variant(0,disabled),2000)) throw new Error('prefix-0 did not load');
 
-    if(zero && !all){
+    for(let round=0;round<12;round++){
+      const allOk=await test('round-'+round+'-all',variant(blocks.length,disabled),3500);
+      if(allOk){out.allLoadsAfterDisabling=true;break;}
+
       let lo=0,hi=blocks.length;
       while(hi-lo>1){
         const mid=Math.floor((lo+hi)/2);
-        const ok=await test('prefix-'+mid,variant(mid),7000);
+        const ok=await test('round-'+round+'-prefix-'+mid,variant(mid,disabled),2500);
         if(ok)lo=mid; else hi=mid;
       }
       const idx=hi-1;
+      if(disabled.has(idx)) throw new Error('diagnostic stalled on already-disabled script '+idx);
       const b=blocks[idx];
       const id=(b.open.match(/\bid=["']([^"']+)["']/i)||[])[1]||null;
-      out.culprit={scriptIndex:idx,activePrefix:hi,id,open:b.open,snippet:b.block.slice(0,800)};
-      const only=await test('all-except-'+idx,variant(blocks.length,idx),9000);
-      out.disableOnly=only;
+      out.blockers.push({round,scriptIndex:idx,id,open:b.open,snippet:b.block.slice(0,1200)});
+      disabled.add(idx);
     }
+
+    out.disabled=[...disabled];
+    out.finalAllLoad=await test('final-all',variant(blocks.length,disabled),5000);
   }catch(e){
     out.errors.push(String(e&&e.stack||e));
   }finally{
     if(browser)await browser.close();
     fs.writeFileSync('cp02-result.json',JSON.stringify(out,null,2));
-    console.log('CP02_DIAG='+JSON.stringify(out));
-    if(!out.culprit)process.exitCode=1;
+    console.log('CP02_MULTI_DIAG='+JSON.stringify(out));
+    if(!out.finalAllLoad)process.exitCode=1;
   }
 })();
