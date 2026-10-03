@@ -1,0 +1,63 @@
+{
+  "checkpoint": "CP_V166_V26_PREVIEW_VERIFIED_V28_ACTIVE",
+  "recorded_at": "2026-10-04T03:51:33+09:00",
+  "current_version": {
+    "requested_line": "V165+",
+    "candidate": "V166-REWARD-IDEMPOTENCY-LEDGER-20261003-1804JST",
+    "live_pageshare_version": 28,
+    "live_pageshare_version_id": "ver_a1ad1dc50a5a487a812c77da29290eae",
+    "live_status": "active",
+    "v166_pageshare_version": 26,
+    "v166_pageshare_version_id": "ver_90d3f9ed7bdc4b6d8576b936b158e6e6",
+    "v166_status": "uploaded"
+  },
+  "public_url": "https://misty-horizon-1435.hosted.pageshare.ai/",
+  "verification": {
+    "https": "PASS",
+    "http_status": 200,
+    "title": "Golden Horse｜友達用 V107",
+    "live_http_bytes": 2068665,
+    "live_http_sha256": "e940ccc63d8f4b3e6111c0a86186ec5bb08e47889c70c0db879ed0509c582213",
+    "live_tail_version": "V164-SERVER-STATE-RECEIPT-FAIL-CLOSED",
+    "v166_preview_bytes": 2071318,
+    "v166_preview_sha256": "0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9",
+    "github_v166_sha256": "0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9",
+    "v166_preview_matches_github": true,
+    "v166_static_ledger_tests": {
+      "status": "PASS",
+      "assertions": 13
+    },
+    "runtime_browser": "BLOCKED_TOOL_TIMEOUT",
+    "guest": "NOT_RUN",
+    "initial_1000g": "NOT_RUN",
+    "bet": "NOT_RUN",
+    "seven_horse_race": "NOT_RUN",
+    "goal": "NOT_RUN",
+    "result": "NOT_RUN",
+    "next_race": "NOT_RUN"
+  },
+  "changes": [
+    "No game source modification.",
+    "Confirmed PageShare V26 is an exact stored copy of the GitHub V166 candidate.",
+    "Detected PageShare V28 became active after V26; left active version unchanged.",
+    "Validated V166 idempotency ledger with 13 deterministic assertions."
+  ],
+  "source_control": {
+    "repository": "hiroshi0111m-ops/golden-horse",
+    "branch": "v166-reward-idempotency-ledger-dev",
+    "v166_commit": "089456c9659fdadf47c8ead5124bd26d986a4c0f",
+    "html_blob": "c5af3a6fac1d0c01ce62b73387c103d452298888"
+  },
+  "rollback": {
+    "preserved": true,
+    "v166_pageshare_version_id": "ver_90d3f9ed7bdc4b6d8576b936b158e6e6",
+    "code_declared_rollback": "V165_ROLLBACK_ORIGINAL.html"
+  },
+  "constraints": {
+    "shipstatic": "BLOCKED_AUTH_NO_RETRY",
+    "original_modified": false,
+    "production_modified": false,
+    "supabase_production_modified": false
+  },
+  "next_operation": "Create a fresh temporary preview for PageShare V26 and execute GUEST -> 1000G -> BET -> 7 horses -> GOAL -> RESULT -> next race in a responsive browser runtime. Do not activate V26 until the full flow passes; if the game itself fails, make only the smallest V167 fix."
+}
