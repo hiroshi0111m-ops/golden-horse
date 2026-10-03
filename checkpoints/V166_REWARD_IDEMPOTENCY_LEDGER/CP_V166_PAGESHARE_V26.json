@@ -1,0 +1,50 @@
+{
+  "checkpoint": "CP-V166-PAGESHARE-V26-PUBLISHED",
+  "created_jst": "2026-10-03T22:43:00+09:00",
+  "version": "V166-REWARD-IDEMPOTENCY-LEDGER-20261003-1804JST",
+  "source": {
+    "path": "checkpoints/V166_REWARD_IDEMPOTENCY_LEDGER/index.html",
+    "size_bytes": 2071318,
+    "sha256": "0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9"
+  },
+  "pageshare": {
+    "url": "https://misty-horizon-1435.hosted.pageshare.ai",
+    "site_id": "site_b068e4d0318441a5922b4d77d910a7a3",
+    "active_version": 26,
+    "active_version_id": "ver_90d3f9ed7bdc4b6d8576b936b158e6e6",
+    "rollback_version": 25,
+    "rollback_version_id": "ver_5e87715d165e41a4993acb753b764503",
+    "bytes": 2071318,
+    "status": "active"
+  },
+  "verification": {
+    "static_from_saved_v166_report": "14/14 PASS",
+    "regression_from_saved_v166_report": "187/187 PASS",
+    "javascript_syntax_errors_from_saved_v166_report": 0,
+    "live_url_title": "PASS",
+    "live_dom_interaction": "BLOCKED_BY_CLOUD_BROWSER_PROTOCOL_TIMEOUT",
+    "live_console": [
+      "expected production API isolation warning"
+    ],
+    "guest_1000g": "PENDING",
+    "bet": "PENDING",
+    "seven_horses_runtime": "PENDING",
+    "race_finish": "PENDING",
+    "mobile_widths": "PENDING"
+  },
+  "diagnostics": {
+    "setInterval_occurrences": 36,
+    "setTimeout_occurrences": 229,
+    "mutationObserver_occurrences": 124,
+    "addEventListener_occurrences": 276,
+    "script_tags": 200,
+    "root_cause": "not established; timeout also reproduced on prior PageShare version, so no speculative code change"
+  },
+  "safeguards": {
+    "shipstatic": "BLOCKED_AUTH",
+    "production_modified": false,
+    "supabase_production_modified": false,
+    "member_data_modified": false
+  },
+  "next": "Run runtime test in a browser with a higher DevTools protocol timeout; only create V167 after a reproducible game-side failure."
+}
