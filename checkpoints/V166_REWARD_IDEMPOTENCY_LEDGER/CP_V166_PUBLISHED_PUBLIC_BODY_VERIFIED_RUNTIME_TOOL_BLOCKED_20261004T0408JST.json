@@ -1,0 +1,79 @@
+{
+  "checkpoint": "CP_V166_PUBLISHED_PUBLIC_BODY_VERIFIED_RUNTIME_TOOL_BLOCKED",
+  "recorded_at": "2026-10-04T04:08:39+09:00",
+  "current_version": {
+    "candidate": "V166-REWARD-IDEMPOTENCY-LEDGER-20261003-1804JST",
+    "pageshare_version": 26,
+    "pageshare_version_id": "ver_90d3f9ed7bdc4b6d8576b936b158e6e6",
+    "status": "active"
+  },
+  "current_cp": "CP_V166_PUBLISHED_PUBLIC_BODY_VERIFIED_RUNTIME_TOOL_BLOCKED",
+  "public_url": "https://misty-horizon-1435.hosted.pageshare.ai/",
+  "verification": {
+    "https": "PASS",
+    "http_status": 200,
+    "browser_title": "Golden Horse｜友達用 V107",
+    "served_bytes": 2071799,
+    "pageshare_overlay_bytes": 481,
+    "normalized_body_bytes": 2071318,
+    "normalized_body_sha256": "0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9",
+    "github_candidate_sha256": "0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9",
+    "normalized_body_exact_match": true,
+    "v166_static_ledger_tests": {
+      "status": "PASS",
+      "assertions": 13,
+      "covered": [
+        "subject context required",
+        "first grant accepted",
+        "same-key replay idempotent",
+        "same-key mutation rejected",
+        "semantic duplicate rejected",
+        "member mismatch rejected",
+        "47-venue completion required"
+      ]
+    },
+    "runtime_browser": {
+      "status": "BLOCKED_TOOL_TIMEOUT",
+      "evidence": [
+        "Public URL resolved and title loaded.",
+        "Navigation completion timed out.",
+        "Subsequent Page.getFrameTree timed out.",
+        "Same behavior reproduced on the pre-V166 V164 live page, so no V166 game defect was inferred."
+      ]
+    },
+    "guest": "NOT_RUN",
+    "initial_1000g": "NOT_RUN",
+    "bet": "NOT_RUN",
+    "seven_horse_race": "NOT_RUN",
+    "goal": "NOT_RUN",
+    "result": "NOT_RUN",
+    "next_race": "NOT_RUN"
+  },
+  "changes": [
+    "Activated already-saved PageShare Version 26 at the existing DEV fixed URL.",
+    "Did not modify game source.",
+    "Did not modify original, production, or Supabase production.",
+    "Preserved former active Version 28 as an immediate rollback target."
+  ],
+  "source_control": {
+    "repository": "hiroshi0111m-ops/golden-horse",
+    "branch": "v166-reward-idempotency-ledger-dev",
+    "v166_commit": "089456c9659fdadf47c8ead5124bd26d986a4c0f",
+    "html_blob": "c5af3a6fac1d0c01ce62b73387c103d452298888",
+    "prior_checkpoint_commit": "aedd5b350584cdd03956f031cfbd54a65efccea3"
+  },
+  "rollback": {
+    "pageshare_version": 28,
+    "pageshare_version_id": "ver_a1ad1dc50a5a487a812c77da29290eae",
+    "preserved": true,
+    "source_declared_rollback": "V165_ROLLBACK_ORIGINAL.html"
+  },
+  "constraints": {
+    "shipstatic": "BLOCKED_AUTH_NO_RETRY",
+    "pageshare_preview_ui": "BLOCKED_AUTH",
+    "original_modified": false,
+    "production_modified": false,
+    "supabase_production_modified": false
+  },
+  "next_operation": "Open the fixed public URL in a responsive real browser/LINE WebView and run GUEST -> verify 1000G -> BET -> seven horses -> GOAL -> RESULT -> next race. If the same post-title stall reproduces outside the cloud browser, capture the first long task/console error and make only the smallest V167 boot-performance fix; otherwise do not change game code."
+}
