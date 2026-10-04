@@ -161,7 +161,7 @@ Keep adapter fields:
 Store/seat payments can award promotional G.
 Required rule:
 payment/reservation alone does NOT immediately mint G.
-Server confirms actual visit/use and exit; reward is finalized after the configured post-exit delay (target around 10 minutes).
+Server confirms actual visit/use and exit. When GPS enforcement is ON, the member must also be verified outside the configured prohibited radius before reward finalization. Reward is then finalized after the configured post-exit delay (target around 10 minutes).
 No reward for cancellation, refund or non-use.
 Tie reservation ID + external payment ID + member ID + reward ledger entry together and make reward issuance idempotent.
 Admin controls the reward-G amount/rule.
