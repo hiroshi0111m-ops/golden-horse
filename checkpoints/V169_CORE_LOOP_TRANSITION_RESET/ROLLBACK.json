@@ -1,0 +1,13 @@
+{
+  "branch": "gh-rc-20261020",
+  "commit": "7a0e0332564b9765e2f8173cc5890ae81a9c3d0e",
+  "publicURL": "https://misty-horizon-1435.hosted.pageshare.ai/",
+  "siteId": "site_b068e4d0318441a5922b4d77d910a7a3",
+  "version": 31,
+  "versionId": "ver_00f7e19fa88646d096d9f7356dc0e7a4",
+  "previousRollbackVersion": 28,
+  "previousRollbackVersionId": "ver_a1ad1dc50a5a487a812c77da29290eae",
+  "file": "ROLLBACK_PUBLIC_VERSION31.html",
+  "retained": true,
+  "productionModified": false
+}
