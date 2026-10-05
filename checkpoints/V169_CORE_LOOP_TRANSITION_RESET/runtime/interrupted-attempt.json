@@ -1,0 +1,41 @@
+{
+  "run1": {
+    "run": 1,
+    "race": 82,
+    "nextRace": 83,
+    "initialGold": 1000,
+    "totalBet": 70,
+    "postBetGold": 930,
+    "winner": 1,
+    "payout": 21,
+    "resultGold": 951,
+    "nextGold": 1001,
+    "steps": [
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS",
+      "PASS"
+    ],
+    "reloadDuringRun": false,
+    "reloadBetweenRuns": false
+  },
+  "run2": {
+    "steps": [
+      "PASS",
+      "PASS",
+      "NOT_TESTED",
+      "NOT_TESTED",
+      "NOT_TESTED",
+      "NOT_TESTED",
+      "NOT_TESTED",
+      "NOT_TESTED"
+    ],
+    "failure": "Browser Use returned This page crashed data-URL after clicking existing single-bet type. Crash origin unconfirmed; no further game changes.",
+    "time": "2026-10-05T03:40:42.032Z"
+  },
+  "coreLoop": "PARTIAL; not PASS"
+}

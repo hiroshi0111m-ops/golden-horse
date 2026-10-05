@@ -1,0 +1,1022 @@
+[
+  {
+    "time": "2026-10-05T03:06:34.895Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v106-finish"
+  },
+  {
+    "time": "2026-10-05T03:06:40.181Z",
+    "step": "show-result",
+    "photo": false,
+    "epoch": 0,
+    "activeEpoch": 0,
+    "running": true
+  },
+  {
+    "time": "2026-10-05T03:06:40.341Z",
+    "step": "DOM:finishOverlay",
+    "class": "finishOverlay on"
+  },
+  {
+    "time": "2026-10-05T03:06:40.341Z",
+    "step": "DOM:finishPanel",
+    "class": "finishPanel"
+  },
+  {
+    "time": "2026-10-05T03:06:40.378Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo"
+  },
+  {
+    "time": "2026-10-05T03:06:40.429Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo"
+  },
+  {
+    "time": "2026-10-05T03:06:40.516Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:06:40.572Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo"
+  },
+  {
+    "time": "2026-10-05T03:06:40.625Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo"
+  },
+  {
+    "time": "2026-10-05T03:06:40.709Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo"
+  },
+  {
+    "time": "2026-10-05T03:06:40.817Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo gh16-photo-tension"
+  },
+  {
+    "time": "2026-10-05T03:06:40.883Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera on ghCamStart gh23-backstretch gh-v76-lite ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo gh16-photo-tension gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:10.878Z",
+    "step": "hold-result",
+    "seconds": 7,
+    "epoch": 0,
+    "running": true
+  },
+  {
+    "time": "2026-10-05T03:07:17.927Z",
+    "step": "transition-entry",
+    "running": true,
+    "epoch": 0,
+    "settled": true,
+    "transitioning": false
+  },
+  {
+    "time": "2026-10-05T03:07:17.929Z",
+    "step": "before-save",
+    "running": true,
+    "epoch": 0,
+    "settled": true,
+    "transitioning": true
+  },
+  {
+    "time": "2026-10-05T03:07:17.931Z",
+    "step": "before-close",
+    "running": true,
+    "epoch": 0
+  },
+  {
+    "time": "2026-10-05T03:07:17.931Z",
+    "step": "close-entry",
+    "running": true,
+    "epoch": 0
+  },
+  {
+    "time": "2026-10-05T03:07:17.933Z",
+    "step": "after-close",
+    "running": false,
+    "epoch": 1
+  },
+  {
+    "time": "2026-10-05T03:07:17.933Z",
+    "step": "before-venue"
+  },
+  {
+    "time": "2026-10-05T03:07:17.935Z",
+    "step": "before-theme"
+  },
+  {
+    "time": "2026-10-05T03:07:17.944Z",
+    "step": "before-odds"
+  },
+  {
+    "time": "2026-10-05T03:07:17.948Z",
+    "step": "before-render"
+  },
+  {
+    "time": "2026-10-05T03:07:17.949Z",
+    "step": "before-countdown"
+  },
+  {
+    "time": "2026-10-05T03:07:17.950Z",
+    "step": "next-ready",
+    "running": false,
+    "epoch": 1
+  },
+  {
+    "time": "2026-10-05T03:07:18.053Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v2-sprint gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo gh16-photo-tension gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:18.054Z",
+    "step": "DOM:finishOverlay",
+    "class": "finishOverlay"
+  },
+  {
+    "time": "2026-10-05T03:07:18.054Z",
+    "step": "DOM:finishPanel",
+    "class": "finishPanel"
+  },
+  {
+    "time": "2026-10-05T03:07:18.055Z",
+    "step": "DOM:resultNext",
+    "class": "resultNext",
+    "text": "次のレースを準備中…",
+    "disabled": true
+  },
+  {
+    "time": "2026-10-05T03:07:18.113Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo gh16-photo-tension gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:18.155Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo gh50-photo gh56-photo gh16-photo-tension gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:18.199Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo gh50-photo gh16-photo-tension gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:18.235Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo gh16-photo-tension gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:18.331Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:18.376Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:19.229Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:20.128Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:21.031Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:21.939Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:22.845Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:23.751Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:24.655Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:25.548Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:26.449Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:27.349Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:28.255Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:29.156Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:30.059Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:30.959Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:31.865Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:32.773Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:33.678Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:34.572Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:35.477Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:36.378Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:37.296Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:38.196Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:39.082Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:39.990Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:40.895Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:41.799Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:42.700Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:43.600Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:44.499Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:45.389Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:46.288Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:47.201Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:48.097Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:48.995Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:49.899Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:50.805Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:51.704Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:52.601Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:53.495Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:54.395Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:55.298Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:56.200Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:57.104Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:58.007Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:58.905Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:07:59.804Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:00.702Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:01.602Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:02.509Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:03.407Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:04.310Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:05.211Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:06.115Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:07.012Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:07.912Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:08.811Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:09.714Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:10.620Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:11.516Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:12.422Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:13.322Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:14.222Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:15.125Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:16.031Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:16.926Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:17.827Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:18.723Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:19.632Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:20.538Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:21.429Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:22.331Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:23.234Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:24.134Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:25.034Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:25.933Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:26.838Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:27.733Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:28.636Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:29.544Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:30.445Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:31.352Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:32.253Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:33.150Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:34.050Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:34.952Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:35.851Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:36.761Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:37.658Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:38.553Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:39.463Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:40.354Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:41.259Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:42.164Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:43.069Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:43.978Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:44.861Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:45.772Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:46.661Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:47.572Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:48.464Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:49.377Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:50.277Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:51.166Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:52.081Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:52.980Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:53.884Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:54.783Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:55.680Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:56.579Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:57.485Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:58.382Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:08:59.283Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:00.184Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:01.085Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:02.004Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:02.906Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:03.805Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:04.699Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:05.596Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:06.494Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:07.406Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:08.297Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:09.198Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:10.108Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:11.005Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:11.915Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:12.811Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:13.712Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:14.627Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:15.504Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:16.416Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:17.321Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite ghGateEntered gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:09:18.301Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite gh-v127-photo on inGate gh-v106-finish ghCamStart"
+  },
+  {
+    "time": "2026-10-05T03:09:18.302Z",
+    "step": "DOM:finishOverlay",
+    "class": "finishOverlay"
+  },
+  {
+    "time": "2026-10-05T03:09:18.503Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on inGate gh-v106-finish ghCamStart"
+  },
+  {
+    "time": "2026-10-05T03:09:36.415Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on inGate gh-v106-finish ghCamStart"
+  },
+  {
+    "time": "2026-10-05T03:09:41.801Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on inGate gh-v106-finish ghCamStart ghGateEntered"
+  },
+  {
+    "time": "2026-10-05T03:10:03.729Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on inGate gh-v106-finish ghCamStart ghGateEntered"
+  },
+  {
+    "time": "2026-10-05T03:10:09.877Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on inGate gh-v106-finish ghCamStart ghGateEntered"
+  },
+  {
+    "time": "2026-10-05T03:10:13.542Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on inGate gh-v106-finish ghCamStart ghGateEntered"
+  },
+  {
+    "time": "2026-10-05T03:10:14.289Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on gh-v106-finish ghCamStart ghGateEntered"
+  },
+  {
+    "time": "2026-10-05T03:10:14.370Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on gh-v106-finish ghCamStart ghGateEntered gh-v2-racing"
+  },
+  {
+    "time": "2026-10-05T03:10:14.536Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing"
+  },
+  {
+    "time": "2026-10-05T03:10:48.602Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint"
+  },
+  {
+    "time": "2026-10-05T03:10:48.705Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint"
+  },
+  {
+    "time": "2026-10-05T03:10:48.850Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v127-stretch"
+  },
+  {
+    "time": "2026-10-05T03:10:49.069Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v127-stretch gh-v106-straight"
+  },
+  {
+    "time": "2026-10-05T03:10:55.457Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v127-stretch gh-v106-straight gh-v132-final"
+  },
+  {
+    "time": "2026-10-05T03:10:55.557Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v106-straight gh-v132-final gh-v127-last200"
+  },
+  {
+    "time": "2026-10-05T03:10:55.705Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v106-straight gh-v132-final gh-v127-last200 gh-v131-focus"
+  },
+  {
+    "time": "2026-10-05T03:11:01.605Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v127-last200 gh-v131-focus gh-v106-finish"
+  },
+  {
+    "time": "2026-10-05T03:11:01.783Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v131-focus gh-v106-finish"
+  },
+  {
+    "time": "2026-10-05T03:11:01.977Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v106-finish"
+  },
+  {
+    "time": "2026-10-05T03:11:07.303Z",
+    "step": "show-result",
+    "photo": false,
+    "epoch": 1,
+    "activeEpoch": 1,
+    "running": true
+  },
+  {
+    "time": "2026-10-05T03:11:07.468Z",
+    "step": "DOM:finishOverlay",
+    "class": "finishOverlay on"
+  },
+  {
+    "time": "2026-10-05T03:11:07.469Z",
+    "step": "DOM:finishPanel",
+    "class": "finishPanel"
+  },
+  {
+    "time": "2026-10-05T03:11:07.563Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered gh-v2-racing sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo"
+  },
+  {
+    "time": "2026-10-05T03:11:07.695Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo"
+  },
+  {
+    "time": "2026-10-05T03:11:07.842Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo"
+  },
+  {
+    "time": "2026-10-05T03:11:07.930Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo"
+  },
+  {
+    "time": "2026-10-05T03:11:08.014Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo"
+  },
+  {
+    "time": "2026-10-05T03:11:08.148Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo"
+  },
+  {
+    "time": "2026-10-05T03:11:08.423Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo gh-v131-photo"
+  },
+  {
+    "time": "2026-10-05T03:11:08.662Z",
+    "step": "DOM:raceScreen",
+    "class": "raceScreen gh-cinema gh-cam-0 gh-v101 gh-v101-cam0 gh24-night gh-v127-camera gh23-backstretch gh-v76-lite on ghCamStart ghGateEntered sprint gh-v2-sprint gh-v106-finish gh-v117-judging gh-v132-photo gh-v127-photo gh51-photo gh52-photo gh50-photo gh56-photo gh-v131-photo gh16-photo-tension"
+  },
+  {
+    "time": "2026-10-05T03:11:38.426Z",
+    "step": "hold-result",
+    "seconds": 7,
+    "epoch": 1,
+    "running": true
+  },
+  {
+    "time": "2026-10-05T03:11:45.509Z",
+    "step": "transition-entry",
+    "running": true,
+    "epoch": 1,
+    "settled": true,
+    "transitioning": true
+  }
+]

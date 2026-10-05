@@ -1,0 +1,106 @@
+{
+  "id": "CP_V169_PUBLIC_CORE_LOOP_PARTIAL_BROWSER_CRASH",
+  "status": "PARTIAL",
+  "coreLoop": "NOT_PASS",
+  "createdAt": "2026-10-05T03:44:15.939Z",
+  "branch": "gh-rc-20261020",
+  "sourceCommit": "1b92690e950758069359a1605752f302c3585864",
+  "publicURL": "https://misty-horizon-1435.hosted.pageshare.ai/",
+  "publicVersion": 32,
+  "publicVersionId": "ver_8576e44f3aa645d28239f4f4ad25f5c1",
+  "candidateBlobSHA": "74e79339f3544644c480576103dea00185cb5e58",
+  "candidateSHA256": "5b9be8568249f7de73985a94e041f9964dc914d09f38be30facb02b39734299a",
+  "cause": "Active overriding startRace did not reset raceState.transitioning or resultNext. Second result returned at duplicate-transition guard. Reload restored the initial false latch.",
+  "causeClassification": "CONFIRMED_GAME_SIDE",
+  "changed": [
+    "Reset transition latch only after the startRace running guard",
+    "Re-enable resultNext and restore its label at the same new-race boundary"
+  ],
+  "regression": {
+    "oldVersion": "FAIL at RUN2",
+    "candidate": "PASS three transitions; duplicate callbacks rejected",
+    "inlineScriptSyntax": "PASS 201"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "race": 82,
+      "nextRace": 83,
+      "steps": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "initialGold": 1000,
+      "betGold": 70,
+      "postBetGold": 930,
+      "payoutGold": 21,
+      "resultGold": 951,
+      "nextGold": 1001,
+      "reloaded": false
+    },
+    {
+      "run": 2,
+      "race": 83,
+      "steps": [
+        "PASS",
+        "PASS",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED"
+      ],
+      "initialGold": 1000,
+      "status": "INTERRUPTED_BROWSER_CRASH",
+      "reloaded": false
+    },
+    {
+      "run": 3,
+      "steps": [
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED",
+        "NOT_TESTED"
+      ],
+      "status": "NOT_STARTED"
+    }
+  ],
+  "threeConsecutiveComplete": false,
+  "publicFixLoadedObserved": true,
+  "rollback": {
+    "branch": "gh-rc-20261020",
+    "commit": "7a0e0332564b9765e2f8173cc5890ae81a9c3d0e",
+    "publicURL": "https://misty-horizon-1435.hosted.pageshare.ai/",
+    "siteId": "site_b068e4d0318441a5922b4d77d910a7a3",
+    "version": 31,
+    "versionId": "ver_00f7e19fa88646d096d9f7356dc0e7a4",
+    "previousRollbackVersion": 28,
+    "previousRollbackVersionId": "ver_a1ad1dc50a5a487a812c77da29290eae",
+    "file": "ROLLBACK_PUBLIC_VERSION31.html",
+    "retained": true,
+    "productionModified": false
+  },
+  "browserInterruption": {
+    "message": "This page crashed",
+    "origin": "UNCONFIRMED",
+    "additionalGameChanges": false,
+    "retry": "A new public tab also crashed before GUEST; Chrome unavailable",
+    "blockedCrashURL": "Browser Use URL policy rejected interaction with its data: crash page; not bypassed"
+  },
+  "nextOneAction": "Restore an available responsive real browser, then repeat the complete public core loop three consecutive times without reload.",
+  "productionModified": false,
+  "forbiddenFeaturesModified": false,
+  "rcMasterModified": false,
+  "evidenceLocalRoot": "C:/Users/hiroshi/.codex/visualizations/2026/10/05/01a10990-0079-7341-9603-06bd3197897b/fixed-three-runs"
+}

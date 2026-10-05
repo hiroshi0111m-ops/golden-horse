@@ -1,0 +1,205 @@
+Browser tab: 1, Title: "GOLDEN HORSE｜V149 CINEMA GOLD", URL: "https://misty-horizon-1435.hosted.pageshare.ai/".
+0 AXWebArea GOLDEN HORSE｜V149 CINEMA GOLD, URL: misty-horizon-1435.hosted.pageshare.ai/
+	1 container gh-demo-warning
+		2 text GOLDEN HORSE｜V149 CINEMA GOLD（隔離テスト）
+		3 text 登録なし・初期1,000G。Gold・BET履歴はこの端末に保存。本番会員データ・本番残高には接続しません。
+	4 container home
+		5 text 会員番号
+		580 text 体験モード
+		7 text 残高
+		581 text 1,000G
+		9 text 本日のレース数
+		582 text 11
+		11 text 頭数
+		583 text 7
+		13 text 総投票
+		584 text 430G
+		15 container
+			503 text GOLDEN HORSE • DREAMS RUN FOREVER ♛
+			17 container
+				18 text GOLDEN
+				19 text HORSE
+			20 container
+				21 text ゴールデンホース
+				22 text THE LEGEND BEGINS
+			23 text すべての熱狂は、この一頭から始まる。
+			24 heading 駆けろ、 黄金の世界へ。, Value: 2
+				25 text 駆けろ、
+				26 text 黄金の世界へ。
+			27 text 競馬を、もっと熱く。もっと近く。
+			28 text MY HORSE / LIVE
+			29 text ギャラクシア
+			30 text HORSE Lv.12　騎手 星川レオン ● LIVE
+			585 text 第83レース
+			586 text 横浜・みなとみらい
+			33 text ダート1600m ☀ 良
+		34 text YOUR LEGEND STARTS HERE
+		35 heading 次の栄光が、あなたを待っている。, Value: 2
+			36 text 次の栄光が、あなたを待っている。
+		37 button ♛ レースへ 出走馬と投票を確認する
+			38 text ♛
+			39 text レースへ
+			40 text 出走馬と投票を確認する
+		41 button ♞ マイホース・育成 名馬を育てる
+			42 text ♞
+			43 text マイホース・育成
+			44 text 名馬を育てる
+		45 button ◇ 所持カード・装備 集めて強くする
+			46 text ◇
+			47 text 所持カード・装備
+			48 text 集めて強くする
+		49 button ♛ 全国制覇・大会 47都道府県への挑戦
+			50 text ♛
+			51 text 全国制覇・大会
+			52 text 47都道府県への挑戦
+		53 button ✦ イベント・懸賞 開催中の特典を見る
+			54 text ✦
+			55 text イベント・懸賞
+			56 text 開催中の特典を見る
+		57 button (collapsed) その他の機能を開く ログイン・騎手・ガチャ・席確保など, Secondary Actions: Expand
+			58 AXListMarker ▸ 
+			59 text その他の機能を開く
+			60 text ログイン・騎手・ガチャ・席確保など
+		61 text 🚫 店内ゲーム一切禁止
+		62 text 店内で本ゲームを開く・操作する・プレイする行為は一切禁止です。違反内容や悪質性に応じて利用停止・アカウント停止または削除・強制退店等の対象となります。
+		63 container
+			64 container
+				65 text GOLDEN HORSE · CINEMATIC RACE
+				66 heading 黄金のレースへ。, Value: 2
+					67 text 黄金のレースへ。
+				68 text 七頭が駆ける、ただ一度の勝負。
+				69 text 横浜・みなとみらい
+			587 text 第83レース / GI
+			71 heading ゴールデンレース, Value: 2
+				72 text ゴールデンレース
+			588 text 横浜・みなとみらい　芝1200m　☁ 稍重
+			74 text 投票締切まで
+			589 text 120
+			76 text 秒
+			77 button スキップ → 10秒前, ID: skipBtn
+			78 container betTypes
+				79 button 単勝
+				80 button 複勝
+				81 button 馬連
+				82 button ワイド
+				83 button 3連複
+				84 button 3連単
+			85 container ghV24BgmMeter
+				86 text 投票BGM：標準
+				87 text カウントダウンSEより控えめ / 旧版より聞き取りやすく調整
+			88 button Description: 投票欄へ移動, ID: ghV71JumpToBet
+				89 text 投票欄へ
+				90 text 馬の選択・購入Gold・MY BET
+			142 heading ② オッズ・出走馬, Value: 3
+				143 text ② オッズ・出走馬
+			144 container
+				145 text 複勝は単勝から自動算出・必ず0.1倍以上低い / 最終更新 
+				509 text 12:39
+			147 container oddsCards
+				510 container
+					511 text 1 ギャラクシア 1番人気 騎手:星川レオン 騎手力:88 人馬:94 先行 ◎ 単勝 2.1倍 複勝 1.2倍 能力 96 調子 88 スタミナ 91
+				512 container
+					513 text 2 スターリーレオン 2番人気 騎手:岳 騎手力:74 人馬:82 先行 ▲ 単勝 4倍 複勝 1.5倍 能力 69 調子 60 スタミナ 93
+				514 container
+					515 text 3 ネビュラドリーム 6番人気 騎手:悠真 騎手力:78 人馬:88 差し ◎ 単勝 15倍 複勝 3.2倍 能力 96 調子 84 スタミナ 81
+				516 container
+					517 text 4 ゴールドスピリット 3番人気 騎手:蒼真 騎手力:83 人馬:86 逃げ ○ 単勝 5.4倍 複勝 1.7倍 能力 84 調子 76 スタミナ 79
+				518 container
+					519 text 5 ミッドナイトフレア 7番人気 騎手:七瀬 騎手力:81 人馬:91 追込 ▲ 単勝 20.5倍 複勝 4.1倍 能力 89 調子 73 スタミナ 87
+				520 container
+					521 text 6 サンダーウィング 5番人気 騎手:龍崎 騎手力:86 人馬:80 差し △ 単勝 13.2倍 複勝 3.0倍 能力 77 調子 82 スタミナ 90
+				522 container
+					523 text 7 ブラックオーロラ 4番人気 騎手:黒田 騎手力:90 人馬:84 追込 ☆ 単勝 8.4倍 複勝 2.2倍 能力 86 調子 67 スタミナ 88
+			529 button Description: 出走馬一覧へ戻る, ID: ghV71JumpToHorses
+			530 container
+				531 text 購入する馬を選択 
+				532 text 1頭選択
+			533 container horseChoiceGrid
+				534 button 1
+				535 button 2
+				536 button 3
+				537 button 4
+				538 button 5
+				539 button 6
+				540 button 7
+			541 container selectionSummary
+				542 text 1番 ギャラクシア 選択オッズ 2.1倍 / 10G → 見込 21G
+			543 text 購入Gold
+			544 container chips
+				545 button 5G
+				546 button 10G
+				547 button 50G
+				548 button 100G
+			549 button Description: 単勝 1番 10Gold を投票に追加, ID: betBtn
+			91 container gh-v141-betbar
+				92 text BET COMMAND / 選択内容
+				590 text 単勝｜1番｜10G
+				591 text MY BET 0G
+			552 heading MY BET / 投票中, Value: 3
+				553 text MY BET / 投票中
+			554 text 締切前なら取消可
+			555 container betSlips
+				556 text まだ投票はありません。
+				557 text 馬を選んで投票を追加してください
+		558 container ghV64HomeMeta
+			559 container ghV36GoldRule
+				560 text Goldガイド Goldは2種類
+				561 text 新規50G / 毎日
+				562 text 付与Gold
+				563 text レース正常決着
+				564 text 結果で増減
+				565 text 的中払戻
+				566 text 通常Gold
+				567 text 懸賞
+				568 text 通常Goldだけ
+				569 container
+					570 text 取消・除外・返還は  付与Goldへ戻る  → 再度レース正常決着が必要。席・店頭で獲得したGoldは最初から  通常Gold 。
+			571 container ghV44HomeBadge
+				572 text 進化ギャラリー 進化ギャラリー：所持  16 種 / SPECIAL ART  0 種 / 極・極・極・極・極・極・極・極・AURA MAX  0 種。カードの進化状況と次に必要な重複をまとめて確認できます。
+			573 container ghV46Quality
+				574 text 演出品質 演出品質： CINEMA HIGH  / 設定 自動。画質素材そのものは維持し、軽量時は背景の粒子・光線だけ減らします。
+				575 button 自動
+				576 button CINEMA HIGH
+				577 button 軽量安定
+			578 container ghV8RemoteStatus
+				579 text 運営設定 ゲスト体験：端末内で動作中。
+		592 text ☁ 端末保存
+		96 button 安全・利用方針
+	593 text ゲスト体験 1,000G（端末内のみ）
+	97 text 動作確認モード / GPS・ログイン判定のみ省略
+	98 container ゲーム内の主な画面
+		99 button ⌂ ホーム
+			100 text ⌂
+			101 text ホーム
+		102 button ♞ レース
+			103 text ♞
+			104 text レース
+		105 button ♘ 育成
+			106 text ♘
+			107 text 育成
+		108 button ◇ カード
+			109 text ◇
+			110 text カード
+		111 button ✧ ガチャ
+			112 text ✧
+			113 text ガチャ
+	527 pop up button ？ ご質問・ご案内, ID: gh-help-open
+	115 text \n
+	116 text \n
+	117 text \n 
+	118 text \n
+	119 text \n\n
+	120 text \n\n
+	121 text \n 
+	122 text \n
+	123 text \n
+	124 text \n 
+	125 text \n
+	126 text \n
+	127 text \n
+	128 text \n
+	129 text \n
+	130 text \n 
+	131 link Description: Hosted by Pageshare.ai, Value: pageshare.ai/?utm_source=free_plan_overlay
+
+The focused UI element is 0 AXWebArea GOLDEN HORSE｜V149 CINEMA GOLD, URL: misty-horizon-1435.hosted.pageshare.ai/
