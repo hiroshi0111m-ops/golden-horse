@@ -1,0 +1,101 @@
+{
+  "checkpoint": "CP_V169_PUBLIC_CORE_LOOP_3RUN_PASS",
+  "recordedAtJST": "2026-10-06 12:37",
+  "branch": "gh-rc-20261020",
+  "sourceVersion": "V169 (V166-based)",
+  "publicVersion": 32,
+  "publicVersionId": "ver_8576e44f3aa645d28239f4f4ad25f5c1",
+  "publicUrl": "https://misty-horizon-1435.hosted.pageshare.ai/",
+  "validationBaseCommit": "2e8a39724c636b9b93fc927bfd3f7d58e95f5fcc",
+  "gameSourceCommit": "1b92690e950758069359a1605752f302c3585864",
+  "gameSourceBlob": "74e79339f3544644c480576103dea00185cb5e58",
+  "gameSourceSHA256": "5b9be8568249f7de73985a94e041f9964dc914d09f38be30facb02b39734299a",
+  "coreLoop": "PASS",
+  "testMethod": "Actual Codex in-app browser UI, same tab, three consecutive runs, no reload; natural race without race-SKIP; RESULT next button clicked in all runs; next BET horse selected and acceptance button enabled",
+  "steps": [
+    "GUEST",
+    "initial balance exactly 1000G",
+    "BET accepted",
+    "exactly 7 horses start",
+    "GOAL",
+    "RESULT",
+    "next race usable"
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "steps": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "race": "第72→第73",
+      "balance": "1000→990→990",
+      "bet": "単勝1番10G",
+      "nextButtonClicked": true,
+      "reloaded": false,
+      "gameChanged": false
+    },
+    {
+      "run": 2,
+      "steps": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "race": "第73→第74",
+      "balance": "1000→930→970→1020",
+      "payout": 40,
+      "existingFirstClearReward": 50,
+      "nextButtonClicked": true,
+      "reloaded": false,
+      "gameChanged": false
+    },
+    {
+      "run": 3,
+      "steps": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "race": "第74→第75",
+      "balance": "1000→990→1011",
+      "payout": 21,
+      "nextButtonClicked": true,
+      "reloaded": false,
+      "gameChanged": false
+    }
+  ],
+  "gameChanged": false,
+  "republished": false,
+  "consoleErrorsOrWarnings": [],
+  "limitations": [
+    "Previous human Edge click failure was not reproduced; original cause remains unconfirmed.",
+    "PASS applies to the observed guest core loop, not member/server/payment/deferred RC features.",
+    "Automatic seven-second transition was not the selected next-race route in these three runs."
+  ],
+  "rollback": {
+    "beforeEvidenceCommit": "2e8a39724c636b9b93fc927bfd3f7d58e95f5fcc",
+    "currentPublicVersion": 32,
+    "currentPublicVersionId": "ver_8576e44f3aa645d28239f4f4ad25f5c1",
+    "priorCP": "CP_V169_PUBLIC_CORE_LOOP_PARTIAL_BROWSER_CRASH",
+    "previousGameVersion": 31,
+    "previousGameVersionId": "ver_00f7e19fa88646d096d9f7356dc0e7a4",
+    "preFixCommit": "7a0e0332564b9765e2f8173cc5890ae81a9c3d0e",
+    "olderVersion28Retained": true
+  },
+  "firstBlocker": null,
+  "nextOneAction": "同じ公開Version32で、既報のEdge RESULTボタンのクリック不可条件を再確認する。新機能へは進まない。"
+}

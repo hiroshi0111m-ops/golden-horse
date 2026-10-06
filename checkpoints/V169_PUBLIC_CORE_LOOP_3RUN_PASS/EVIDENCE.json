@@ -1,0 +1,225 @@
+{
+  "runs": [
+    {
+      "run": 1,
+      "steps": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "race": "第72→第73",
+      "balance": "1000→990→990",
+      "bet": "単勝1番10G",
+      "nextButtonClicked": true,
+      "reloaded": false,
+      "gameChanged": false
+    },
+    {
+      "run": 2,
+      "steps": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "race": "第73→第74",
+      "balance": "1000→930→970→1020",
+      "payout": 40,
+      "existingFirstClearReward": 50,
+      "nextButtonClicked": true,
+      "reloaded": false,
+      "gameChanged": false
+    },
+    {
+      "run": 3,
+      "steps": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "race": "第74→第75",
+      "balance": "1000→990→1011",
+      "payout": 21,
+      "nextButtonClicked": true,
+      "reloaded": false,
+      "gameChanged": false
+    }
+  ],
+  "manifest": [
+    {
+      "file": "browser-console.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "file": "run1-bet.txt",
+      "bytes": 8360,
+      "sha256": "0d2b46a8d1fe2122cebd1e51a5c5aa11a6ee109def5ffe73f5e4834b5b103082"
+    },
+    {
+      "file": "run1-guest-1000.jpg",
+      "bytes": 41514,
+      "sha256": "1d62eb824bad6654e14ac414f751fdfb957973ab968e1d29666f978ab6189361"
+    },
+    {
+      "file": "run1-live.jpg",
+      "bytes": 44402,
+      "sha256": "7926e8471071f64b2c857e904a0ccf9be51ef5e5cbfa35a4db236781ebb80eae"
+    },
+    {
+      "file": "run1-next-bet-usable.jpg",
+      "bytes": 39188,
+      "sha256": "fd84ae38720edf311a6c3dc7bab43328faba3248a202861031727c1b0480edd2"
+    },
+    {
+      "file": "run1-next-bet.txt",
+      "bytes": 8435,
+      "sha256": "a05019a0bb548c1f8c474705de64fdcca452dd41edc4f42e6e0745089b5d4981"
+    },
+    {
+      "file": "run1-observations.jsonl",
+      "bytes": 6503,
+      "sha256": "76c83fbc4017b5182fc9c0b88f734fe8434213b4d571499d75b9328a055f0a98"
+    },
+    {
+      "file": "run1-prestart.jpg",
+      "bytes": 45002,
+      "sha256": "a5519b60e35df2909bed673b8a08ac0f4dbd5075cf28edc57bcc1cce51a2d310"
+    },
+    {
+      "file": "run1-result.jpg",
+      "bytes": 44903,
+      "sha256": "5d989d2f07f8aa8ccc9ee2c299435cde3e7503d84afb608c53b0c0350617fd93"
+    },
+    {
+      "file": "run1-start.jpg",
+      "bytes": 45925,
+      "sha256": "e4424b0a5d4cb97ac53dbf63a759cb07cfb41b0f0a51a734d39dc7f5c1854c22"
+    },
+    {
+      "file": "run1-status.json",
+      "bytes": 275,
+      "sha256": "44d3dc54684a4db926620dd1e10131d4bb8f07c46ff08a5841c2e9f0663cd7ac"
+    },
+    {
+      "file": "run2-bet-accepts.json",
+      "bytes": 1632,
+      "sha256": "2742642d177936e180682b49ebc6c7a76356de94359c2bb64dde496ee48f4d22"
+    },
+    {
+      "file": "run2-bet.txt",
+      "bytes": 8799,
+      "sha256": "51e590f88b2489d39f7808c3dd8c348df5889b4c3c0aab6c5b499d5400b148f5"
+    },
+    {
+      "file": "run2-guest-1000.txt",
+      "bytes": 8463,
+      "sha256": "b28272aec7617052e2886f1e8118465805a4b36fef2e42e892b5e5fa2bf5a4b9"
+    },
+    {
+      "file": "run2-live.jpg",
+      "bytes": 43444,
+      "sha256": "d7ab1bd63f9207878993c7853a2d7a9ed161408d5637fe4db631cc2f5971c980"
+    },
+    {
+      "file": "run2-next-bet-usable.jpg",
+      "bytes": 38786,
+      "sha256": "4ae94f3ef4e1c6b9b3d64cbf00bcfd0c7de0b8319ce22c19ecabc603cb220efa"
+    },
+    {
+      "file": "run2-next-bet.txt",
+      "bytes": 8472,
+      "sha256": "a8d99d2bd0a6bc5afb45f99bcb28e3e3d2789f588ed0ff8336ce221aa58e9835"
+    },
+    {
+      "file": "run2-observations.jsonl",
+      "bytes": 7629,
+      "sha256": "f8048b24e5c1d38acf257fb42f835d7b969eed85124ebc5b78e63b95679d65ae"
+    },
+    {
+      "file": "run2-result-payout.jpg",
+      "bytes": 45961,
+      "sha256": "255b60c29fa1ecdcdb8578927460875f2e3edfdaaec381d3670e197d6497d710"
+    },
+    {
+      "file": "run2-start.jpg",
+      "bytes": 44093,
+      "sha256": "a0195447e5609bdb7111b52f01fc2b1ddd26ac949bc9316514edc80a3ad9c42e"
+    },
+    {
+      "file": "run2-status.json",
+      "bytes": 306,
+      "sha256": "baa304ae9c46b93cbfd034e8215646e27d345e7f9890b5f49af0a6046b64a0c7"
+    },
+    {
+      "file": "run3-bet.txt",
+      "bytes": 8384,
+      "sha256": "a0fda5ac65d2b5c8f91048e49dbb9cc696c44b185704ac8da07dd566c82dea74"
+    },
+    {
+      "file": "run3-goal.jpg",
+      "bytes": 46176,
+      "sha256": "ed3ac6aa8dcdd75eafc78d4f29972b84fee414a8ec86164f85bbc5e298fa5093"
+    },
+    {
+      "file": "run3-guest-1000.txt",
+      "bytes": 8476,
+      "sha256": "e61134d67b79e3b11fc6f11118461c3399f76058b010e661fed743a3071ef3c8"
+    },
+    {
+      "file": "run3-live.jpg",
+      "bytes": 42537,
+      "sha256": "363dd99c7a005b41bc2993c8df3d5edc391556e5a06407de433ca6249df566ec"
+    },
+    {
+      "file": "run3-next-bet-usable.jpg",
+      "bytes": 38795,
+      "sha256": "0370013fe79113db1fc47e17e5f0966da195101295723159345ace1285bff296"
+    },
+    {
+      "file": "run3-next-bet.txt",
+      "bytes": 8462,
+      "sha256": "6daeec490c2a42d6f7ff3bf1c38746181693681a709394fcda1d02faa00abd22"
+    },
+    {
+      "file": "run3-observations.jsonl",
+      "bytes": 6585,
+      "sha256": "fda104a28f8064cddbefbeceae8e529b4fce1f1d8c7d0a46c9c0d7724be30410"
+    },
+    {
+      "file": "run3-result.txt",
+      "bytes": 11206,
+      "sha256": "12582a33b57fc0c1abf11791e8186d82d0d72c1cf8ab481270dd12564ec14a74"
+    },
+    {
+      "file": "run3-status.json",
+      "bytes": 266,
+      "sha256": "6f3d6d074bc2551855690f6b82f2493295805e08f244536b12891a6a4e27074e"
+    }
+  ],
+  "observations": [
+    {
+      "run": 1,
+      "jsonl": "{\"betSlips\":\"単勝 110G / オッズ 21.2倍見込 212G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"RACE INFORMATION\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着7番 ブラックオーロラWINNER2着4番 ゴールドスピリット2馬身半3着5番 ミッドナイトフレア1馬身4着 2番 スターリーレオン / 5着 6番 サンダーウィング / 6着 3番 ネビュラドリーム / 7着 1番 ギャラクシア着差：2着 2馬身半 / 3着 5番：1馬身MY BET 的中なし結果表示 0秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:28:06.980Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 21.2倍見込 212G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"PADDOCK TO GATE\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着7番 ブラックオーロラWINNER2着4番 ゴールドスピリット2馬身半3着5番 ミッドナイトフレア1馬身4着 2番 スターリーレオン / 5着 6番 サンダーウィング / 6着 3番 ネビュラドリーム / 7着 1番 ギャラクシア着差：2着 2馬身半 / 3着 5番：1馬身MY BET 的中なし結果表示 0秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:28:17.914Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 21.2倍見込 212G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"FANFARE\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着7番 ブラックオーロラWINNER2着4番 ゴールドスピリット2馬身半3着5番 ミッドナイトフレア1馬身4着 2番 スターリーレオン / 5着 6番 サンダーウィング / 6着 3番 ネビュラドリーム / 7着 1番 ギャラクシア着差：2着 2馬身半 / 3着 5番：1馬身MY BET 的中なし結果表示 0秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:28:53.641Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 21.2倍見込 212G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"850\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"向こう正面\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着7番 ブラックオーロラWINNER2着4番 ゴールドスピリット2馬身半3着5番 ミッドナイトフレア1馬身4着 2番 スターリーレオン / 5着 6番 サンダーウィング / 6着 3番 ネビュラドリーム / 7着 1番 ギャラクシア着差：2着 2馬身半 / 3着 5番：1馬身MY BET 的中なし結果表示 0秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:29:15.215Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 21.2倍見込 212G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"600\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"勝負開始\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着7番 ブラックオーロラWINNER2着4番 ゴールドスピリット2馬身半3着5番 ミッドナイトフレア1馬身4着 2番 スターリーレオン / 5着 6番 サンダーウィング / 6着 3番 ネビュラドリーム / 7着 1番 ギャラクシア着差：2着 2馬身半 / 3着 5番：1馬身MY BET 的中なし結果表示 0秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:29:37.481Z\"}\n{\"betSlips\":\"まだ投票はありません。\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"GOAL\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":54,\"width\":420.453125,\"x\":30.765625,\"y\":476.59375},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"resultNext\",\"id\":\"resultNext\",\"tag\":\"BUTTON\"},\"visible\":true},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着5番 ミッドナイトフレア2馬身3着6番 サンダーウィング2馬身4着 1番 ギャラクシア / 5着 3番 ネビュラドリーム / 6着 4番 ゴールドスピリット / 7着 7番 ブラックオーロラ着差：2着 2馬身 / 3着 6番：2馬身MY BET 的中なし結果表示 発表中秒次のレース準備へ\",\"resultVisible\":true,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:30:04.685Z\"}\n"
+    },
+    {
+      "run": 2,
+      "jsonl": "{\"betSlips\":\"まだ投票はありません。\",\"bootError\":\"\",\"count\":\"120\",\"distance\":\"0\",\"gold\":\"1,000G\",\"guest\":\"体験モード\",\"phase\":\"GOAL\",\"raceOn\":false,\"resultButton\":{\"disabled\":true,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレースを準備中…\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着5番 ミッドナイトフレア2馬身3着6番 サンダーウィング2馬身4着 1番 ギャラクシア / 5着 3番 ネビュラドリーム / 6着 4番 ゴールドスピリット / 7着 7番 ブラックオーロラ着差：2着 2馬身 / 3着 6番：2馬身MY BET 的中なし結果表示 発表中秒次のレースを準備中…\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:30:50.004Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 17.0倍見込 170G取消単勝 210G / オッズ 4.0倍見込 40G取消単勝 310G / オッズ 5.7倍見込 57G取消単勝 410G / オッズ 13.3倍見込 133G取消単勝 510G / オッズ 2.1倍見込 21G取消単勝 610G / オッズ 9.0倍見込 90G取消単勝 710G / オッズ 22.3倍見込 223G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"930G\",\"guest\":\"体験モード\",\"phase\":\"GATE IN\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着5番 ミッドナイトフレア2馬身3着6番 サンダーウィング2馬身4着 1番 ギャラクシア / 5着 3番 ネビュラドリーム / 6着 4番 ゴールドスピリット / 7着 7番 ブラックオーロラ着差：2着 2馬身 / 3着 6番：2馬身MY BET 的中なし結果表示 発表中秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:32:19.492Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 17.0倍見込 170G取消単勝 210G / オッズ 4.0倍見込 40G取消単勝 310G / オッズ 5.7倍見込 57G取消単勝 410G / オッズ 13.3倍見込 133G取消単勝 510G / オッズ 2.1倍見込 21G取消単勝 610G / オッズ 9.0倍見込 90G取消単勝 710G / オッズ 22.3倍見込 223G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"930G\",\"guest\":\"体験モード\",\"phase\":\"FANFARE\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着5番 ミッドナイトフレア2馬身3着6番 サンダーウィング2馬身4着 1番 ギャラクシア / 5着 3番 ネビュラドリーム / 6着 4番 ゴールドスピリット / 7着 7番 ブラックオーロラ着差：2着 2馬身 / 3着 6番：2馬身MY BET 的中なし結果表示 発表中秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:32:46.699Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 17.0倍見込 170G取消単勝 210G / オッズ 4.0倍見込 40G取消単勝 310G / オッズ 5.7倍見込 57G取消単勝 410G / オッズ 13.3倍見込 133G取消単勝 510G / オッズ 2.1倍見込 21G取消単勝 610G / オッズ 9.0倍見込 90G取消単勝 710G / オッズ 22.3倍見込 223G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"850\",\"gold\":\"930G\",\"guest\":\"体験モード\",\"phase\":\"向こう正面\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着5番 ミッドナイトフレア2馬身3着6番 サンダーウィング2馬身4着 1番 ギャラクシア / 5着 3番 ネビュラドリーム / 6着 4番 ゴールドスピリット / 7着 7番 ブラックオーロラ着差：2着 2馬身 / 3着 6番：2馬身MY BET 的中なし結果表示 発表中秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:33:08.744Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 17.0倍見込 170G取消単勝 210G / オッズ 4.0倍見込 40G取消単勝 310G / オッズ 5.7倍見込 57G取消単勝 410G / オッズ 13.3倍見込 133G取消単勝 510G / オッズ 2.1倍見込 21G取消単勝 610G / オッズ 9.0倍見込 90G取消単勝 710G / オッズ 22.3倍見込 223G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"200\",\"gold\":\"930G\",\"guest\":\"体験モード\",\"phase\":\"最終決戦\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着5番 ミッドナイトフレア2馬身3着6番 サンダーウィング2馬身4着 1番 ギャラクシア / 5着 3番 ネビュラドリーム / 6着 4番 ゴールドスピリット / 7着 7番 ブラックオーロラ着差：2着 2馬身 / 3着 6番：2馬身MY BET 的中なし結果表示 発表中秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:33:43.074Z\"}\n{\"betSlips\":\"まだ投票はありません。\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"970G\",\"guest\":\"体験モード\",\"phase\":\"GOAL\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":54,\"width\":420.453125,\"x\":30.765625,\"y\":467.59375},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"resultNext\",\"id\":\"resultNext\",\"tag\":\"BUTTON\"},\"visible\":true},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着3番 ネビュラドリーム2馬身3着7番 ブラックオーロラ1馬身4着 1番 ギャラクシア / 5着 5番 ミッドナイトフレア / 6着 4番 ゴールドスピリット / 7着 6番 サンダーウィング着差：2着 2馬身 / 3着 7番：1馬身MY BET 的中 1件 / 払戻 40Gold結果表示 発表中秒次のレース準備へ\",\"resultVisible\":true,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:33:59.204Z\"}\n"
+    },
+    {
+      "run": 3,
+      "jsonl": "{\"betSlips\":\"まだ投票はありません。\",\"bootError\":\"\",\"count\":\"120\",\"distance\":\"0\",\"gold\":\"1,000G\",\"guest\":\"体験モード\",\"phase\":\"GOAL\",\"raceOn\":false,\"resultButton\":{\"disabled\":true,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレースを準備中…\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着3番 ネビュラドリーム2馬身3着7番 ブラックオーロラ1馬身4着 1番 ギャラクシア / 5着 5番 ミッドナイトフレア / 6着 4番 ゴールドスピリット / 7着 6番 サンダーウィング着差：2着 2馬身 / 3着 7番：1馬身MY BET 的中 1件 / 払戻 40Gold結果表示 発表中秒次のレースを準備中…\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:34:28.494Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 2.1倍見込 21G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"FINAL ODDS\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着3番 ネビュラドリーム2馬身3着7番 ブラックオーロラ1馬身4着 1番 ギャラクシア / 5着 5番 ミッドナイトフレア / 6着 4番 ゴールドスピリット / 7着 6番 サンダーウィング着差：2着 2馬身 / 3着 7番：1馬身MY BET 的中 1件 / 払戻 40Gold結果表示 発表中秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:35:22.630Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 2.1倍見込 21G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"1200\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"第1コーナー\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着3番 ネビュラドリーム2馬身3着7番 ブラックオーロラ1馬身4着 1番 ギャラクシア / 5着 5番 ミッドナイトフレア / 6着 4番 ゴールドスピリット / 7着 6番 サンダーウィング着差：2着 2馬身 / 3着 7番：1馬身MY BET 的中 1件 / 払戻 40Gold結果表示 発表中秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:35:54.734Z\"}\n{\"betSlips\":\"単勝 110G / オッズ 2.1倍見込 21G取消\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"990G\",\"guest\":\"体験モード\",\"phase\":\"GOAL\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着2番 スターリーレオンWINNER2着3番 ネビュラドリーム2馬身3着7番 ブラックオーロラ1馬身4着 1番 ギャラクシア / 5着 5番 ミッドナイトフレア / 6着 4番 ゴールドスピリット / 7着 6番 サンダーウィング着差：2着 2馬身 / 3着 7番：1馬身MY BET 的中 1件 / 払戻 40Gold結果表示 発表中秒次のレース準備へ\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:36:41.143Z\"}\n{\"betSlips\":\"まだ投票はありません。\",\"bootError\":\"\",\"count\":\"0\",\"distance\":\"0\",\"gold\":\"1,011G\",\"guest\":\"体験モード\",\"phase\":\"GOAL\",\"raceOn\":true,\"resultButton\":{\"disabled\":false,\"rect\":{\"height\":54,\"width\":420.453125,\"x\":30.765625,\"y\":467.59375},\"text\":\"次のレース準備へ\",\"topAtCenter\":{\"cls\":\"resultNext\",\"id\":\"resultNext\",\"tag\":\"BUTTON\"},\"visible\":true},\"resultText\":\"OFFICIAL RESULT着順確定1着1番 ギャラクシアWINNER2着7番 ブラックオーロラ2馬身半3着2番 スターリーレオン2馬身4着 6番 サンダーウィング / 5着 4番 ゴールドスピリット / 6着 3番 ネビュラドリーム / 7着 5番 ミッドナイトフレア着差：2着 2馬身半 / 3着 2番：2馬身MY BET 的中 1件 / 払戻 21Gold結果表示 発表中秒次のレース準備へ\",\"resultVisible\":true,\"runners\":[{\"id\":\"runner1\",\"visible\":true},{\"id\":\"runner2\",\"visible\":true},{\"id\":\"runner3\",\"visible\":true},{\"id\":\"runner4\",\"visible\":true},{\"id\":\"runner5\",\"visible\":true},{\"id\":\"runner6\",\"visible\":true},{\"id\":\"runner7\",\"visible\":true}],\"time\":\"2026-10-06T03:36:54.425Z\"}\n{\"betSlips\":\"まだ投票はありません。\",\"bootError\":\"\",\"count\":\"109\",\"distance\":\"0\",\"gold\":\"1,011G\",\"guest\":\"体験モード\",\"phase\":\"GOAL\",\"raceOn\":false,\"resultButton\":{\"disabled\":true,\"rect\":{\"height\":0,\"width\":0,\"x\":0,\"y\":0},\"text\":\"次のレースを準備中…\",\"topAtCenter\":{\"cls\":\"\",\"id\":\"gh-demo-warning\",\"tag\":\"DIV\"},\"visible\":false},\"resultText\":\"OFFICIAL RESULT着順確定1着1番 ギャラクシアWINNER2着7番 ブラックオーロラ2馬身半3着2番 スターリーレオン2馬身4着 6番 サンダーウィング / 5着 4番 ゴールドスピリット / 6着 3番 ネビュラドリーム / 7着 5番 ミッドナイトフレア着差：2着 2馬身半 / 3着 2番：2馬身MY BET 的中 1件 / 払戻 21Gold結果表示 発表中秒次のレースを準備中…\",\"resultVisible\":false,\"runners\":[{\"id\":\"runner1\",\"visible\":false},{\"id\":\"runner2\",\"visible\":false},{\"id\":\"runner3\",\"visible\":false},{\"id\":\"runner4\",\"visible\":false},{\"id\":\"runner5\",\"visible\":false},{\"id\":\"runner6\",\"visible\":false},{\"id\":\"runner7\",\"visible\":false}],\"time\":\"2026-10-06T03:37:09.311Z\"}\n"
+    }
+  ]
+}

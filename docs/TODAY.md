@@ -1,4 +1,4 @@
-# TODAY — 2026-10-05
+# TODAY — 2026-10-06
 
 ## Single goal
 Prove the currently published V166-based DEV can complete the real user core loop:
@@ -11,7 +11,9 @@ GUEST → confirm 1000G → place BET → exactly 7 horses → race start/run �
 - Current public DEV: https://misty-horizon-1435.hosted.pageshare.ai/
 - Published HTML body exact match with GitHub candidate: PASS
 - Static ledger assertions: 13/13 PASS
-- Runtime core loop: NOT_TESTED because the previous cloud browser timed out after title load.
+- Current public: V169 / PageShare Version32.
+- Runtime guest core loop: PASS after three consecutive complete real in-app-browser runs without reload on 2026-10-06.
+- Current checkpoint: `CP_V169_PUBLIC_CORE_LOOP_3RUN_PASS`.
 - Do not infer a game defect from that tool timeout alone.
 
 ## PASS criteria
@@ -63,7 +65,7 @@ ROLLBACK
 FIRST BLOCKER (if any)
 NEXT ONE ACTION
 
-## Latest runtime evidence — 2026-10-05
+## Previous runtime evidence — 2026-10-05
 - Published DEV: PageShare Version32, V169 core-loop transition reset.
 - Source commit: `1b92690e950758069359a1605752f302c3585864`.
 - Current validation checkpoint: `CP_V169_PUBLIC_CORE_LOOP_PARTIAL_BROWSER_CRASH`.
@@ -74,3 +76,17 @@ NEXT ONE ACTION
 - Rollback: pre-fix Version31 retained; original public source and branch commit7a0e0332564b9765e2f8173cc5890ae81a9c3d0e retained in the V169 checkpoint. Existing Version28 rollback retained.
 - Next one action: recover a responsive real browser and repeat GUEST→1000G→BET→7 horses→start→GOAL→RESULT→next race three consecutive times without reload.
 - Scope remains this core loop only. RC MASTER, GPS/store-reward specs, production, member data and deferred features are unchanged.
+
+## Latest runtime evidence — 2026-10-06
+- Current CP: `CP_V169_PUBLIC_CORE_LOOP_3RUN_PASS`.
+- CORE LOOP: PASS for the observed guest loop. Same public Version32, same in-app tab; no reload, crash or game stop across RUN1/RUN2/RUN3.
+- Each run: GUEST → exactly1000G → accepted BET → exactly7 horses actually start → GOAL → official RESULT → click next-race button → select a horse and verify enabled BET action in next race.
+- RUN1: all7 PASS; race72→73; 1000→990→990G; single horse1 10G; no hit.
+- RUN2: all7 PASS; race73→74; 1000→930→970→1020G; seven singles10G each; payout40G plus existing first-clear50G.
+- RUN3: all7 PASS; race74→75; 1000→990→1011G; single horse1 10G; payout21G.
+- No game-source changes or republish. Existing source blob `74e79339f3544644c480576103dea00185cb5e58` and active Version32 rechecked after the runs. Only evidence/checkpoint/TODAY were saved.
+- Previous human Edge next-button FAIL remains historical evidence. It was not reproduced here; its original cause is still unconfirmed. No speculative game fix.
+- Evidence: `checkpoints/V169_PUBLIC_CORE_LOOP_3RUN_PASS/`; screenshots and DOM recordings retained locally with SHA256 manifest.
+- Rollback: current public Version32, prior evidence commit `2e8a39724c636b9b93fc927bfd3f7d58e95f5fcc`, existing Version31/pre-fix commit and Version28 retained.
+- Next one action: reproduce the previously reported Edge RESULT-button click conditions on the same public version. Do not advance to new features automatically.
+- RC MASTER, GPS/store-reward specifications, production, real member data and deferred features are unchanged. Member/server/payment flows remain NOT_TESTED by these guest runs.
