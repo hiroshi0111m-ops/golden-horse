@@ -69,4 +69,6 @@ for i, row in enumerate(rows[:12], 1):
         f"HOTSPOT#{i} score={row['score']} line={row['start_line']} "
         f"offset={row['start_offset']} counts={row['counts']}"
     )
+    if i <= 5:
+        print(f"HOTSPOT_SNIPPET#{i}={row['snippet'][:320]}")
 print("FREEZE_HOTSPOT_REPORT=PASS")
