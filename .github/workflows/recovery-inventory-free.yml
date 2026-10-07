@@ -1,0 +1,39 @@
+name: GOLDEN HORSE free recovery inventory
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "31 17 * * 0"
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Build checkpoint recovery inventory
+        run: python scripts/gh_recovery_inventory.py
+
+      - name: Save branch and commit inventory
+        run: |
+          git branch -a > gh-branches.txt
+          git log --oneline --decorate -n 200 > gh-recent-commits.txt
+
+      - name: Upload recovery inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-recovery-inventory
+          path: |
+            gh-recovery-inventory.json
+            gh-branches.txt
+            gh-recent-commits.txt
+          retention-days: 7
