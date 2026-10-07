@@ -28,3 +28,12 @@ trivy-results.sarif
 Thumbs.db
 .vscode/
 .idea/
+gh-dom-integrity-report.json
+gh-runtime-risk-report.json
+gh-recovery-inventory.json
+gh-branches.txt
+gh-recent-commits.txt
+deep-qa-report.json
+deep-qa-*.png
+client-matrix-report.json
+client-matrix-*.png
