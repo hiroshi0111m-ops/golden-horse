@@ -1,0 +1,78 @@
+name: GOLDEN HORSE guard
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/**"
+      - "v*-dev"
+      - "v*-runtime-*"
+      - "main"
+
+concurrency:
+  group: golden-horse-guard-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Static guard
+        run: python scripts/gh_guard.py
+
+      - name: Source bloat guard
+        run: python scripts/gh_quality_report.py
+
+      - name: Build static UI inventory
+        run: python scripts/gh_ui_inventory.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-golden-horse-playwright-v1
+
+      - name: Install Playwright
+        run: |
+          npm --version
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Start local server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/golden-horse-http.log 2>&1 &
+          echo $! > /tmp/golden-horse-http.pid
+          sleep 2
+
+      - name: Runtime smoke
+        run: timeout 45s node scripts/gh_runtime_smoke.mjs
+
+      - name: CPU probe if browser is unresponsive
+        if: failure()
+        continue-on-error: true
+        timeout-minutes: 2
+        run: timeout 35s node scripts/gh_cpu_probe.mjs
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-runtime-diagnostics
+          path: |
+            runtime-smoke-*.png
+            golden-horse-cpu-profile.json
+            playwright-trace.zip
+            runtime-performance-metrics.json
+            gh-ui-inventory.json
+          if-no-files-found: ignore
+          retention-days: 3

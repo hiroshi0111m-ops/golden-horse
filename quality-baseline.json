@@ -1,0 +1,15 @@
+{
+  "source": "V166_REWARD_IDEMPOTENCY_LEDGER",
+  "index_bytes": 2071318,
+  "counts": {
+    "setInterval": 36,
+    "setTimeout": 229,
+    "MutationObserver": 124,
+    "addEventListener": 276,
+    "script_tags": 200
+  },
+  "limits": {
+    "index_bytes_multiplier": 1.2,
+    "count_multiplier": 1.25
+  }
+}

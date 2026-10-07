@@ -1,0 +1,27 @@
+name: Dependency Review
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: high
+
+      - name: Note
+        if: always()
+        run: echo "Automatic PR mode will be enabled after GitHub Dependency graph is enabled for this repository."
