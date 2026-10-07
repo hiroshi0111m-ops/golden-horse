@@ -69,10 +69,11 @@ jobs:
           sleep 2
 
       - name: Runtime smoke
+        id: runtime
         run: timeout 45s node scripts/gh_runtime_smoke.mjs
 
       - name: CPU probe if browser is unresponsive
-        if: failure()
+        if: steps.runtime.outcome == 'failure'
         continue-on-error: true
         timeout-minutes: 2
         run: timeout 35s node scripts/gh_cpu_probe.mjs
