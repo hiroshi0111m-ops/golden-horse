@@ -1,0 +1,47 @@
+name: GOLDEN HORSE seven-step runtime
+
+on:
+  push:
+    branches:
+      - "v168-boot-loop-fix-dev"
+    paths:
+      - "scripts/gh_7step_runtime.mjs"
+      - ".github/workflows/seven-step-runtime.yml"
+      - "checkpoints/V168_BOOT_LOOP_FIX/index.html"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gh-seven-step-runtime
+  cancel-in-progress: true
+
+jobs:
+  seven-step:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v6
+      - id: chrome
+        run: |
+          CHROME_BIN="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME_BIN"
+          echo "chrome_bin=$CHROME_BIN" >> "$GITHUB_OUTPUT"
+      - run: npm install --no-save playwright-core
+      - run: |
+          python -m http.server 4173 --bind 127.0.0.1 >/tmp/gh-7step-http.log 2>&1 &
+          sleep 1
+      - name: Run full guest race flow
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome_bin }}
+        run: timeout 130s node scripts/gh_7step_runtime.mjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-seven-step-runtime
+          path: |
+            seven-step-runtime-report.json
+            seven-step-*.png
+          if-no-files-found: ignore
+          retention-days: 3
