@@ -12,7 +12,7 @@ on:
 jobs:
   guard:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -39,12 +39,14 @@ jobs:
           sleep 2
 
       - name: Runtime smoke
+        env:
+          GH_LIVE_URL: "https://misty-horizon-1435.hosted.pageshare.ai/"
         run: node scripts/gh_runtime_smoke.mjs
 
-      - name: Upload smoke screenshot
+      - name: Upload smoke screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: golden-horse-runtime-smoke
-          path: runtime-smoke.png
+          path: runtime-smoke-*.png
           if-no-files-found: ignore
