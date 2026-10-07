@@ -31,14 +31,40 @@ async function state(page) {
   }));
 }
 
-async function placeFiveGoldBet(page) {
+async function placeFiveGoldBet(page, row) {
   await page.locator("button.horsePick").first().click();
   await page.getByRole("button", { name: "5G", exact: true }).first().click();
   await page.waitForFunction(() => {
     const button = document.getElementById("betBtn");
     return !!button && !button.disabled && !button.classList.contains("gh-v141-notready");
   }, null, { timeout: 12_000 });
+  await page.evaluate(() => {
+    window.__ghClientBetTrace = [];
+    window.addEventListener("click", event => {
+      const button = event.target?.closest?.("#betBtn");
+      if (!button) return;
+      const entry = {
+        trusted: event.isTrusted,
+        detail: event.detail,
+        defaultBefore: event.defaultPrevented,
+        busyBefore: button.dataset.ghBusy || "",
+        blockedBefore: Number(window.GH_V54_TAP_GUARD?.blocked || 0),
+      };
+      window.__ghClientBetTrace.push(entry);
+      queueMicrotask(() => Object.assign(entry, {
+        defaultAfter: event.defaultPrevented,
+        busyAfter: button.dataset.ghBusy || "",
+        blockedAfter: Number(window.GH_V54_TAP_GUARD?.blocked || 0),
+        modalOn: !!document.getElementById("gh-v141-confirm")?.classList.contains("on"),
+        selections: typeof betSelections !== "undefined" ? [...betSelections] : null,
+        stake: typeof stake !== "undefined" ? Number(stake) : null,
+        mode: typeof currentMode === "function" ? currentMode() : null,
+      }));
+    }, true);
+  });
   await page.locator("#betBtn").click({ force: true });
+  await page.waitForTimeout(50);
+  row.betTrace = await page.evaluate(() => window.__ghClientBetTrace || []);
   const confirm = page.locator("#gh-v141-ok");
   await confirm.waitFor({ state: "visible", timeout: 5_000 });
   await page.waitForTimeout(700);
@@ -100,7 +126,7 @@ async function runClient(browser, cfg) {
     row.initialGold = before.gold;
     if (before.gold !== 1000) throw new Error(`initial gold=${before.gold}`);
 
-    row.slips = await placeFiveGoldBet(page);
+    row.slips = await placeFiveGoldBet(page, row);
     const afterBet = await state(page);
     row.goldAfterBet = afterBet.gold;
     if (afterBet.gold !== 995) throw new Error(`5G deduction mismatch: ${afterBet.gold}`);
