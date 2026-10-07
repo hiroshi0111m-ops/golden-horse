@@ -12,14 +12,24 @@ count = len(scripts)
 
 VARIANTS = {
     "baseline": [],
-    "disable_core_1": [(1, 1)],
     "keep_core_only": [(2, count)],
-    "disable_2_100": [(2, min(100, count))],
-    "disable_101_200": [(101, count)],
-    "disable_2_50": [(2, min(50, count))],
-    "disable_51_100": [(51, min(100, count))],
-    "disable_101_150": [(101, min(150, count))],
-    "disable_151_200": [(151, count)],
+
+    # Keep core + one quarter. These identify which script ranges can
+    # independently make boot non-responsive.
+    "keep_2_50": [(51, count)],
+    "keep_51_100": [(2, 50), (101, count)],
+    "keep_101_150": [(2, 100), (151, count)],
+    "keep_151_200": [(2, 150)],
+
+    # Keep core + smaller eighths for immediate second-stage isolation.
+    "keep_2_25": [(26, count)],
+    "keep_26_50": [(2, 25), (51, count)],
+    "keep_51_75": [(2, 50), (76, count)],
+    "keep_76_100": [(2, 75), (101, count)],
+    "keep_101_125": [(2, 100), (126, count)],
+    "keep_126_150": [(2, 125), (151, count)],
+    "keep_151_175": [(2, 150), (176, count)],
+    "keep_176_200": [(2, 175)],
 }
 
 def disabled(index, ranges):
