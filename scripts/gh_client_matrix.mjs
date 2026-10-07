@@ -11,12 +11,12 @@ function deviceOptions(name) {
 const pixel = deviceOptions("Pixel 7");
 const iphone = deviceOptions("iPhone 15");
 const clients = [
+  { name: "android-chrome", engine: "chromium", contextOptions: pixel },
   {
     name: "line-android-simulated",
     engine: "chromium",
     contextOptions: { ...pixel, userAgent: `${pixel.userAgent} Line/14.0.0` },
   },
-  { name: "android-chrome", engine: "chromium", contextOptions: pixel },
   { name: "iphone-safari", engine: "webkit", contextOptions: iphone },
 ];
 
@@ -72,15 +72,27 @@ async function runClient(browser, cfg) {
     betHistory: null,
     nextCountdown: null,
     transitionMode: null,
+    appReady: null,
     pageErrors,
     consoleErrors,
   };
 
   try {
-    const response = await page.goto(url, { waitUntil: "commit", timeout: 20_000 });
+    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
     row.http = response?.status() ?? null;
     if (row.http !== 200) throw new Error(`HTTP ${row.http}`);
-    await page.waitForTimeout(2_500);
+    await page.waitForFunction(() => {
+      const ready = document.readyState === "interactive" || document.readyState === "complete";
+      const finalGuard = typeof window.GH_V166_REWARD_IDEMPOTENCY_LEDGER === "object";
+      const betGuard = typeof window.GH_V141 === "object";
+      return ready && finalGuard && betGuard && document.querySelectorAll("button.horsePick").length === 7;
+    }, null, { timeout: 20_000 });
+    row.appReady = await page.evaluate(() => ({
+      readyState: document.readyState,
+      betGuard: !!window.GH_V141,
+      finalGuard: !!window.GH_V166_REWARD_IDEMPOTENCY_LEDGER,
+      horseChoices: document.querySelectorAll("button.horsePick").length,
+    }));
 
     const body = await page.locator("body").innerText();
     if (!/体験モード|GUEST|ゲスト/i.test(body)) throw new Error("guest marker missing");
