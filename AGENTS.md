@@ -89,3 +89,7 @@ On the user's Windows development PC:
 - `RUN_GOLDEN_HORSE_BROWSER_TEST_FREE.bat` runs the Android-size Playwright smoke locally, avoiding GitHub queue time.
 - `ONE_CLICK_GOLDEN_HORSE_DEV.bat` starts checked local PC + same-Wi-Fi phone preview.
 - `START_GOLDEN_HORSE_PUBLIC_FREE.bat` starts a temporary Cloudflare Quick Tunnel for phone/LINE testing outside the local Wi-Fi. It is development-only; do not treat its random URL as production.
+
+
+## V168 targeted boot loop fix
+This branch changes only three observer feedback loops identified by automated boot bisection: V106 auto-retreat, V116 cinema-audio, and V123 venue-label cleanup. V166 remains immutable rollback. Do not promote V168 until fast runtime, full guard, and seven-step guest race automation pass.
