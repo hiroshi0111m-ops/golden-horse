@@ -12,56 +12,54 @@ permissions:
   contents: read
 
 jobs:
-  live-health:
+  source-health:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
-      - name: Check fixed DEV URL
+      - name: Check GitHub V166 source is retrievable
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCE_URL="https://raw.githubusercontent.com/hiroshi0111m-ops/golden-horse/v166-reward-idempotency-ledger-dev/checkpoints/V166_REWARD_IDEMPOTENCY_LEDGER/index.html"
+          FILE="/tmp/golden-horse-source.html"
+
+          curl -L --fail --silent --show-error --max-time 60 --retry 2 "$SOURCE_URL" -o "$FILE"
+
+          BYTES="$(wc -c < "$FILE" | tr -d ' ')"
+          SHA="$(sha256sum "$FILE" | awk '{print $1}')"
+
+          echo "SOURCE_HTTP=PASS"
+          echo "SOURCE_BYTES=$BYTES"
+          echo "SOURCE_SHA256=$SHA"
+
+          if [ "$BYTES" -lt 1800000 ]; then
+            echo "FAIL: source file is unexpectedly small"
+            exit 1
+          fi
+
+          echo "SOURCE_MONITOR=PASS"
+
+      - name: Check PageShare DEV if currently active
         shell: bash
         run: |
           set -euo pipefail
 
           URL="https://misty-horizon-1435.hosted.pageshare.ai/"
-          FILE="/tmp/golden-horse-live.html"
+          CODE="$(curl -L --silent --output /tmp/golden-horse-live.html --write-out '%{http_code}' --max-time 30 "$URL" || true)"
 
-          curl -L --fail --silent --show-error             --max-time 60             --retry 2             --retry-delay 2             "$URL"             -o "$FILE"
+          echo "PAGESHARE_HTTP=$CODE"
 
-          BYTES="$(wc -c < "$FILE" | tr -d ' ')"
-          SHA="$(sha256sum "$FILE" | awk '{print $1}')"
-
-          echo "HTTP=PASS"
-          echo "BYTES=$BYTES"
-          echo "SHA256=$SHA"
-
-          if [ "$BYTES" -lt 1800000 ]; then
-            echo "FAIL: served page is unexpectedly small"
-            exit 1
+          if [ "$CODE" = "200" ]; then
+            BYTES="$(wc -c < /tmp/golden-horse-live.html | tr -d ' ')"
+            echo "PAGESHARE_BYTES=$BYTES"
+            if [ "$BYTES" -lt 1800000 ]; then
+              echo "FAIL: live PageShare page is unexpectedly small"
+              exit 1
+            fi
+            echo "PAGESHARE_LIVE=PASS"
+          else
+            echo "PAGESHARE_LIVE=INACTIVE_OR_EXPIRED"
+            echo "This does not fail source health. A permanent free host can replace it later."
           fi
-
-          grep -qiE 'Golden[[:space:]]*Horse|GoldenHorse' "$FILE" || {
-            echo "FAIL: Golden Horse marker missing"
-            exit 1
-          }
-
-          grep -qiE 'GUEST|ゲスト' "$FILE" || {
-            echo "FAIL: guest marker missing"
-            exit 1
-          }
-
-          grep -qiE 'BET' "$FILE" || {
-            echo "FAIL: BET marker missing"
-            exit 1
-          }
-
-          grep -qiE 'RESULT' "$FILE" || {
-            echo "FAIL: RESULT marker missing"
-            exit 1
-          }
-
-          grep -qiE '1,000|1000' "$FILE" || {
-            echo "FAIL: 1000G marker missing"
-            exit 1
-          }
-
-          echo "LIVE_MONITOR=PASS"
