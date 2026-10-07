@@ -1,0 +1,50 @@
+name: GOLDEN HORSE guard
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/**"
+      - "v*-dev"
+      - "v*-runtime-*"
+  pull_request:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Static guard
+        run: python scripts/gh_guard.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright
+        run: |
+          npm --version
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Start local server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/golden-horse-http.log 2>&1 &
+          echo $! > /tmp/golden-horse-http.pid
+          sleep 2
+
+      - name: Runtime smoke
+        run: node scripts/gh_runtime_smoke.mjs
+
+      - name: Upload smoke screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-runtime-smoke
+          path: runtime-smoke.png
+          if-no-files-found: ignore
