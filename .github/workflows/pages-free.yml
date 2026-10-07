@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout GOLDEN HORSE V166
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: v166-reward-idempotency-ledger-dev
 
