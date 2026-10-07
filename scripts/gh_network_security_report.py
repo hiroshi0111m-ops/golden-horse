@@ -21,8 +21,8 @@ def active_index():
 p = active_index()
 s = p.read_text(encoding="utf-8", errors="replace")
 
-raw_urls = re.findall(r'https?://[^\\s<>()]+', s)
-urls = sorted(set(u.rstrip('"',;}]') for u in raw_urls))
+raw_urls = re.findall(r"https?://[^\\s<>()]+", s)
+urls = sorted(set(raw_urls))
 domains = {}
 for u in urls:
     try:
