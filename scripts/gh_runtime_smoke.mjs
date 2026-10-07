@@ -4,6 +4,15 @@ import path from "path";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
 function walk(dir, out = []) {
   for (const name of fs.readdirSync(dir)) {
     if (name === ".git" || name === "node_modules") continue;
@@ -90,9 +99,9 @@ try {
   }
 
   try {
-    const client = await context.newCDPSession(page);
-    await client.send("Performance.enable");
-    const metrics = await client.send("Performance.getMetrics");
+    const client = await withTimeout(context.newCDPSession(page), 5000, "CDP session");
+    await withTimeout(client.send("Performance.enable"), 5000, "Performance.enable");
+    const metrics = await withTimeout(client.send("Performance.getMetrics"), 5000, "Performance.getMetrics");
     fs.writeFileSync("runtime-performance-metrics.json", JSON.stringify(metrics, null, 2));
   } catch (err) {
     console.error(`PERFORMANCE_METRICS_FAIL=${String(err)}`);
@@ -109,11 +118,15 @@ try {
   }
 } finally {
   try {
-    await context.tracing.stop({ path: "playwright-trace.zip" });
+    await withTimeout(
+      context.tracing.stop({ path: "playwright-trace.zip" }),
+      8000,
+      "Playwright trace save"
+    );
   } catch (err) {
     console.error(`TRACE_SAVE_FAIL=${String(err)}`);
   }
-  await browser.close().catch(() => {});
+  await withTimeout(browser.close(), 5000, "browser close").catch(() => {});
 }
 
 if (failed) process.exit(1);
