@@ -2,6 +2,14 @@ name: GOLDEN HORSE client matrix free
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - "automation/v169-timing-contract"
+    paths:
+      - "scripts/gh_client_matrix.mjs"
+      - "scripts/create_v171_three_cycle_fix.py"
+      - ".github/workflows/client-matrix-free.yml"
+      - "checkpoints/V168_BOOT_LOOP_FIX/index.html"
 
 permissions:
   contents: read
@@ -9,7 +17,7 @@ permissions:
 jobs:
   client-matrix:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -25,14 +33,20 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium webkit
 
+      - name: Generate V171 and run preflight
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V171_THREE_CYCLE_FIX/index.html
+        run: |
+          python scripts/create_v171_three_cycle_fix.py
+          python scripts/gh_preflight.py
+
       - name: Start local server
         run: |
           python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
           sleep 2
 
       - name: Run Android / LINE-simulated / iPhone matrix
-        continue-on-error: true
-        run: timeout 120s node scripts/gh_client_matrix.mjs
+        run: timeout 700s node scripts/gh_client_matrix.mjs
 
       - name: Upload client matrix
         if: always()
@@ -42,5 +56,6 @@ jobs:
           path: |
             client-matrix-report.json
             client-matrix-*.png
+            checkpoints/V171_THREE_CYCLE_FIX/index.html
           if-no-files-found: ignore
           retention-days: 3
