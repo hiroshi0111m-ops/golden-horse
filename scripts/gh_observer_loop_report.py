@@ -95,6 +95,7 @@ for m in re.finditer(r"setInterval\s*\((.{0,1800}?),\s*(\d{1,6})\s*\)", s, re.S)
 fast_intervals.sort(key=lambda x: (x["ms"], x["offset"]))
 
 report = {
+    "report_version": 1,
     "active_index": str(p.relative_to(ROOT)),
     "observer_count": len(rows),
     "top_observers": rows[:60],
