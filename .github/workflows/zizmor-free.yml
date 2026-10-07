@@ -4,10 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "automation/**"
       - "v*-dev"
       - "v*-runtime-*"
       - "main"
+    paths:
+      - ".github/workflows/**"
 
 concurrency:
   group: zizmor-${{ github.ref_name }}
