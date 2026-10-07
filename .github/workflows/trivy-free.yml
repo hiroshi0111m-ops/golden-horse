@@ -10,7 +10,7 @@ on:
   pull_request:
 
 concurrency:
-  group: trivy-${{ github.ref }}
+  group: trivy-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 permissions:
