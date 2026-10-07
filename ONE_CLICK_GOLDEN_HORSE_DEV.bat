@@ -21,25 +21,16 @@ if %errorlevel%==0 (
   )
 )
 
-echo [1/3] 静的チェック...
-%PY% scripts\gh_guard.py
+echo [1/2] 無料プレフライトチェック...
+%PY% scripts\gh_preflight.py
 if errorlevel 1 (
   echo.
-  echo 静的チェックで停止しました。ゲームは起動しません。
+  echo チェックで停止しました。ゲームは起動しません。
   pause
   exit /b 1
 )
 
-echo [2/3] 肥大化チェック...
-%PY% scripts\gh_quality_report.py
-if errorlevel 1 (
-  echo.
-  echo 肥大化チェックで停止しました。ゲームは起動しません。
-  pause
-  exit /b 1
-)
-
-echo [3/3] ローカルDEVサーバー起動...
+echo [2/2] ローカルDEVサーバー起動...
 start "GOLDEN HORSE DEV SERVER" cmd /k "%PY% scripts\serve_golden_horse.py"
 timeout /t 2 /nobreak >nul
 
