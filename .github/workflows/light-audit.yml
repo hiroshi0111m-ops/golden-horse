@@ -12,6 +12,7 @@ on:
       - "scripts/gh_dom_integrity_report.py"
       - "scripts/gh_runtime_risk_report.py"
       - "scripts/gh_freeze_hotspots.py"
+      - "scripts/gh_observer_loop_report.py"
 
 concurrency:
   group: gh-light-audit-${{ github.ref_name }}
@@ -38,6 +39,9 @@ jobs:
 
       - name: Freeze hotspot scoring
         run: python scripts/gh_freeze_hotspots.py
+
+      - name: Observer-loop and fast-interval analysis
+        run: python scripts/gh_observer_loop_report.py
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:
@@ -47,4 +51,5 @@ jobs:
             gh-dom-integrity-report.json
             gh-runtime-risk-report.json
             gh-freeze-hotspots.json
+            gh-observer-loop-report.json
           retention-days: 3
