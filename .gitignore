@@ -14,6 +14,7 @@ venv/
 .lighthouseci/
 runtime-smoke-*.png
 runtime-performance-metrics.json
+runtime-network-report.json
 golden-horse-cpu-profile.json
 playwright-trace.zip
 gh-ui-inventory.json
