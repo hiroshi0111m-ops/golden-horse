@@ -1,0 +1,61 @@
+name: GOLDEN HORSE boot bisect free
+
+on:
+  push:
+    branches:
+      - "v166-reward-idempotency-ledger-dev"
+    paths:
+      - "scripts/gh_boot_bisect.py"
+      - "scripts/gh_boot_bisect.mjs"
+      - ".github/workflows/boot-bisect-free.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gh-boot-bisect
+  cancel-in-progress: true
+
+jobs:
+  bisect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate script-range variants
+        run: python scripts/gh_boot_bisect.py
+
+      - name: Locate system Chrome
+        id: chrome
+        run: |
+          CHROME_BIN="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME_BIN"
+          echo "chrome_bin=$CHROME_BIN" >> "$GITHUB_OUTPUT"
+
+      - name: Install lightweight browser driver
+        run: npm install --no-save playwright-core
+
+      - name: Start server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 >/tmp/gh-bisect-http.log 2>&1 &
+          sleep 1
+
+      - name: Run boot bisect
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome_bin }}
+        run: timeout 150s node scripts/gh_boot_bisect.mjs
+
+      - name: Upload bisect report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-boot-bisect
+          path: |
+            bisect_variants/manifest.json
+            bisect-results.json
+          if-no-files-found: ignore
+          retention-days: 3
