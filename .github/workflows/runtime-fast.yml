@@ -8,7 +8,7 @@ on:
       - "v169-*-dev"
     paths:
       - "scripts/gh_runtime_fast.mjs"
-      - "checkpoints/V167_BOOT_PERF/index.html"
+      - "checkpoints/**/index.html"
       - ".github/workflows/runtime-fast.yml"
   workflow_dispatch:
 
