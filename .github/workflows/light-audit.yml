@@ -9,6 +9,8 @@ on:
     paths:
       - "checkpoints/**/index.html"
       - "scripts/gh_network_security_report.py"
+      - "scripts/gh_dom_integrity_report.py"
+      - "scripts/gh_runtime_risk_report.py"
 
 concurrency:
   group: gh-light-audit-${{ github.ref_name }}
