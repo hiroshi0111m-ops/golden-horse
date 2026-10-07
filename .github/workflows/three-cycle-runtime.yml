@@ -8,6 +8,7 @@ on:
       - "scripts/gh_3cycle_runtime.mjs"
       - "scripts/create_v169_race_loop_fix.py"
       - "scripts/create_v170_race_timing_fix.py"
+      - "scripts/create_v171_three_cycle_fix.py"
       - ".github/workflows/three-cycle-runtime.yml"
       - "checkpoints/V168_BOOT_LOOP_FIX/index.html"
   workflow_dispatch:
@@ -31,10 +32,10 @@ jobs:
           test -n "$CHROME_BIN"
           echo "chrome_bin=$CHROME_BIN" >> "$GITHUB_OUTPUT"
       - run: npm install --no-save playwright-core
-      - run: python scripts/create_v170_race_timing_fix.py
+      - run: python scripts/create_v171_three_cycle_fix.py
       - run: python scripts/gh_preflight.py
         env:
-          GH_ACTIVE_INDEX: checkpoints/V170_RACE_TIMING_FIX/index.html
+          GH_ACTIVE_INDEX: checkpoints/V171_THREE_CYCLE_FIX/index.html
       - name: Run three complete races without reload
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome_bin }}
@@ -49,6 +50,6 @@ jobs:
           path: |
             three-cycle-runtime-report.json
             three-cycle-failure.png
-            checkpoints/V170_RACE_TIMING_FIX/index.html
+            checkpoints/V171_THREE_CYCLE_FIX/index.html
           if-no-files-found: ignore
           retention-days: 7

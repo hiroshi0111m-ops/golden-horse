@@ -24,14 +24,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      GH_ACTIVE_INDEX: checkpoints/V170_RACE_TIMING_FIX/index.html
+      GH_ACTIVE_INDEX: checkpoints/V171_THREE_CYCLE_FIX/index.html
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate V170 race timing fix
-        run: python scripts/create_v170_race_timing_fix.py
+      - name: Generate V171 three-cycle fix
+        run: python scripts/create_v171_three_cycle_fix.py
 
       - name: Syntax-check automation scripts
         run: |
