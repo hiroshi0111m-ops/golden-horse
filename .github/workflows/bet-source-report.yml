@@ -1,0 +1,21 @@
+name: GOLDEN HORSE BET source report
+
+on:
+  push:
+    branches:
+      - "v168-boot-loop-fix-dev"
+    paths:
+      - "scripts/gh_bet_source_report.py"
+      - ".github/workflows/bet-source-report.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v6
+      - run: python scripts/gh_bet_source_report.py
