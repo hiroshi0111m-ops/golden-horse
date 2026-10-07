@@ -62,7 +62,23 @@ async function placeFiveGoldBet(page, row) {
       }));
     }, true);
   });
-  await page.locator("#betBtn").click({ force: true });
+  const betButton = page.locator("#betBtn");
+  await betButton.scrollIntoViewIfNeeded();
+  row.betHitTarget = await betButton.evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const hit = document.elementFromPoint(x, y);
+    return {
+      x: Math.round(x),
+      y: Math.round(y),
+      tag: hit?.tagName || null,
+      id: hit?.id || null,
+      className: typeof hit?.className === "string" ? hit.className : null,
+      isBetButton: hit === button || !!hit?.closest?.("#betBtn"),
+    };
+  });
+  await betButton.click({ timeout: 10_000 });
   await page.waitForTimeout(50);
   row.betTrace = await page.evaluate(() => window.__ghClientBetTrace || []);
   const confirm = page.locator("#gh-v141-ok");
