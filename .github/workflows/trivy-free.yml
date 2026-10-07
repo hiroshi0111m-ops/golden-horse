@@ -2,12 +2,16 @@ name: Trivy free security scan
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "41 18 * * *"
   push:
     branches:
-      - "automation/**"
       - "v*-dev"
       - "v*-runtime-*"
-      - "main"
+    paths:
+      - "checkpoints/**"
+      - ".github/workflows/**"
+      - "scripts/**"
 
 concurrency:
   group: trivy-${{ github.event.pull_request.head.ref || github.ref_name }}
