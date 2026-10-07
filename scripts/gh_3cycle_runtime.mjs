@@ -79,22 +79,40 @@ async function runCycle(page,cycle){
 
   // The product automatically advances after the locked result hold. Avoid a
   // test-only race between that valid transition and Playwright actionability.
-  const transitionMode=await page.evaluate(()=>{
+  const transition=await page.evaluate(()=>{
     const next=document.getElementById("resultNext");
     const overlay=document.getElementById("finishOverlay");
     const panel=document.getElementById("finishPanel");
+    const snapshot=()=>({
+      running:typeof running!=="undefined"?!!running:null,
+      transitioning:typeof raceState!=="undefined"?!!raceState.transitioning:null,
+      settled:typeof raceState!=="undefined"?!!raceState.settled:null,
+      overlayOn:overlay?.classList.contains("on")??false,
+      panelHidden:panel?.classList.contains("hidden")??false,
+      buttonDisabled:next?.disabled??null,
+      buttonText:(next?.textContent||"").trim(),
+      activeBets:typeof state!=="undefined"&&Array.isArray(state.raceBets)?state.raceBets.length:null,
+      betHistory:typeof state!=="undefined"&&Array.isArray(state.betHistory)?state.betHistory.length:null
+    });
     if(!next||!overlay?.classList.contains("on")||panel?.classList.contains("hidden")){
       throw new Error("official result controls are not active");
     }
-    if(next.disabled)return "automatic";
+    const before=snapshot();
+    if(next.disabled)return {mode:"automatic",before,after:snapshot()};
     next.click();
-    return "manual";
+    return {mode:"manual",before,after:snapshot()};
   });
-  await page.waitForFunction(()=>{
-    const screen=document.getElementById("raceScreen");
-    const finish=document.getElementById("finishOverlay");
-    return !!screen&&!screen.classList.contains("on")&&!!finish&&!finish.classList.contains("on");
-  },null,{timeout:8000});
+  log(`CYCLE_${cycle}_TRANSITION`,transition);
+  try{
+    await page.waitForFunction(()=>{
+      const screen=document.getElementById("raceScreen");
+      const finish=document.getElementById("finishOverlay");
+      return !!screen&&!screen.classList.contains("on")&&!!finish&&!finish.classList.contains("on");
+    },null,{timeout:8000});
+  }catch(error){
+    log(`CYCLE_${cycle}_TRANSITION_TIMEOUT`,await appState(page));
+    throw error;
+  }
   const after=await appState(page);
   if(after.activeBets!==0)throw new Error(`cycle ${cycle}: active bets not archived`);
   if(after.betHistory<(before.betHistory??0)+1)throw new Error(`cycle ${cycle}: bet history did not advance`);
@@ -115,7 +133,7 @@ async function runCycle(page,cycle){
     historyBefore:before.betHistory,
     historyAfter:after.betHistory,
     nextCountdown:after.countdown,
-    transitionMode,
+    transitionMode:transition.mode,
     resultType:resultText.split("\n").slice(0,2).join(" / "),
     slips
   };
