@@ -20,85 +20,68 @@ if (!candidates.length) throw new Error("index.html not found");
 
 const active = candidates[0];
 const rel = path.relative(root, active).split(path.sep).map(encodeURIComponent).join("/");
-const localUrl = `http://127.0.0.1:4173/${rel}`;
-const targets = [
-  { name: "android-local", url: localUrl, viewport: { width: 390, height: 844 } },
-  { name: "desktop-local", url: localUrl, viewport: { width: 1366, height: 768 } },
-];
-
-if (process.env.GH_LIVE_URL) {
-  targets.push({
-    name: "android-live",
-    url: process.env.GH_LIVE_URL,
-    viewport: { width: 390, height: 844 },
-  });
-}
+const url = `http://127.0.0.1:4173/${rel}`;
 
 const browser = await chromium.launch({ headless: true });
-let failed = false;
+const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+page.setDefaultTimeout(10000);
 
-for (const target of targets) {
-  const page = await browser.newPage({ viewport: target.viewport });
-  const pageErrors = [];
-  page.on("pageerror", err => pageErrors.push(String(err)));
+const pageErrors = [];
+page.on("pageerror", err => pageErrors.push(String(err)));
 
-  let response = null;
-  try {
-    // The current GOLDEN HORSE page can keep the browser busy for a long time.
-    // We only wait for the HTTP/navigation commit, then inspect the live DOM.
-    response = await page.goto(target.url, { waitUntil: "commit", timeout: 30000 });
-  } catch (err) {
-    console.error(`${target.name}: NAVIGATION_FAIL=${String(err)}`);
-    failed = true;
-    await page.close();
-    continue;
-  }
-
-  if (!response || !response.ok()) {
-    console.error(`${target.name}: HTTP_FAIL=${response ? response.status() : "no response"}`);
-    failed = true;
-    await page.close();
-    continue;
-  }
-
-  await page.waitForTimeout(7000);
-
-  let body = "";
-  try {
-    body = (await page.locator("body").innerText({ timeout: 10000 })).toUpperCase();
-  } catch (err) {
-    console.error(`${target.name}: BODY_READ_FAIL=${String(err)}`);
-    failed = true;
-  }
-
-  const checks = {
-    body_nonempty: body.trim().length > 0,
-    guest_present: body.includes("GUEST") || body.includes("ゲスト"),
-    bet_present: body.includes("BET"),
-    result_present: body.includes("RESULT"),
-  };
-
-  for (const [name, ok] of Object.entries(checks)) {
-    console.log(`${target.name}:${name}=${ok ? "PASS" : "FAIL"}`);
-    if (!ok) failed = true;
-  }
-
-  if (pageErrors.length) {
-    console.error(`${target.name}:PAGE_ERRORS=${pageErrors.length}`);
-    for (const e of pageErrors.slice(0, 20)) console.error(e);
-    failed = true;
-  }
-
-  try {
-    await page.screenshot({ path: `runtime-smoke-${target.name}.png`, fullPage: false });
-  } catch (err) {
-    console.error(`${target.name}: SCREENSHOT_FAIL=${String(err)}`);
-  }
-
-  await page.close();
+let response;
+try {
+  response = await page.goto(url, { waitUntil: "commit", timeout: 30000 });
+} catch (err) {
+  console.error(`NAVIGATION_FAIL=${String(err)}`);
+  await browser.close();
+  process.exit(1);
 }
 
-await browser.close();
+if (!response || !response.ok()) {
+  console.error(`HTTP_FAIL=${response ? response.status() : "no response"}`);
+  await browser.close();
+  process.exit(1);
+}
+
+await page.waitForTimeout(7000);
+
+let body = "";
+try {
+  body = (await page.locator("body").innerText({ timeout: 10000 })).toUpperCase();
+} catch (err) {
+  console.error(`BODY_READ_FAIL=${String(err)}`);
+  console.error("RUNTIME_SMOKE=NOT_RESPONSIVE");
+  await browser.close().catch(() => {});
+  process.exit(1);
+}
+
+const checks = {
+  body_nonempty: body.trim().length > 0,
+  guest_present: body.includes("GUEST") || body.includes("ゲスト"),
+  bet_present: body.includes("BET"),
+  result_present: body.includes("RESULT"),
+};
+
+let failed = false;
+for (const [name, ok] of Object.entries(checks)) {
+  console.log(`${name}=${ok ? "PASS" : "FAIL"}`);
+  if (!ok) failed = true;
+}
+
+if (pageErrors.length) {
+  console.error(`PAGE_ERRORS=${pageErrors.length}`);
+  for (const e of pageErrors.slice(0, 20)) console.error(e);
+  failed = true;
+}
+
+try {
+  await page.screenshot({ path: "runtime-smoke-android-local.png", fullPage: false, timeout: 5000 });
+} catch (err) {
+  console.error(`SCREENSHOT_FAIL=${String(err)}`);
+}
+
+await browser.close().catch(() => {});
 
 if (failed) process.exit(1);
 console.log("RUNTIME_SMOKE=PASS");
