@@ -1,4 +1,4 @@
-from pathlib import Path
+MAP_VERSION=1\nfrom pathlib import Path
 import json
 import re
 
