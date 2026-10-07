@@ -54,8 +54,11 @@ jobs:
           echo $! > /tmp/golden-horse-http.pid
           sleep 2
 
+      - name: Diagnostic timeout regression tests
+        run: node --test tests/runtime-timeout.test.mjs
+
       - name: Runtime smoke
-        run: timeout 45s node scripts/gh_runtime_smoke.mjs
+        run: timeout 90s node scripts/gh_runtime_smoke.mjs
 
       - name: CPU probe if browser is unresponsive
         if: failure()
@@ -73,6 +76,7 @@ jobs:
             golden-horse-cpu-profile.json
             playwright-trace.zip
             runtime-performance-metrics.json
+            runtime-smoke-status.json
             gh-ui-inventory.json
           if-no-files-found: ignore
           retention-days: 3

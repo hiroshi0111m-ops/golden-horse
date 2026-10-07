@@ -4,13 +4,18 @@ import path from "path";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 
-function withTimeout(promise, ms, label) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms)
-    ),
-  ]);
+async function withTimeout(promise, ms, label) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function walk(dir, out = []) {
@@ -65,7 +70,7 @@ try {
     await page.waitForTimeout(7000);
 
     try {
-      body = (await page.locator("body").innerText({ timeout: 10000 })).toUpperCase();
+      body = (await withTimeout(page.locator("body").innerText({ timeout: 10000 }), 10000, "body read")).toUpperCase();
     } catch (err) {
       console.error(`BODY_READ_FAIL=${String(err)}`);
       console.error("RUNTIME_SMOKE=NOT_RESPONSIVE");
@@ -116,7 +121,13 @@ try {
   } catch (err) {
     console.error(`SCREENSHOT_FAIL=${String(err)}`);
   }
-} finally {
+ } finally {
+  fs.writeFileSync("runtime-smoke-status.json", JSON.stringify({
+    active: path.relative(root, active), url,
+    status: failed ? "FAIL" : "PASS",
+    pageErrors, consoleErrors,
+    scope: "boot smoke only; seven-step race flow NOT TESTED",
+  }, null, 2));
   try {
     await withTimeout(
       context.tracing.stop({ path: "playwright-trace.zip" }),
