@@ -2,6 +2,9 @@ name: GOLDEN HORSE free live monitor
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - "main"
   schedule:
     - cron: "17 */6 * * *"
 
