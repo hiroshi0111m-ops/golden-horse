@@ -10,8 +10,7 @@ on:
       - "v*-runtime-*"
     paths:
       - "checkpoints/**"
-      - ".github/workflows/**"
-      - "scripts/**"
+      - ".github/workflows/trivy-free.yml"
 
 concurrency:
   group: trivy-${{ github.event.pull_request.head.ref || github.ref_name }}
