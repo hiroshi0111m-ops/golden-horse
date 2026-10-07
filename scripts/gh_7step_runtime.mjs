@@ -2,7 +2,7 @@ import { chromium } from "playwright-core";
 import fs from "fs";
 
 const chrome=process.env.CHROME_BIN;
-const url="http://127.0.0.1:4173/checkpoints/V168_BOOT_LOOP_FIX/index.html";
+const url="http://127.0.0.1:4173/checkpoints/V169_RACE_LOOP_FIX/index.html";
 const report={url,startedAt:new Date().toISOString(),steps:{},events:[]};
 
 function log(msg,obj){
@@ -41,7 +41,10 @@ page.setDefaultTimeout(8000);
 const pageErrors=[];
 const consoleErrors=[];
 page.on("pageerror",e=>pageErrors.push(String(e)));
-page.on("console",m=>{if(m.type()==="error")consoleErrors.push(m.text())});
+page.on("console",m=>{
+  if(m.type()==="error")consoleErrors.push(m.text());
+
+});
 
 let finalExit=0;
 try{
@@ -118,6 +121,11 @@ try{
     log("BET_STATE_BEFORE_CLICK",before);
 
     await bet.click({force:true});
+    const confirm=page.locator('#gh-v141-ok');
+    await confirm.waitFor({state:'visible',timeout:5000});
+    // The first click opens confirmation; allow the 650ms double-click guard to release.
+    await page.waitForTimeout(700);
+    await confirm.click();
     await page.waitForTimeout(900);
 
     const slips=(await page.locator("#betSlips").innerText().catch(()=>"" )).trim();
@@ -125,7 +133,7 @@ try{
     const toast=await page.locator(".toast,.ghToast,#toast").allInnerTexts().catch(()=>[]);
     log("BET_STATE_AFTER_CLICK",{after,slips,toast});
 
-    const accepted=!/まだ投票はありません/.test(slips);
+    const accepted=slips.length>0&&!/まだ投票はありません/.test(slips);
     if(!accepted)throw new Error("BET did not appear in MY BET: "+slips.slice(0,240)+" | class="+after.betClass+" disabled="+after.betDisabled);
     return {slips:slips.slice(0,300),betClass:after.betClass};
   });
@@ -170,6 +178,8 @@ try{
     return {finishVisible,raceOn,countdown};
   });
 
+  if(pageErrors.length)throw new Error("Uncaught page errors: "+pageErrors.join(" | "));
+  console.log("PAGE_ERRORS=0");
   console.log("SEVEN_STEP_RUNTIME=PASS");
 }catch(e){
   finalExit=1;

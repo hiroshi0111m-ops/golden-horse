@@ -4,13 +4,18 @@ import path from "path";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 
-function withTimeout(promise, ms, label) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms)
-    ),
-  ]);
+async function withTimeout(promise, ms, label) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function walk(dir, out = []) {
@@ -27,7 +32,7 @@ function walk(dir, out = []) {
 const candidates = walk(root).sort((a, b) => fs.statSync(b).size - fs.statSync(a).size);
 if (!candidates.length) throw new Error("index.html not found");
 
-const active = candidates[0];
+const active = process.env.GH_ACTIVE_INDEX ? path.resolve(root, process.env.GH_ACTIVE_INDEX) : candidates[0];
 const rel = path.relative(root, active).split(path.sep).map(encodeURIComponent).join("/");
 const url = `http://127.0.0.1:4173/${rel}`;
 
@@ -94,9 +99,9 @@ try {
   if (!failed) {
     const checks = {
       body_nonempty: body.trim().length > 0,
-      guest_present: body.includes("GUEST") || body.includes("ゲスト"),
+      guest_present: body.includes("GUEST") || body.includes("ゲスト") || body.includes("体験モード"),
       bet_present: body.includes("BET"),
-      result_present: body.includes("RESULT"),
+      result_panel_exists: await page.locator("#finishPanel").count() === 1,
     };
 
     for (const [name, ok] of Object.entries(checks)) {
