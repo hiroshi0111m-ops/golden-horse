@@ -63,3 +63,22 @@ jobs:
             echo "PAGESHARE_LIVE=INACTIVE_OR_EXPIRED"
             echo "This does not fail source health. A permanent free host can replace it later."
           fi
+
+      - name: Check legacy Netlify backup
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          URL="https://golden-horse-live-game.netlify.app/"
+          CODE="$(curl -L --silent --output /tmp/golden-horse-netlify.html --write-out '%{http_code}' --max-time 30 "$URL" || true)"
+          echo "NETLIFY_LEGACY_HTTP=$CODE"
+
+          if [ "$CODE" = "200" ]; then
+            BYTES="$(wc -c < /tmp/golden-horse-netlify.html | tr -d ' ')"
+            echo "NETLIFY_LEGACY_BYTES=$BYTES"
+            echo "NETLIFY_LEGACY=AVAILABLE"
+          else
+            echo "NETLIFY_LEGACY=UNAVAILABLE"
+          fi
+
+          echo "This is a legacy backup only and is not treated as the current V166 DEV."
