@@ -19,6 +19,26 @@ Updated: 2026-10-07
 - GitHub public-repository secret scanning / push protection is available at no extra charge
 - Standard GitHub-hosted runners are free and unlimited for this public repository
 
+- Free Cloudflare Quick Tunnel launcher for temporary HTTPS phone/LINE testing; optional email OTP access restriction
+
+- detect-secrets scheduled secret scanning
+
+- V166 immutable SHA-256 guard and automatic checkpoint manifest
+
+- Structured GitHub bug report form, PR safety checklist, CODEOWNERS, and .gitignore secret protection
+
+- Weekly checkpoint recovery inventory with branch/commit list
+
+- Manual multi-device accessibility deep QA
+
+- Manual Android Chrome / simulated LINE WebView / iPhone Safari client matrix
+
+- Manual OWASP ZAP baseline web security scan
+
+- DOM duplicate-ID report, runtime-risk map, and automatic freeze-hotspot scoring
+
+- Runtime failed-request / HTTP-error network report
+
 ## Installed but waiting on one setting
 - GitHub Dependency Review is installed in manual mode. The repository Dependency graph is currently disabled.
 - GitHub Pages deployment workflow is installed. An automatic test confirmed Pages itself is not enabled yet. One-time setting required: Repository Settings -> Pages -> Build and deployment -> Source = GitHub Actions.
