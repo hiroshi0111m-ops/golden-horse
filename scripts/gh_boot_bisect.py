@@ -13,36 +13,26 @@ count = len(scripts)
 VARIANTS = {
     "baseline": [],
     "keep_core_only": [(2, count)],
-
-    # Keep core + one quarter. These identify which script ranges can
-    # independently make boot non-responsive.
-    "keep_2_50": [(51, count)],
-    "keep_51_100": [(2, 50), (101, count)],
-    "keep_101_150": [(2, 100), (151, count)],
-    "keep_151_200": [(2, 150)],
-
-    # Keep core + smaller eighths for immediate second-stage isolation.
-    "keep_2_25": [(26, count)],
-    "keep_26_50": [(2, 25), (51, count)],
-    "keep_51_75": [(2, 50), (76, count)],
-    "keep_76_100": [(2, 75), (101, count)],
-    "keep_101_125": [(2, 100), (126, count)],
-    "keep_126_150": [(2, 125), (151, count)],
-    "keep_151_175": [(2, 150), (176, count)],
-    "keep_176_200": [(2, 175)],
-    "keep_76_87": [(2, 75), (88, count)],
-    "keep_88_100": [(2, 87), (101, count)],
-    "keep_126_137": [(2, 125), (138, count)],
-    "keep_138_150": [(2, 137), (151, count)],
-
-    "keep_76_81": [(2, 75), (82, count)],
-    "keep_82_87": [(2, 81), (88, count)],
-    "keep_88_94": [(2, 87), (95, count)],
-    "keep_95_100": [(2, 94), (101, count)],
-    "keep_126_131": [(2, 125), (132, count)],
-    "keep_132_137": [(2, 131), (138, count)],
-    "keep_138_144": [(2, 137), (145, count)],
-    "keep_145_150": [(2, 144), (151, count)],
+    "keep_88": [(2, 87), (89, count)],
+    "keep_89": [(2, 88), (90, count)],
+    "keep_90": [(2, 89), (91, count)],
+    "keep_91": [(2, 90), (92, count)],
+    "keep_92": [(2, 91), (93, count)],
+    "keep_93": [(2, 92), (94, count)],
+    "keep_94": [(2, 93), (95, count)],
+    "keep_95": [(2, 94), (96, count)],
+    "keep_96": [(2, 95), (97, count)],
+    "keep_97": [(2, 96), (98, count)],
+    "keep_98": [(2, 97), (99, count)],
+    "keep_99": [(2, 98), (100, count)],
+    "keep_100": [(2, 99), (101, count)],
+    "keep_138": [(2, 137), (139, count)],
+    "keep_139": [(2, 138), (140, count)],
+    "keep_140": [(2, 139), (141, count)],
+    "keep_141": [(2, 140), (142, count)],
+    "keep_142": [(2, 141), (143, count)],
+    "keep_143": [(2, 142), (144, count)],
+    "keep_144": [(2, 143), (145, count)],
 }
 
 def disabled(index, ranges):
