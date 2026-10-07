@@ -1,0 +1,46 @@
+name: GOLDEN HORSE client matrix free
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  client-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright browsers
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium webkit
+
+      - name: Start local server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
+          sleep 2
+
+      - name: Run Android / LINE-simulated / iPhone matrix
+        continue-on-error: true
+        run: timeout 120s node scripts/gh_client_matrix.mjs
+
+      - name: Upload client matrix
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-client-matrix
+          path: |
+            client-matrix-report.json
+            client-matrix-*.png
+          if-no-files-found: ignore
+          retention-days: 3
