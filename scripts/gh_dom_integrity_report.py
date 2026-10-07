@@ -56,4 +56,6 @@ Path("gh-dom-integrity-report.json").write_text(
 for k, v in report.items():
     if not isinstance(v, dict):
         print(f"{k}={v}")
+for key, count in list(report["duplicate_ids"].items())[:30]:
+    print(f"DUPLICATE_ID={key} count={count}")
 print("DOM_INTEGRITY_REPORT=PASS")
