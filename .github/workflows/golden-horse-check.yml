@@ -27,14 +27,23 @@ jobs:
           python -m compileall -q scripts
           for f in scripts/*.mjs; do node --check "$f"; done
 
+      - name: Immutable V166 baseline
+        run: python scripts/gh_immutable_v166.py
+
       - name: Static guard
         run: python scripts/gh_guard.py
+
+      - name: Seven-step static contract
+        run: python scripts/gh_7step_contract.py
 
       - name: Source bloat guard
         run: python scripts/gh_quality_report.py
 
       - name: Build static UI inventory
         run: python scripts/gh_ui_inventory.py
+
+      - name: Generate checkpoint manifest
+        run: python scripts/gh_checkpoint_manifest.py
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -79,5 +88,6 @@ jobs:
             playwright-trace.zip
             runtime-performance-metrics.json
             gh-ui-inventory.json
+            gh-checkpoint-manifest.json
           if-no-files-found: ignore
           retention-days: 3
