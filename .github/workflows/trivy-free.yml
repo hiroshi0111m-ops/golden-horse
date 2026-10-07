@@ -7,7 +7,7 @@ on:
       - "automation/**"
       - "v*-dev"
       - "v*-runtime-*"
-  pull_request:
+      - "main"
 
 concurrency:
   group: trivy-${{ github.event.pull_request.head.ref || github.ref_name }}
