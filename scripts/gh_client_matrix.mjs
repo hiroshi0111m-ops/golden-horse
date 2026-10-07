@@ -135,6 +135,18 @@ async function runClient(browser, cfg) {
       finalGuard: !!window.GH_V166_REWARD_IDEMPOTENCY_LEDGER,
       horseChoices: document.querySelectorAll("button.horsePick").length,
     }));
+    await page.waitForFunction(() => {
+      const photos = [...document.querySelectorAll("#home .gh-v77-photo")];
+      return photos.length === 2 && photos.every(photo =>
+        photo.complete && photo.naturalWidth > 0 && photo.classList.contains("is-loaded")
+      );
+    }, null, { timeout: 15_000 });
+    row.venuePhotos = await page.locator("#home .gh-v77-photo").evaluateAll(photos => photos.map(photo => ({
+      src: photo.currentSrc || photo.src,
+      naturalWidth: photo.naturalWidth,
+      naturalHeight: photo.naturalHeight,
+      loaded: photo.classList.contains("is-loaded"),
+    })));
 
     const body = await page.locator("body").innerText();
     if (!/体験モード|GUEST|ゲスト/i.test(body)) throw new Error("guest marker missing");
