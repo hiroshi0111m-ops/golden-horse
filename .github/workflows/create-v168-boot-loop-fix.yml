@@ -1,0 +1,61 @@
+name: Create V168 boot loop fix candidate
+
+on:
+  push:
+    branches:
+      - "v166-reward-idempotency-ledger-dev"
+    paths:
+      - "scripts/create_v168_boot_loop_fix.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: create-v168-boot-loop-fix
+  cancel-in-progress: true
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Checkout V166 source branch
+        uses: actions/checkout@v6
+        with:
+          ref: v166-reward-idempotency-ledger-dev
+          fetch-depth: 0
+
+      - name: Verify immutable V166
+        run: python scripts/gh_immutable_v166.py
+
+      - name: Generate V168 targeted loop fix
+        run: python scripts/create_v168_boot_loop_fix.py
+
+      - name: Validate generated V168 statically
+        run: |
+          python scripts/gh_guard.py
+          python scripts/gh_7step_contract.py
+          python scripts/gh_quality_report.py
+
+      - name: Commit candidate to dedicated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TARGET="v168-boot-loop-fix-dev"
+          git checkout -B "$TARGET"
+          git add checkpoints/V168_BOOT_LOOP_FIX
+          if git diff --cached --quiet; then
+            echo "No V168 changes to commit."
+          else
+            git commit -m "V168: fix three MutationObserver feedback loops"
+          fi
+          git push --force-with-lease origin "$TARGET"
+
+      - name: Summary
+        run: |
+          echo "V168 candidate branch: v168-boot-loop-fix-dev"
+          echo "V166 source remains unchanged."
