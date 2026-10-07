@@ -1,0 +1,29 @@
+# GOLDEN HORSE local/generated files
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Test and diagnostic artifacts
+.lighthouseci/
+runtime-smoke-*.png
+runtime-performance-metrics.json
+golden-horse-cpu-profile.json
+playwright-trace.zip
+gh-ui-inventory.json
+gh-checkpoint-manifest.json
+gh-network-security-report.json
+detect-secrets-report.json
+trivy-results.sarif
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
