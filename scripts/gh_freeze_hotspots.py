@@ -52,6 +52,7 @@ for row in buckets.values():
 
 rows.sort(key=lambda x: (-x["score"], x["start_offset"]))
 report = {
+    "report_version": 1,
     "active_index": str(p.relative_to(ROOT)),
     "window_chars": WINDOW,
     "hotspots": rows[:50],
