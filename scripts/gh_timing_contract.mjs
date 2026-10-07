@@ -50,7 +50,9 @@ try {
     document.addEventListener("gh:fanfare-ended", () => mark("fanfareEnded"));
 
     const recordResult = () => {
+      const overlay = document.getElementById("finishOverlay");
       const visible = !!result && !result.classList.contains("hidden") &&
+        !!overlay && overlay.classList.contains("on") &&
         !!race && race.classList.contains("on") &&
         getComputedStyle(result).display !== "none";
       if (visible) mark("resultVisible");
@@ -93,7 +95,7 @@ try {
   report.phaseLog = timing.phaseLog;
   report.runnerCount = runnerCount;
   report.measurements = {
-    fanfareToStartMs: Math.round(timing.marks.startShown - timing.marks.fanfareEnded),
+    fanfarePhaseToStartMs: Math.round(timing.marks.startShown - timing.marks.fanfareShown),
     readyToStartMs: Math.round(timing.marks.startShown - timing.marks.readyShown),
     raceStartToGoalMs: Math.round(timing.marks.goalShown - timing.marks.startShown),
     resultVisibleMs: Math.round(timing.marks.resultHidden - timing.marks.resultVisible),
