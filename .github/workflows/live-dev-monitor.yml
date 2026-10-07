@@ -1,0 +1,64 @@
+name: GOLDEN HORSE free live monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  live-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check fixed DEV URL
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          URL="https://misty-horizon-1435.hosted.pageshare.ai/"
+          FILE="/tmp/golden-horse-live.html"
+
+          curl -L --fail --silent --show-error             --max-time 60             --retry 2             --retry-delay 2             "$URL"             -o "$FILE"
+
+          BYTES="$(wc -c < "$FILE" | tr -d ' ')"
+          SHA="$(sha256sum "$FILE" | awk '{print $1}')"
+
+          echo "HTTP=PASS"
+          echo "BYTES=$BYTES"
+          echo "SHA256=$SHA"
+
+          if [ "$BYTES" -lt 1800000 ]; then
+            echo "FAIL: served page is unexpectedly small"
+            exit 1
+          fi
+
+          grep -qiE 'Golden[[:space:]]*Horse|GoldenHorse' "$FILE" || {
+            echo "FAIL: Golden Horse marker missing"
+            exit 1
+          }
+
+          grep -qiE 'GUEST|ゲスト' "$FILE" || {
+            echo "FAIL: guest marker missing"
+            exit 1
+          }
+
+          grep -qiE 'BET' "$FILE" || {
+            echo "FAIL: BET marker missing"
+            exit 1
+          }
+
+          grep -qiE 'RESULT' "$FILE" || {
+            echo "FAIL: RESULT marker missing"
+            exit 1
+          }
+
+          grep -qiE '1,000|1000' "$FILE" || {
+            echo "FAIL: 1000G marker missing"
+            exit 1
+          }
+
+          echo "LIVE_MONITOR=PASS"
