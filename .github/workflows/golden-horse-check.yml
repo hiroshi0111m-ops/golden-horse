@@ -87,6 +87,7 @@ jobs:
             golden-horse-cpu-profile.json
             playwright-trace.zip
             runtime-performance-metrics.json
+            runtime-network-report.json
             gh-ui-inventory.json
             gh-checkpoint-manifest.json
           if-no-files-found: ignore
