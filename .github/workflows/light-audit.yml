@@ -13,6 +13,7 @@ on:
       - "scripts/gh_runtime_risk_report.py"
       - "scripts/gh_freeze_hotspots.py"
       - "scripts/gh_observer_loop_report.py"
+      - "scripts/gh_script_complexity_report.py"
 
 concurrency:
   group: gh-light-audit-${{ github.ref_name }}
@@ -42,6 +43,9 @@ jobs:
 
       - name: Observer-loop and fast-interval analysis
         run: python scripts/gh_observer_loop_report.py
+
+      - name: Inline script complexity ranking
+        run: python scripts/gh_script_complexity_report.py
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:
@@ -52,4 +56,5 @@ jobs:
             gh-runtime-risk-report.json
             gh-freeze-hotspots.json
             gh-observer-loop-report.json
+            gh-script-complexity-report.json
           retention-days: 3
