@@ -29,6 +29,7 @@ patterns = {
 }
 
 report = {
+    "report_version": 1,
     "active_index": str(p.relative_to(ROOT)),
     "items": {},
 }
