@@ -7,6 +7,7 @@ on:
       - "automation/v168-confirmed-race-test"
     paths:
       - "scripts/gh_7step_runtime.mjs"
+      - "scripts/create_v169_race_loop_fix.py"
       - ".github/workflows/seven-step-runtime.yml"
       - "checkpoints/V168_BOOT_LOOP_FIX/index.html"
   workflow_dispatch:
@@ -30,6 +31,8 @@ jobs:
           test -n "$CHROME_BIN"
           echo "chrome_bin=$CHROME_BIN" >> "$GITHUB_OUTPUT"
       - run: npm install --no-save playwright-core
+      - run: python scripts/create_v169_race_loop_fix.py
+      - run: python scripts/gh_preflight.py
       - run: |
           python -m http.server 4173 --bind 127.0.0.1 >/tmp/gh-7step-http.log 2>&1 &
           sleep 1
@@ -44,5 +47,6 @@ jobs:
           path: |
             seven-step-runtime-report.json
             seven-step-*.png
+            checkpoints/V169_RACE_LOOP_FIX/index.html
           if-no-files-found: ignore
           retention-days: 3

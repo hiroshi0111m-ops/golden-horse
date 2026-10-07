@@ -2,7 +2,7 @@ import { chromium } from "playwright-core";
 import fs from "fs";
 
 const chrome=process.env.CHROME_BIN;
-const url="http://127.0.0.1:4173/checkpoints/V168_BOOT_LOOP_FIX/index.html";
+const url="http://127.0.0.1:4173/checkpoints/V169_RACE_LOOP_FIX/index.html";
 const report={url,startedAt:new Date().toISOString(),steps:{},events:[]};
 
 function log(msg,obj){
