@@ -7,7 +7,13 @@ on:
       - "automation/**"
       - "v*-dev"
       - "v*-runtime-*"
-      - "main"
+    paths:
+      - "scripts/**"
+      - "checkpoints/**/index.html"
+      - "quality-baseline.json"
+      - "AGENTS.md"
+      - "*.bat"
+      - ".github/workflows/golden-horse-check.yml"
 
 concurrency:
   group: golden-horse-guard-${{ github.event.pull_request.head.ref || github.ref_name }}
