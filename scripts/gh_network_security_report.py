@@ -21,7 +21,8 @@ def active_index():
 p = active_index()
 s = p.read_text(encoding="utf-8", errors="replace")
 
-urls = sorted(set(re.findall(r"https?://[^\\s\\"'<>]+", s)))
+raw_urls = re.findall(r'https?://[^\\s<>()]+', s)
+urls = sorted(set(u.rstrip('"',;}]') for u in raw_urls))
 domains = {}
 for u in urls:
     try:
@@ -33,12 +34,12 @@ for u in urls:
 
 http_urls = [u for u in urls if u.startswith("http://")]
 danger = {
-    "eval": len(re.findall(r"\\beval\\s*\\(", s)),
-    "new_Function": len(re.findall(r"\\bnew\\s+Function\\s*\\(", s)),
-    "document_write": len(re.findall(r"\\bdocument\\.write\\s*\\(", s)),
-    "postMessage": len(re.findall(r"\\bpostMessage\\s*\\(", s)),
-    "localStorage": len(re.findall(r"\\blocalStorage\\b", s)),
-    "sessionStorage": len(re.findall(r"\\bsessionStorage\\b", s)),
+    "eval": len(re.findall(r"\beval\s*\(", s)),
+    "new_Function": len(re.findall(r"\bnew\s+Function\s*\(", s)),
+    "document_write": len(re.findall(r"\bdocument\.write\s*\(", s)),
+    "postMessage": len(re.findall(r"\bpostMessage\s*\(", s)),
+    "localStorage": len(re.findall(r"\blocalStorage\b", s)),
+    "sessionStorage": len(re.findall(r"\bsessionStorage\b", s)),
 }
 
 report = {
