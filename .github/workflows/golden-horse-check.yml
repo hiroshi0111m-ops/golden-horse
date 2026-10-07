@@ -10,7 +10,7 @@ on:
   pull_request:
 
 concurrency:
-  group: golden-horse-guard-${{ github.ref }}
+  group: golden-horse-guard-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -65,3 +65,4 @@ jobs:
             playwright-trace.zip
             runtime-performance-metrics.json
           if-no-files-found: ignore
+          retention-days: 3
