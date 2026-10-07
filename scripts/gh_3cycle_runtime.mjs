@@ -77,9 +77,19 @@ async function runCycle(page,cycle){
   if(!atResult.settled)throw new Error(`cycle ${cycle}: result was not settled`);
   if(atResult.activeBets!==1)throw new Error(`cycle ${cycle}: result lost active bet before archival`);
 
-  const next=page.locator("#resultNext");
-  await next.waitFor({state:"visible",timeout:5000});
-  await next.click();
+  // The product automatically advances after the locked result hold. Avoid a
+  // test-only race between that valid transition and Playwright actionability.
+  const transitionMode=await page.evaluate(()=>{
+    const next=document.getElementById("resultNext");
+    const overlay=document.getElementById("finishOverlay");
+    const panel=document.getElementById("finishPanel");
+    if(!next||!overlay?.classList.contains("on")||panel?.classList.contains("hidden")){
+      throw new Error("official result controls are not active");
+    }
+    if(next.disabled)return "automatic";
+    next.click();
+    return "manual";
+  });
   await page.waitForFunction(()=>{
     const screen=document.getElementById("raceScreen");
     const finish=document.getElementById("finishOverlay");
@@ -105,6 +115,7 @@ async function runCycle(page,cycle){
     historyBefore:before.betHistory,
     historyAfter:after.betHistory,
     nextCountdown:after.countdown,
+    transitionMode,
     resultType:resultText.split("\n").slice(0,2).join(" / "),
     slips
   };
