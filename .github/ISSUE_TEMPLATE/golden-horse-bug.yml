@@ -1,0 +1,73 @@
+name: GOLDEN HORSE バグ報告
+description: スマホ・PC・店舗テストで見つかった不具合を記録します
+title: "[BUG] "
+body:
+  - type: dropdown
+    id: stage
+    attributes:
+      label: どの工程で止まりましたか
+      options:
+        - 起動
+        - GUEST
+        - 初期1,000G
+        - BET
+        - 7頭発走
+        - GOAL
+        - RESULT
+        - 次レース
+        - 会員・管理画面
+        - その他
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: 端末
+      description: 例 Galaxy / iPhone / Windows PC
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: ブラウザ・アプリ
+      description: 例 Chrome / Edge / LINE WebView
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 直前にした操作
+      description: できるだけ短く順番を書いてください
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際に起きたこと
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 本来どうなるべきだったか
+    validations:
+      required: true
+
+  - type: input
+    id: screenshot
+    attributes:
+      label: スクショ・動画URL
+      description: あれば貼ってください
+
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: 確認
+      options:
+        - label: 推測PASSではなく、実際に再現・確認して修正する
+          required: true
