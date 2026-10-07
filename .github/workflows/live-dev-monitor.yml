@@ -31,6 +31,12 @@ jobs:
           echo "SOURCE_BYTES=$BYTES"
           echo "SOURCE_SHA256=$SHA"
 
+          EXPECTED_SHA="0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9"
+          if [ "$SHA" != "$EXPECTED_SHA" ]; then
+            echo "FAIL: immutable V166 source checksum changed"
+            exit 1
+          fi
+
           if [ "$BYTES" -lt 1800000 ]; then
             echo "FAIL: source file is unexpectedly small"
             exit 1
@@ -79,3 +85,36 @@ jobs:
           fi
 
           echo "This is a legacy backup only and is not treated as the current V166 DEV."
+
+      - name: Audit HTTP security headers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          audit_headers () {
+            NAME="$1"
+            URL="$2"
+            HEADER_FILE="/tmp/$NAME-headers.txt"
+
+            CODE="$(curl -L -sS -D "$HEADER_FILE" -o /dev/null --max-time 30 -w '%{http_code}' "$URL" || true)"
+            echo "$NAME HTTP=$CODE"
+
+            if [ "$CODE" != "200" ]; then
+              echo "$NAME HEADER_AUDIT=SKIPPED"
+              return 0
+            fi
+
+            for H in               "strict-transport-security"               "content-security-policy"               "x-content-type-options"               "referrer-policy"               "permissions-policy"
+            do
+              if grep -qi "^$H:" "$HEADER_FILE"; then
+                echo "$NAME $H=PASS"
+              else
+                echo "$NAME $H=MISSING"
+              fi
+            done
+          }
+
+          audit_headers "NETLIFY_LEGACY" "https://golden-horse-live-game.netlify.app/"
+          audit_headers "PAGESHARE_DEV" "https://misty-horizon-1435.hosted.pageshare.ai/"
+
+          echo "HEADER_AUDIT=REPORT_ONLY"
