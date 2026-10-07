@@ -22,6 +22,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Syntax-check automation scripts
+        run: |
+          python -m compileall -q scripts
+          for f in scripts/*.mjs; do node --check "$f"; done
+
       - name: Static guard
         run: python scripts/gh_guard.py
 
