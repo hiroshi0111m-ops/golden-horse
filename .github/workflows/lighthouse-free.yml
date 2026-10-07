@@ -2,15 +2,17 @@ name: Lighthouse free diagnostics
 
 on:
   workflow_dispatch:
-  pull_request:
   push:
     branches:
-      - "automation/**"
       - "v*-dev"
       - "v*-runtime-*"
+    paths:
+      - "checkpoints/**/index.html"
+      - "lighthouserc.cjs"
+      - "scripts/serve_golden_horse.py"
 
 concurrency:
-  group: lighthouse-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: lighthouse-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
