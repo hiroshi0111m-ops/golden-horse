@@ -28,10 +28,19 @@ jobs:
       - name: Source bloat guard
         run: python scripts/gh_quality_report.py
 
+      - name: Build static UI inventory
+        run: python scripts/gh_ui_inventory.py
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-golden-horse-playwright-v1
 
       - name: Install Playwright
         run: |
@@ -64,5 +73,6 @@ jobs:
             golden-horse-cpu-profile.json
             playwright-trace.zip
             runtime-performance-metrics.json
+            gh-ui-inventory.json
           if-no-files-found: ignore
           retention-days: 3
