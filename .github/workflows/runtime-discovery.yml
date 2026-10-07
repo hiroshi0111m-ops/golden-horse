@@ -1,0 +1,41 @@
+name: GOLDEN HORSE runtime discovery
+
+on:
+  push:
+    branches:
+      - "v168-boot-loop-fix-dev"
+    paths:
+      - "scripts/gh_runtime_discovery.mjs"
+      - ".github/workflows/runtime-discovery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v6
+      - id: chrome
+        run: |
+          CHROME_BIN="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          echo "chrome_bin=$CHROME_BIN" >> "$GITHUB_OUTPUT"
+      - run: npm install --no-save playwright-core
+      - run: |
+          python -m http.server 4173 --bind 127.0.0.1 >/tmp/gh-discovery-http.log 2>&1 &
+          sleep 1
+      - name: Discover visible runtime controls
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome_bin }}
+        run: timeout 30s node scripts/gh_runtime_discovery.mjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-runtime-discovery
+          path: |
+            runtime-discovery.json
+            runtime-discovery.png
+          if-no-files-found: ignore
+          retention-days: 2
