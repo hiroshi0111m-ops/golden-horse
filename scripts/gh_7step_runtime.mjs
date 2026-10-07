@@ -118,6 +118,11 @@ try{
     log("BET_STATE_BEFORE_CLICK",before);
 
     await bet.click({force:true});
+    const confirm=page.locator('#gh-v141-ok');
+    await confirm.waitFor({state:'visible',timeout:5000});
+    // The first click opens confirmation; allow the 650ms double-click guard to release.
+    await page.waitForTimeout(700);
+    await confirm.click();
     await page.waitForTimeout(900);
 
     const slips=(await page.locator("#betSlips").innerText().catch(()=>"" )).trim();
@@ -125,7 +130,7 @@ try{
     const toast=await page.locator(".toast,.ghToast,#toast").allInnerTexts().catch(()=>[]);
     log("BET_STATE_AFTER_CLICK",{after,slips,toast});
 
-    const accepted=!/まだ投票はありません/.test(slips);
+    const accepted=slips.length>0&&!/まだ投票はありません/.test(slips);
     if(!accepted)throw new Error("BET did not appear in MY BET: "+slips.slice(0,240)+" | class="+after.betClass+" disabled="+after.betDisabled);
     return {slips:slips.slice(0,300),betClass:after.betClass};
   });

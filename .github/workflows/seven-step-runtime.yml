@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "v168-boot-loop-fix-dev"
+      - "automation/v168-confirmed-race-test"
     paths:
       - "scripts/gh_7step_runtime.mjs"
       - ".github/workflows/seven-step-runtime.yml"
