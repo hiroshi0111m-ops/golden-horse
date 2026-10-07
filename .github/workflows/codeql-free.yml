@@ -9,6 +9,10 @@ on:
       - "v*-runtime-*"
   pull_request:
 
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: write
