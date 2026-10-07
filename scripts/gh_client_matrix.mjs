@@ -1,7 +1,7 @@
 import { chromium, webkit, devices } from "playwright";
 import fs from "fs";
 
-const url = "http://127.0.0.1:4173/checkpoints/V171_THREE_CYCLE_FIX/index.html";
+const url = "http://127.0.0.1:4173/checkpoints/V172_CSP_IMAGE_FIX/index.html";
 
 function deviceOptions(name) {
   const { defaultBrowserType: _defaultBrowserType, ...options } = devices[name];

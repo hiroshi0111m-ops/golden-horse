@@ -2,7 +2,7 @@ import { chromium } from "playwright-core";
 import fs from "fs";
 
 const chrome=process.env.CHROME_BIN;
-const url="http://127.0.0.1:4173/checkpoints/V171_THREE_CYCLE_FIX/index.html";
+const url="http://127.0.0.1:4173/checkpoints/V172_CSP_IMAGE_FIX/index.html";
 const report={url,startedAt:new Date().toISOString(),steps:{},events:[]};
 
 function log(msg,obj){
