@@ -1,18 +1,16 @@
-name: GOLDEN HORSE seven-step runtime
+name: GOLDEN HORSE three-cycle runtime
 
 on:
   push:
     branches:
-      - "v168-boot-loop-fix-dev"
-      - "automation/v168-confirmed-race-test"
       - "automation/v169-timing-contract"
     paths:
-      - "scripts/gh_7step_runtime.mjs"
+      - "scripts/gh_3cycle_runtime.mjs"
       - "scripts/create_v169_race_loop_fix.py"
       - "scripts/create_v170_race_timing_fix.py"
       - "scripts/create_v171_three_cycle_fix.py"
       - "scripts/create_v172_csp_image_fix.py"
-      - ".github/workflows/seven-step-runtime.yml"
+      - ".github/workflows/three-cycle-runtime.yml"
       - "checkpoints/V168_BOOT_LOOP_FIX/index.html"
   workflow_dispatch:
 
@@ -20,13 +18,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: gh-seven-step-runtime
+  group: gh-three-cycle-runtime
   cancel-in-progress: true
 
 jobs:
-  seven-step:
+  three-cycle:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v6
       - id: chrome
@@ -39,20 +37,20 @@ jobs:
       - run: python scripts/gh_preflight.py
         env:
           GH_ACTIVE_INDEX: checkpoints/V172_CSP_IMAGE_FIX/index.html
-      - run: |
-          python -m http.server 4173 --bind 127.0.0.1 >/tmp/gh-7step-http.log 2>&1 &
-          sleep 1
-      - name: Run full guest race flow
+      - name: Run three complete races without reload
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome_bin }}
-        run: timeout 130s node scripts/gh_7step_runtime.mjs
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 >/tmp/gh-3cycle-http.log 2>&1 &
+          sleep 1
+          timeout 650s node scripts/gh_3cycle_runtime.mjs
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: golden-horse-seven-step-runtime
+          name: golden-horse-three-cycle-runtime
           path: |
-            seven-step-runtime-report.json
-            seven-step-*.png
+            three-cycle-runtime-report.json
+            three-cycle-failure.png
             checkpoints/V172_CSP_IMAGE_FIX/index.html
           if-no-files-found: ignore
-          retention-days: 3
+          retention-days: 7
