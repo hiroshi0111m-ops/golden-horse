@@ -11,12 +11,12 @@ function deviceOptions(name) {
 const pixel = deviceOptions("Pixel 7");
 const iphone = deviceOptions("iPhone 15");
 const clients = [
-  { name: "android-chrome", engine: "chromium", contextOptions: pixel },
   {
     name: "line-android-simulated",
     engine: "chromium",
     contextOptions: { ...pixel, userAgent: `${pixel.userAgent} Line/14.0.0` },
   },
+  { name: "android-chrome", engine: "chromium", contextOptions: pixel },
   { name: "iphone-safari", engine: "webkit", contextOptions: iphone },
 ];
 
