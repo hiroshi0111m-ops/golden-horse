@@ -37,27 +37,13 @@ const browser=await chromium.launch({
 const context=await browser.newContext({viewport:{width:390,height:844}});
 const page=await context.newPage();
 page.setDefaultTimeout(8000);
-await page.addInitScript(()=>{
-  const NativeObserver=window.MutationObserver;
-  window.MutationObserver=class extends NativeObserver {
-    constructor(callback){
-      const source=document.currentScript?.id||new Error().stack;
-      let calls=0;
-      super((records,observer)=>{
-        calls++;
-        if(calls===1000||calls===10000)console.log('OBSERVER_REPEAT '+JSON.stringify({source,calls,targets:records.slice(0,3).map(r=>({id:r.target.id,attribute:r.attributeName,type:r.type}))}));
-        callback(records,observer);
-      });
-    }
-  };
-});
 
 const pageErrors=[];
 const consoleErrors=[];
 page.on("pageerror",e=>pageErrors.push(String(e)));
 page.on("console",m=>{
   if(m.type()==="error")consoleErrors.push(m.text());
-  if(m.text().startsWith('OBSERVER_REPEAT '))log(m.text());
+
 });
 
 let finalExit=0;
@@ -192,6 +178,8 @@ try{
     return {finishVisible,raceOn,countdown};
   });
 
+  if(pageErrors.length)throw new Error("Uncaught page errors: "+pageErrors.join(" | "));
+  console.log("PAGE_ERRORS=0");
   console.log("SEVEN_STEP_RUNTIME=PASS");
 }catch(e){
   finalExit=1;

@@ -7,6 +7,11 @@ import os
 ROOT = Path(__file__).resolve().parents[1]
 
 def active_index():
+    if os.environ.get("GH_ACTIVE_INDEX"):
+        candidate = (ROOT / os.environ["GH_ACTIVE_INDEX"]).resolve()
+        if not candidate.is_file() or not candidate.is_relative_to(ROOT):
+            raise SystemExit("invalid GH_ACTIVE_INDEX")
+        return candidate
     candidates = []
     for p in ROOT.rglob("index.html"):
         if any(part in {".git", "node_modules"} for part in p.parts):

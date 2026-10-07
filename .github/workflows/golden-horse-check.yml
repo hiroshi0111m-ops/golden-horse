@@ -23,10 +23,15 @@ jobs:
   guard:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      GH_ACTIVE_INDEX: checkpoints/V169_RACE_LOOP_FIX/index.html
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Generate V169 race loop fix
+        run: python scripts/create_v169_race_loop_fix.py
 
       - name: Syntax-check automation scripts
         run: |

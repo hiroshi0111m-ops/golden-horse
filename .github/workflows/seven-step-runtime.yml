@@ -33,6 +33,8 @@ jobs:
       - run: npm install --no-save playwright-core
       - run: python scripts/create_v169_race_loop_fix.py
       - run: python scripts/gh_preflight.py
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V169_RACE_LOOP_FIX/index.html
       - run: |
           python -m http.server 4173 --bind 127.0.0.1 >/tmp/gh-7step-http.log 2>&1 &
           sleep 1
