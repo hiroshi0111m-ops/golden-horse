@@ -1,0 +1,49 @@
+{
+  "checkpoint": "V168-BOOT-LOOP-FIX",
+  "created_utc": "2026-10-07T04:31:20.199797+00:00",
+  "source": {
+    "path": "checkpoints/V166_REWARD_IDEMPOTENCY_LEDGER/index.html",
+    "sha256": "0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9",
+    "size_bytes": 2071318
+  },
+  "output": {
+    "path": "checkpoints/V168_BOOT_LOOP_FIX/index.html",
+    "sha256": "fa8e3e100064c76f85ca07efdec413046af6e970778824dba05c1e150273043e",
+    "size_bytes": 2071612
+  },
+  "changes": [
+    {
+      "script_id": "gh-v106-auto-retreat-script",
+      "problem": "MutationObserver watched race.class while inactive tick always called classList.remove on the same watched attribute.",
+      "fix": "Only remove V106 classes when at least one is actually present, breaking the observer feedback loop."
+    },
+    {
+      "script_id": "gh-v116-cinema-audio-script",
+      "problem": "MutationObserver watched race.class while inactive apply always removed cinema classes from the same watched attribute.",
+      "fix": "Only remove cinema classes when they are actually present, breaking the observer feedback loop."
+    },
+    {
+      "script_id": "gh-v123-venue-label-cleanup",
+      "problem": "MutationObserver watched raceVenue text and clean always reassigned textContent, retriggering itself.",
+      "fix": "Only assign textContent when the cleaned text differs from the current value."
+    }
+  ],
+  "diagnostic_evidence": {
+    "boot_bisect_individual_failures": [
+      {
+        "script_index": 91,
+        "id": "gh-v106-auto-retreat-script"
+      },
+      {
+        "script_index": 100,
+        "id": "gh-v116-cinema-audio-script"
+      },
+      {
+        "script_index": 143,
+        "id": "gh-v123-venue-label-cleanup"
+      }
+    ],
+    "note": "Each listed script independently made core+single-script boot non-responsive in Chrome; neighboring single-script variants passed."
+  },
+  "rollback": "Use immutable V166_REWARD_IDEMPOTENCY_LEDGER."
+}
