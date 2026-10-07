@@ -6,8 +6,13 @@ on:
       - "GOLDEN HORSE guard"
       - "CodeQL free security scan"
       - "Lighthouse free diagnostics"
+      - "Trivy free security scan"
     types:
       - completed
+
+concurrency:
+  group: ci-failure-tracker-${{ github.event.workflow_run.name }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -26,7 +31,13 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const run = context.payload.workflow_run;
-            const title = "AUTO: GOLDEN HORSE CI failure";
+            const title = `AUTO: GOLDEN HORSE CI failure - ${run.name}`;
+
+            if (["cancelled", "skipped", "neutral"].includes(run.conclusion)) {
+              core.info(`Ignoring expected conclusion: ${run.conclusion}`);
+              return;
+            }
+
             const body = [
               "GOLDEN HORSE の自動検査で失敗を検出しました。",
               "",
