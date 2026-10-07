@@ -62,4 +62,6 @@ jobs:
           path: |
             runtime-smoke-*.png
             golden-horse-cpu-profile.json
+            playwright-trace.zip
+            runtime-performance-metrics.json
           if-no-files-found: ignore
