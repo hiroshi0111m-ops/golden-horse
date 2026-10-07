@@ -81,3 +81,11 @@ When a runtime browser test is unresponsive:
 5. rerun preflight and runtime tests.
 
 For wider QA, the manual free workflow `GOLDEN HORSE deep QA free` checks Android sizes, tablet, console errors, and axe accessibility.
+
+
+## Windows zero-extra-cost fast path
+On the user's Windows development PC:
+- `RUN_FREE_CHECKS.bat` runs the full static preflight.
+- `RUN_GOLDEN_HORSE_BROWSER_TEST_FREE.bat` runs the Android-size Playwright smoke locally, avoiding GitHub queue time.
+- `ONE_CLICK_GOLDEN_HORSE_DEV.bat` starts checked local PC + same-Wi-Fi phone preview.
+- `START_GOLDEN_HORSE_PUBLIC_FREE.bat` starts a temporary Cloudflare Quick Tunnel for phone/LINE testing outside the local Wi-Fi. It is development-only; do not treat its random URL as production.
