@@ -67,6 +67,7 @@ for idx,m in enumerate(re.finditer(r"<script\b(?P<attrs>[^>]*)>(?P<body>.*?)</sc
 
 rows.sort(key=lambda x:(-x["score"],x["start_line"]))
 report={
+    "report_version":1,
     "active_index":str(p.relative_to(ROOT)),
     "script_count":len(rows),
     "top_scripts":rows[:80],
