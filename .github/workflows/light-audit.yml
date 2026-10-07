@@ -1,0 +1,32 @@
+name: GOLDEN HORSE lightweight audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "v*-dev"
+      - "v*-runtime-*"
+      - "automation/**"
+
+concurrency:
+  group: gh-light-audit-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: External network and risky API inventory
+        run: python scripts/gh_network_security_report.py
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-network-security-report
+          path: gh-network-security-report.json
+          retention-days: 3
