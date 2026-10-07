@@ -25,6 +25,9 @@ jobs:
       - name: Static guard
         run: python scripts/gh_guard.py
 
+      - name: Source bloat guard
+        run: python scripts/gh_quality_report.py
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
