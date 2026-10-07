@@ -1,0 +1,64 @@
+name: Create V167 boot performance candidate
+
+on:
+  push:
+    branches:
+      - "v166-reward-idempotency-ledger-dev"
+    paths:
+      - "scripts/create_v167_boot_perf.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: create-v167-boot-perf
+  cancel-in-progress: true
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Checkout V166 source branch
+        uses: actions/checkout@v6
+        with:
+          ref: v166-reward-idempotency-ledger-dev
+          fetch-depth: 0
+
+      - name: Verify immutable V166
+        run: python scripts/gh_immutable_v166.py
+
+      - name: Generate V167 boot performance candidate
+        run: python scripts/create_v167_boot_perf.py
+
+      - name: Validate generated V167 statically
+        run: |
+          python scripts/gh_guard.py
+          python scripts/gh_7step_contract.py
+          python scripts/gh_quality_report.py
+
+      - name: Commit candidate to dedicated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          TARGET="v167-boot-perf-dev"
+          git checkout -B "$TARGET"
+          git add checkpoints/V167_BOOT_PERF
+
+          if git diff --cached --quiet; then
+            echo "No V167 changes to commit."
+          else
+            git commit -m "V167: defer non-core boot observers and race presentation"
+          fi
+
+          git push --force-with-lease origin "$TARGET"
+
+      - name: Summary
+        run: |
+          echo "V167 candidate branch: v167-boot-perf-dev"
+          echo "V166 source remains unchanged."
