@@ -1,0 +1,95 @@
+{
+  "checkpoint": "V167-BOOT-PERF",
+  "created_utc": "2026-10-07T04:15:39.969071+00:00",
+  "source": {
+    "path": "checkpoints/V166_REWARD_IDEMPOTENCY_LEDGER/index.html",
+    "sha256": "0de728faaaa8a7f9b5e726bd0d014972128f44fa049714636ff8820c513fcfe9",
+    "size_bytes": 2071318
+  },
+  "output": {
+    "path": "checkpoints/V167_BOOT_PERF/index.html",
+    "sha256": "a53cf8d1279fe3c5fcec4e8a74d648b9e27ef0adb3cab0946b6567c136ca9f67",
+    "size_bytes": 2075496
+  },
+  "changes": [
+    {
+      "id": "gh-v8-resilience-cinema-script",
+      "status": "DEFERRED",
+      "delay_ms": 1200,
+      "original_chars": 5639
+    },
+    {
+      "id": "gh-v17-safe-hq-render-r1",
+      "status": "DEFERRED",
+      "delay_ms": 1200,
+      "original_chars": 2189
+    },
+    {
+      "id": "gh-v21-safe-visual-identity-r1",
+      "status": "DEFERRED",
+      "delay_ms": 1200,
+      "original_chars": 5560
+    },
+    {
+      "id": "gh-v112-commentary-engine",
+      "status": "DEFERRED",
+      "delay_ms": 1200,
+      "original_chars": 3603
+    },
+    {
+      "id": "gh-cinema-race-presentation-js",
+      "status": "DEFERRED",
+      "delay_ms": 1200,
+      "original_chars": 10839
+    },
+    {
+      "id": "gh-integrated21-cinema-script",
+      "status": "DEFERRED",
+      "delay_ms": 1800,
+      "original_chars": 1998
+    },
+    {
+      "id": "gh-v128-mobile-race-qa-script",
+      "status": "DEFERRED",
+      "delay_ms": 2500,
+      "original_chars": 2449
+    },
+    {
+      "id": "gh-v130-flow-qa-script",
+      "status": "DEFERRED",
+      "delay_ms": 2500,
+      "original_chars": 2786
+    },
+    {
+      "id": "gh-v140-unified-live-map-script",
+      "status": "DEFERRED",
+      "delay_ms": 2500,
+      "original_chars": 2963
+    },
+    {
+      "id": "gh-v144-script",
+      "status": "DEFERRED",
+      "delay_ms": 2500,
+      "original_chars": 2715
+    }
+  ],
+  "interval_changes": [
+    {
+      "from": "setInterval(audit,350)",
+      "to": "setInterval(audit,1200)",
+      "count": 1
+    },
+    {
+      "from": "setInterval(audit,400)",
+      "to": "setInterval(audit,1200)",
+      "count": 1
+    },
+    {
+      "from": "setInterval(tick,120)",
+      "to": "setInterval(tick,500)",
+      "count": 1
+    }
+  ],
+  "intent": "Reduce boot-time observer/timer pressure without changing core race, BET, payout, membership, or saved V166 source.",
+  "rollback": "Use V166_REWARD_IDEMPOTENCY_LEDGER unchanged."
+}
