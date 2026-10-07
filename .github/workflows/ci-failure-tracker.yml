@@ -1,0 +1,83 @@
+name: GOLDEN HORSE CI failure tracker
+
+on:
+  workflow_run:
+    workflows:
+      - "GOLDEN HORSE guard"
+      - "CodeQL free security scan"
+      - "Lighthouse free diagnostics"
+    types:
+      - completed
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Create/update/close CI issue
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const run = context.payload.workflow_run;
+            const title = "AUTO: GOLDEN HORSE CI failure";
+            const body = [
+              "GOLDEN HORSE の自動検査で失敗を検出しました。",
+              "",
+              `Workflow: ${run.name}`,
+              `Branch: ${run.head_branch}`,
+              `Commit: ${run.head_sha}`,
+              `Conclusion: ${run.conclusion}`,
+              `Run: ${run.html_url}`,
+              "",
+              "推測でPASSにせず、ログと診断Artifactを確認して最小修正してください。"
+            ].join("\n");
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: "open",
+              per_page: 100
+            });
+
+            const existing = issues.find(i => i.title === title && !i.pull_request);
+
+            if (run.conclusion === "success") {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: existing.number,
+                  body: `✅ ${run.name} が成功しました。Run: ${run.html_url}`
+                });
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: existing.number,
+                  state: "closed"
+                });
+              }
+              return;
+            }
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body
+              });
+            }
