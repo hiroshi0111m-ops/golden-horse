@@ -10,7 +10,7 @@ on:
       - "v*-runtime-*"
 
 concurrency:
-  group: lighthouse-${{ github.ref }}
+  group: lighthouse-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -41,3 +41,4 @@ jobs:
           name: golden-horse-lighthouse
           path: .lighthouseci
           if-no-files-found: ignore
+          retention-days: 3
