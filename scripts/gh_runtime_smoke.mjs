@@ -39,9 +39,27 @@ page.setDefaultTimeout(10000);
 
 const pageErrors = [];
 const consoleErrors = [];
+const failedRequests = [];
+const badResponses = [];
 page.on("pageerror", err => pageErrors.push(String(err)));
 page.on("console", msg => {
   if (msg.type() === "error") consoleErrors.push(msg.text());
+});
+page.on("requestfailed", req => {
+  failedRequests.push({
+    url: req.url(),
+    method: req.method(),
+    failure: req.failure()?.errorText || "unknown",
+  });
+});
+page.on("response", res => {
+  if (res.status() >= 400) {
+    badResponses.push({
+      url: res.url(),
+      status: res.status(),
+      statusText: res.statusText(),
+    });
+  }
 });
 
 let failed = false;
@@ -97,6 +115,24 @@ try {
     console.error(`CONSOLE_ERRORS=${consoleErrors.length}`);
     for (const e of consoleErrors.slice(0, 20)) console.error(e);
   }
+
+  if (failedRequests.length) {
+    console.error(`FAILED_REQUESTS=${failedRequests.length}`);
+  }
+  if (badResponses.length) {
+    console.error(`HTTP_BAD_RESPONSES=${badResponses.length}`);
+  }
+
+  fs.writeFileSync(
+    "runtime-network-report.json",
+    JSON.stringify({
+      url,
+      failedRequests,
+      badResponses,
+      consoleErrors,
+      pageErrors,
+    }, null, 2)
+  );
 
   try {
     const client = await withTimeout(context.newCDPSession(page), 5000, "CDP session");
