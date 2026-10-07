@@ -2,12 +2,16 @@ name: CodeQL free security scan
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "23 18 * * *"
   push:
     branches:
-      - "automation/**"
       - "v*-dev"
       - "v*-runtime-*"
-      - "main"
+    paths:
+      - "**/*.html"
+      - "**/*.js"
+      - "**/*.mjs"
 
 concurrency:
   group: codeql-${{ github.event.pull_request.head.ref || github.ref_name }}
