@@ -15,7 +15,7 @@ for idx,m in enumerate(re.finditer(r"<script\b(?P<attrs>[^>]*)>(?P<body>.*?)</sc
     sid=im.group(2) if im else None
     line=s.count("\n",0,m.start())+1
     head=re.sub(r"\s+"," ",body[:500]).strip()
-    rows.append({"index":idx,"id":sid,"line":line,"chars":len(body),"head":head})
+    rows.append({"index":idx,"id":sid,"line":line,"chars":len(body),"head":head,"body":body})
 
 targets=[r for r in rows if 80<=r["index"]<=105 or 135<=r["index"]<=150]
 Path("gh-script-index-map.json").write_text(
@@ -24,4 +24,7 @@ Path("gh-script-index-map.json").write_text(
 
 for r in targets:
     print(f"SCRIPT_INDEX={r['index']} id={r['id']} line={r['line']} chars={r['chars']} head={r['head'][:330]}")
+    if r["index"] in {91,100,143}:
+        body=re.sub(r"\\s+"," ",r["body"]).strip()
+        print(f"SUSPECT_SCRIPT_BODY index={r['index']} id={r['id']} body={body}")
 print("SCRIPT_INDEX_MAP=PASS")
