@@ -54,3 +54,30 @@ A change that breaks any of the above is a regression.
 
 ## RC priority
 Fix blockers to the 7-step guest race flow before adding optional features.
+
+
+## Mandatory free preflight
+Before claiming a code change is safe, run:
+- `python scripts/gh_preflight.py`
+
+This preflight verifies:
+- the saved V166 baseline checksum has not changed,
+- the static application guard,
+- the locked seven-step guest-race contract,
+- source-bloat limits,
+- and a checkpoint manifest.
+
+## Immutable baseline rule
+`checkpoints/V166_REWARD_IDEMPOTENCY_LEDGER/index.html` is a saved baseline.
+Do not edit or replace it for a new game fix.
+Create a new versioned checkpoint (V167 or later) for intentional game-source changes.
+
+## Free diagnostic escalation
+When a runtime browser test is unresponsive:
+1. keep the failure as FAIL/NOT RESPONSIVE,
+2. inspect the Playwright trace and CPU profile artifacts,
+3. use the UI inventory to locate the smallest affected control,
+4. patch only the new versioned checkpoint,
+5. rerun preflight and runtime tests.
+
+For wider QA, the manual free workflow `GOLDEN HORSE deep QA free` checks Android sizes, tablet, console errors, and axe accessibility.
