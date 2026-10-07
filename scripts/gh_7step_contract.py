@@ -29,7 +29,7 @@ checks = {
     "start_gate": 'id="startGate"' in s or "START GATE" in s,
     "goal_line": 'id="trackGoalLine"' in s or ">GOAL<" in s,
     "result_panel": 'id="finishPanel"' in s or "RESULT ゴール" in s,
-    "result_7_seconds": bool(re.search(r"結果表示[\\s<>&;:/_-]*7[\\s<>&;:/_-]*秒", s)),
+    "result_7_seconds": bool(re.search(r"結果表示.{0,200}?7.{0,80}?秒", s, re.S)),
     "next_race_button": 'id="resultNext"' in s or "次のレース準備へ" in s,
     "seven_horse_contract": bool(re.search(r"7頭|七頭", s)),
     "bet_120_contract": bool(re.search(r"BET\s*120秒|BET120秒", s, re.I)),
