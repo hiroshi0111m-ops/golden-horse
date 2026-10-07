@@ -70,24 +70,60 @@ try{
   });
 
   await runStep(page,"BET",async()=>{
-    const horse=page.locator("button.horsePick").filter({visible:true}).first();
+    const horse=page.locator("button.horsePick").first();
     if(await horse.count()===0)throw new Error("horsePick not found");
     await horse.click();
+    await page.waitForTimeout(250);
 
     const five=page.getByRole("button",{name:"5G",exact:true});
     if(await five.count())await five.first().click();
+    await page.waitForTimeout(250);
 
     const bet=page.locator("#betBtn");
     await bet.waitFor({state:"visible"});
-    await page.waitForTimeout(250);
-    await bet.click();
-    await page.waitForTimeout(700);
+
+    const state=async()=>page.evaluate(()=>{
+      const b=document.getElementById("betBtn");
+      const picks=[...document.querySelectorAll("button.horsePick")].map((e,i)=>({
+        i:i+1,class:e.className,pressed:e.getAttribute("aria-pressed"),text:(e.textContent||"").trim()
+      }));
+      const chips=[...document.querySelectorAll("button.chip")].map(e=>({text:(e.textContent||"").trim(),class:e.className}));
+      const panel=document.querySelector(".betPanel");
+      return {
+        betClass:b?.className||null,
+        betDisabled:!!b?.disabled,
+        betTitle:b?.getAttribute("title"),
+        picks,
+        chips,
+        panelText:(panel?.innerText||"").slice(0,1200),
+        integrity:[...document.querySelectorAll("body *")].map(e=>e.textContent||"").find(t=>/オッズの整合性|BETを停止|安全値へ復旧/.test(t))?.slice(0,500)||null
+      };
+    });
+
+    let before=await state();
+    log("BET_STATE_AFTER_SELECTION",before);
+
+    try{
+      await page.waitForFunction(()=>{
+        const b=document.getElementById("betBtn");
+        return !!b&&!b.disabled&&!b.classList.contains("gh-v141-notready");
+      },null,{timeout:12000});
+    }catch{}
+
+    before=await state();
+    log("BET_STATE_BEFORE_CLICK",before);
+
+    await bet.click({force:true});
+    await page.waitForTimeout(900);
 
     const slips=(await page.locator("#betSlips").innerText().catch(()=>"" )).trim();
-    const body=await page.locator("body").innerText();
-    const accepted=!/まだ投票はありません/.test(slips) && /MY BET/.test(body);
-    if(!accepted)throw new Error("BET did not appear in MY BET: "+slips.slice(0,240));
-    return {slips:slips.slice(0,300)};
+    const after=await state();
+    const toast=await page.locator(".toast,.ghToast,#toast").allInnerTexts().catch(()=>[]);
+    log("BET_STATE_AFTER_CLICK",{after,slips,toast});
+
+    const accepted=!/まだ投票はありません/.test(slips);
+    if(!accepted)throw new Error("BET did not appear in MY BET: "+slips.slice(0,240)+" | class="+after.betClass+" disabled="+after.betDisabled);
+    return {slips:slips.slice(0,300),betClass:after.betClass};
   });
 
   await runStep(page,"SKIP_TO_10",async()=>{
