@@ -2,15 +2,15 @@
 
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-18
-CURRENT_VERSION: V174 FINAL FIVE TABS candidate
-CURRENT_CP: CP_V174_TWO_TAB_CONCURRENT_BET_FLAKY_RED
+CURRENT_VERSION: V176 LINE LIFECYCLE FIX candidate
+CURRENT_CP: CP_V176_MULTITAB_SETTLEMENT_3X_PASS
 CURRENT_BRANCH: automation/v174-two-tab-concurrent-bet-qa
-CURRENT_COMMIT: 49fe10113800e9fcef0a44d1ffadac51b545fad1
+CURRENT_COMMIT: 0b51d9b6e04c6560d7e8385498246395f36fed1a
 CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: V176の2タブ同時BET→精算→タブB再読込QAを3回連続実行し、全PASS後のみCURRENT VERSIONをV176へ昇格する
+NEXT_ONE_ACTION: V176を物理Androidと実LINE内ブラウザでGUEST 1,000G→5G BET→7頭→RESULT→次レースまで確認する
 
 ## PASS
 
@@ -29,6 +29,7 @@ NEXT_ONE_ACTION: V176の2タブ同時BET→精算→タブB再読込QAを3回連
 - 5G BET確定後にBET前の完全なlocalStorage/sessionStorage保存状態を再投入して再読込しても995G・active BET 1件を維持し、旧保存状態によるBET巻き戻しなしでPASS。
 - OFFICIAL RESULT精算後に精算前の有効BET保存状態を再投入して再読込しても995G・active BET 0件・履歴1件を維持し、BET復活・履歴消失・二重精算の入口なしでPASS。
 - レース1精算後995Gの保存状態を、レース2の5G BET受理後に再投入して再読込しても990G・active BET 1件・履歴1件を維持し、旧精算済み状態による新規BET消失・5G返却なしでPASS。
+- V176はrun 39064943862と最新head run 39064964822で、生成checksum `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`、mandatory guards、2タブ同時BET→精算→タブB再読込を各3回連続（計6回）PASS。active BET 0・履歴1件へ収束し、V175で残った古いタブBメモリ復活を再現しなかった。
 
 ## RED
 
@@ -42,8 +43,6 @@ NEXT_ONE_ACTION: V176の2タブ同時BET→精算→タブB再読込QAを3回連
 
 ## NOT TESTED
 
-- V176候補のGitHub Actions / Playwright実行。ローカルは公式V175 checksumチェーンを再現できないため構文と置換契約のみPASSで、runtime PASSへ読み替えない。
-- V176候補の2タブ同時BET→精算→タブB再読込3回連続結果。
 - 物理AndroidでのV174完全フロー。
 - 物理iPhoneでのV174完全フロー。
 - 実LINE内ブラウザでのV174完全フロー。
@@ -58,7 +57,7 @@ NEXT_ONE_ACTION: V176の2タブ同時BET→精算→タブB再読込QAを3回連
 - 本番会員を変更しない。
 - G台帳を変更しない。
 - V166原本、V173 rollback、V174生成チェーンを上書きしない。
-- V175/V176は新規候補としてのみ保持し、V176 runtime全PASS前にCURRENTへ昇格しない。
+- V175はFAIL証拠として保持し、V176をCURRENT候補とする。main自動マージと本番公開は行わない。
 
 ## Resume Notes
 
@@ -70,10 +69,10 @@ NEXT_ONE_ACTION: V176の2タブ同時BET→精算→タブB再読込QAを3回連
 - V175 3回連続QA workflow（FAIL証拠）: `.github/workflows/v175-multitab-lifecycle-qa.yml`
 - V176候補生成: `python scripts/create_v176_line_lifecycle_fix.py`
 - V176候補検査: `python scripts/gh_v176_line_lifecycle_contract.py`
-- V176候補active index（検査時のみ）: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
+- V176 current active index: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
 - V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`
 - 復旧検査: `python scripts/gh_rc_restore_drill.py`
-- 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V174_FINAL_FIVE_TABS/index.html python scripts/gh_preflight.py`
+- 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html python scripts/gh_preflight.py`
 - 通信断RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/19
 - 復旧GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/20
 - 引き継ぎ固定: https://github.com/hiroshi0111m-ops/golden-horse/pull/21
