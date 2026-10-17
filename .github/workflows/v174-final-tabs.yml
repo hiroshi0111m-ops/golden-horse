@@ -7,18 +7,22 @@ on:
       - "automation/v174-final-five-tabs"
     paths:
       - "scripts/gh_final_tabs_contract.py"
+      - "scripts/gh_final_tabs_runtime.mjs"
       - "scripts/create_v174_final_tabs_fix.py"
       - "scripts/create_v173_mobile_nav_fix.py"
+      - "scripts/gh_mobile_nav_runtime.mjs"
+      - "scripts/run_test_with_url.mjs"
+      - "scripts/gh_client_matrix.mjs"
+      - "scripts/gh_3cycle_runtime.mjs"
       - ".github/workflows/v174-final-tabs.yml"
-      - "scripts/gh_final_tabs_runtime.mjs"
 
 permissions:
   contents: read
 
 jobs:
-  final-tabs-contract:
+  final-tabs-regression:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
@@ -34,38 +38,64 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Chromium
+      - name: Install Playwright browsers
         run: |
           npm install --no-save playwright
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
+          node -e "console.log('CHROME_BIN='+require('playwright').chromium.executablePath())" >> "$GITHUB_ENV"
 
-      - name: Generate current V173 baseline
+      - name: Generate V174 and run mandatory preflight
         env:
-          GH_ACTIVE_INDEX: checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
-        run: python scripts/create_v173_mobile_nav_fix.py
+          GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: |
+          python scripts/create_v174_final_tabs_fix.py
+          python scripts/gh_preflight.py
+
+      - name: Verify required final five tabs statically
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: python scripts/gh_final_tabs_contract.py
 
       - name: Start local server
         run: |
           python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
           sleep 2
 
-      - name: RED runtime for required five tabs
+      - name: Verify required five-tab navigation at 390px
         env:
-          GH_FINAL_TABS_URL: http://127.0.0.1:4173/checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
+          GH_FINAL_TABS_URL: http://127.0.0.1:4173/checkpoints/V174_FINAL_FIVE_TABS/index.html
         run: node scripts/gh_final_tabs_runtime.mjs
 
-      - name: Verify required final five tabs
+      - name: Recheck V173 mobile safe-area fix
         env:
-          GH_ACTIVE_INDEX: checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
-        run: python scripts/gh_final_tabs_contract.py
+          GH_MOBILE_NAV_URL: http://127.0.0.1:4173/checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: node scripts/gh_mobile_nav_runtime.mjs
 
-      - name: Upload RED evidence
+      - name: Run Android LINE-simulated and iPhone full race matrix
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: timeout 700s node scripts/run_test_with_url.mjs scripts/gh_client_matrix.mjs
+
+      - name: Run three consecutive races on V174
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: timeout 500s node scripts/run_test_with_url.mjs scripts/gh_3cycle_runtime.mjs
+
+      - name: Upload V174 verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: golden-horse-v174-final-tabs-red
+          name: golden-horse-v174-final-tabs-green
           path: |
+            gh-checkpoint-manifest.json
             final-tabs-runtime-report.json
             final-tabs-390*.png
+            mobile-nav-report.json
+            mobile-nav-390*.png
+            client-matrix-report.json
+            client-matrix-*.png
+            three-cycle-runtime-report.json
+            three-cycle-*.png
+            checkpoints/V174_FINAL_FIVE_TABS/index.html
           if-no-files-found: ignore
           retention-days: 3
