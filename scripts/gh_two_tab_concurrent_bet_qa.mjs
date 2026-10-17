@@ -116,7 +116,7 @@ try {
   pageB = await pagePromise;
   pageB.setDefaultTimeout(12_000);
   attachErrors(pageB, "tabB");
-  await pageB.waitForLoadState("domcontentloaded");
+  await pageB.waitForURL(target => target.href === url, { timeout: 30_000 });
   await waitReady(pageB);
 
   report.initialB = await readState(pageB);
