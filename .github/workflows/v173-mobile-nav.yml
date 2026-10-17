@@ -39,7 +39,7 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium webkit
-          echo "CHROME_BIN=$(node -e \"console.log(require('playwright').chromium.executablePath())\")" >> "$GITHUB_ENV"
+          node -e "console.log('CHROME_BIN='+require('playwright').chromium.executablePath())" >> "$GITHUB_ENV"
 
       - name: Generate V173 and run mandatory preflight
         env:
