@@ -7,12 +7,15 @@ on:
       - "automation/v173-mobile-nav-safe-area"
     paths:
       - "scripts/gh_mobile_nav_runtime.mjs"
+      - "scripts/run_test_with_url.mjs"
       - "scripts/create_v173_mobile_nav_fix.py"
       - ".github/workflows/v173-mobile-nav.yml"
       - "scripts/create_v172_csp_image_fix.py"
       - "scripts/create_v171_three_cycle_fix.py"
       - "scripts/create_v170_race_timing_fix.py"
       - "scripts/create_v169_race_loop_fix.py"
+      - "scripts/gh_client_matrix.mjs"
+      - "scripts/gh_3cycle_runtime.mjs"
       - "checkpoints/V168_BOOT_LOOP_FIX/index.html"
 
 permissions:
@@ -21,7 +24,7 @@ permissions:
 jobs:
   mobile-nav-390:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
@@ -32,32 +35,52 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Playwright Chromium
+      - name: Install Playwright browsers
         run: |
           npm install --no-save playwright
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
+          echo "CHROME_BIN=$(node -e \"console.log(require('playwright').chromium.executablePath())\")" >> "$GITHUB_ENV"
 
-      - name: Generate current V172 candidate
-        run: python scripts/create_v172_csp_image_fix.py
+      - name: Generate V173 and run mandatory preflight
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
+        run: |
+          python scripts/create_v173_mobile_nav_fix.py
+          python scripts/gh_preflight.py
 
       - name: Start local server
         run: |
           python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
           sleep 2
 
-      - name: Reproduce 390px mobile navigation overlap
+      - name: Verify 390px mobile navigation has no overlap
         env:
-          GH_MOBILE_NAV_URL: http://127.0.0.1:4173/checkpoints/V172_CSP_IMAGE_FIX/index.html
+          GH_MOBILE_NAV_URL: http://127.0.0.1:4173/checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
         run: node scripts/gh_mobile_nav_runtime.mjs
 
-      - name: Upload mobile navigation evidence
+      - name: Run Android LINE-simulated and iPhone full race matrix
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
+        run: timeout 700s node scripts/run_test_with_url.mjs scripts/gh_client_matrix.mjs
+
+      - name: Run three consecutive races on V173
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
+        run: timeout 500s node scripts/run_test_with_url.mjs scripts/gh_3cycle_runtime.mjs
+
+      - name: Upload V173 verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: golden-horse-v173-mobile-nav-red
+          name: golden-horse-v173-mobile-nav-green
           path: |
+            gh-checkpoint-manifest.json
             mobile-nav-report.json
             mobile-nav-390*.png
-            checkpoints/V172_CSP_IMAGE_FIX/index.html
+            client-matrix-report.json
+            client-matrix-*.png
+            three-cycle-runtime-report.json
+            three-cycle-*.png
+            checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
           if-no-files-found: ignore
           retention-days: 3
