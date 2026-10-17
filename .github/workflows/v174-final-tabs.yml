@@ -1,0 +1,40 @@
+name: GOLDEN HORSE V174 final tabs TDD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v174-final-five-tabs"
+    paths:
+      - "scripts/gh_final_tabs_contract.py"
+      - "scripts/create_v174_final_tabs_fix.py"
+      - "scripts/create_v173_mobile_nav_fix.py"
+      - ".github/workflows/v174-final-tabs.yml"
+      - "scripts/gh_final_tabs_runtime.mjs"
+
+permissions:
+  contents: read
+
+jobs:
+  final-tabs-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate current V173 baseline
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
+        run: python scripts/create_v173_mobile_nav_fix.py
+
+      - name: Verify required final five tabs
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V173_MOBILE_NAV_SAFE_AREA/index.html
+        run: python scripts/gh_final_tabs_contract.py
