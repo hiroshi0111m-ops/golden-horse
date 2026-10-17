@@ -96,7 +96,12 @@ try {
     throw new Error(`double-confirm active bets=${report.afterConfirm.activeBets}`);
   }
 
-  await page.locator("#skipBtn").click();
+  const skip = page.locator("#skipBtn");
+  if (!await skip.isVisible()) {
+    await page.locator('button.gh-v60-nav-item[data-page="startPage"]').click();
+    await skip.waitFor({ state: "visible", timeout: 5_000 });
+  }
+  await skip.click();
   await page.waitForFunction(() => document.getElementById("raceScreen")?.classList.contains("on"), null, { timeout: 25_000 });
   const runners = await page.locator("#runners .runner").count();
   if (runners !== 7) throw new Error(`runner count=${runners}`);
