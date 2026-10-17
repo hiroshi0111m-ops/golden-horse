@@ -5,12 +5,12 @@ UPDATED_JST: 2026-10-18
 CURRENT_VERSION: V174 FINAL FIVE TABS candidate
 CURRENT_CP: CP_V174_TWO_TAB_CONCURRENT_BET_FLAKY_RED
 CURRENT_BRANCH: automation/v174-two-tab-concurrent-bet-qa
-CURRENT_COMMIT: 10cdb6ab22e58973299f085c4de70dff698d1918
+CURRENT_COMMIT: 49fe10113800e9fcef0a44d1ffadac51b545fad1
 CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: 2タブ精算競合で古い有効BETを復活させる保存キーと優先順位を特定し、V174原本を直接変更せず最小修正可否を判定する
+NEXT_ONE_ACTION: 2タブ精算競合のタブB再読込中にgh_guest_isolated_v2_stateへ旧BET状態を書き戻す呼出元をstorage writer traceで特定する
 
 ## PASS
 
@@ -36,6 +36,7 @@ NEXT_ONE_ACTION: 2タブ精算競合で古い有効BETを復活させる保存�
 - 権威BETサーバー、API、DBスキーマ、冪等受付、監査ログの実装先はこのリポジトリ内に存在しない。
 - PR #19は上記を隠さず保持する意図的RED証拠であり、PASSへ読み替えない。
 - 同一ゲスト状態を複製した2タブから同時に5G BET確認後、run 39052004832ではタブA精算後もタブB再読込が995G・active BET 1件・履歴なしを復活、run 39052226802では同手順PASSとなった。結果が実行順で分岐する精算競合のためFLAKY RED（PR #31）。
+- 診断run 39056497035で、タブB再読込直前の共有`gh_guest_isolated_v2_state`は精算済み（active BET 0・履歴1件）だが、再読込後に旧状態へ上書きされることを確認。run 39056689510再実行job 117466692656では、再読込後ハッシュ`b98a1014`が同一実行の同時BET確定直後ハッシュと完全一致し、タブB起動処理が古い確定直後スナップショットを書き戻すことを特定した。呼出元は未特定。
 
 ## NOT TESTED
 
