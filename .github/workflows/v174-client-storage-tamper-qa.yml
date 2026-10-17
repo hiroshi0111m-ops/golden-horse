@@ -10,6 +10,8 @@ on:
       - "scripts/create_v174_final_tabs_fix.py"
       - "scripts/create_v173_mobile_nav_fix.py"
       - ".github/workflows/v174-client-storage-tamper-qa.yml"
+      - "FREE_AUTOMATION_STATUS.md"
+      - "scripts/gh_free_automation_status_contract.py"
 
 permissions:
   contents: read
@@ -43,6 +45,7 @@ jobs:
         run: |
           python scripts/create_v174_final_tabs_fix.py
           python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
 
       - name: Start isolated V174 server
         run: |
