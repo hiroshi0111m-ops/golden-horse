@@ -144,7 +144,7 @@ try {
   }
 
   report.pass = true;
-  console.log(`CLIENT_STORAGE_TAMPER_QA=PASS ${JSON.stringify(report.afterTamperReload)}`);
+  console.log(`CLIENT_STORAGE_TAMPER_QA=PASS ${JSON.stringify({ mutations: report.mutations, afterTamperReload: report.afterTamperReload })}`);
   await page.screenshot({ path: "client-storage-tamper-pass.png", fullPage: false });
 } catch (error) {
   exitCode = 1;
