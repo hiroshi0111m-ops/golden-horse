@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "automation/v173-mobile-nav-safe-area"
+      - "automation/v173-three-cycle-actionability"
     paths:
       - "scripts/gh_mobile_nav_runtime.mjs"
       - "scripts/run_test_with_url.mjs"
