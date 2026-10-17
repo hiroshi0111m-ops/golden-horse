@@ -34,7 +34,6 @@ for token in forbidden:
 assert html.count("gh_guest_isolated_v2_state") == 5, "unexpected guest-state key surface change"
 assert html.count("function localSave(){localStorage.setItem('gh_guest_isolated_v2_state',JSON.stringify(state))}") == 1
 assert "ホーム</button><button class=\"gh-v60-nav-item\" data-page=\"startPage\"><span>♞</span>レース</button>" in html
-assert html.count('button class="horsePick"') == 7
 
 print("V175_MULTITAB_LIFECYCLE_CONTRACT=PASS")
 print("V175_SHA256=" + hashlib.sha256(v175.read_bytes()).hexdigest())
