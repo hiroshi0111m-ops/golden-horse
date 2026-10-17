@@ -14,6 +14,10 @@ on:
       - "scripts/run_test_with_url.mjs"
       - "scripts/gh_client_matrix.mjs"
       - "scripts/gh_3cycle_runtime.mjs"
+      - "scripts/serve_golden_horse.py"
+      - "scripts/gh_serve_active_index_test.py"
+      - "RUN_V174_PHONE_TEST_FREE.bat"
+      - ".github/workflows/v174-phone-preview-tooling.yml"
       - ".github/workflows/v174-final-tabs.yml"
 
 permissions:
@@ -55,6 +59,9 @@ jobs:
         env:
           GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
         run: python scripts/gh_final_tabs_contract.py
+
+      - name: Verify exact phone-preview checkpoint selection
+        run: python scripts/gh_serve_active_index_test.py
 
       - name: Start local server
         run: |
