@@ -26,10 +26,11 @@ try {
 
   await page.waitForFunction(() => {
     const nav = document.querySelector("nav.gh-v60-nav");
-    const badge = [...document.querySelectorAll("body *")].find(element => {
-      const text = (element.textContent || "").replace(/\s+/g, " ").trim();
-      return text.includes("動作確認モード") && getComputedStyle(element).position === "fixed";
-    });
+    const badge = document.getElementById("gh-demo-mode-badge") ||
+      [...document.querySelectorAll("body *")].find(element => {
+        const text = (element.textContent || "").replace(/\s+/g, " ").trim();
+        return text.includes("動作確認モード") && getComputedStyle(element).position === "fixed";
+      });
     return !!nav && !!badge && nav.querySelectorAll("button").length === 5;
   });
 
@@ -39,10 +40,11 @@ try {
     const raceButton = buttons.find(button => /レース/.test(button.textContent || "")) ||
       buttons.find(button => /startPage/.test(button.getAttribute("onclick") || "")) ||
       buttons[1];
-    const badge = [...document.querySelectorAll("body *")].find(element => {
-      const text = (element.textContent || "").replace(/\s+/g, " ").trim();
-      return text.includes("動作確認モード") && getComputedStyle(element).position === "fixed";
-    });
+    const badge = document.getElementById("gh-demo-mode-badge") ||
+      [...document.querySelectorAll("body *")].find(element => {
+        const text = (element.textContent || "").replace(/\s+/g, " ").trim();
+        return text.includes("動作確認モード") && getComputedStyle(element).position === "fixed";
+      });
 
     const navRect = nav.getBoundingClientRect();
     const badgeRect = badge.getBoundingClientRect();
@@ -109,13 +111,26 @@ try {
 
   const raceButton = page.locator("nav.gh-v60-nav button").filter({ hasText: "レース" }).first();
   await raceButton.click();
-  await page.waitForFunction(() => {
-    const home = document.getElementById("home");
-    return !!document.querySelector("button.horsePick") && !!home && !home.classList.contains("active");
-  });
+
+  report.navigation = { raceTabClicked: true, guestEntryShown: false, betScreenVisible: false };
+  const guestEntry = page.locator("#ghFix9Go");
+  if (await guestEntry.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    report.navigation.guestEntryShown = true;
+    await guestEntry.click();
+  } else {
+    const legacyGuestEntry = page.locator("#ghGuestRace");
+    if (await legacyGuestEntry.isVisible({ timeout: 1_000 }).catch(() => false)) {
+      report.navigation.guestEntryShown = true;
+      await legacyGuestEntry.click();
+    }
+  }
+
+  await page.locator("button.horsePick").first().waitFor({ state: "visible", timeout: 15_000 });
+  report.navigation.betScreenVisible = true;
+  await page.screenshot({ path: "mobile-nav-390-bet.png", fullPage: false });
 
   report.pass = true;
-  console.log(`MOBILE_NAV=PASS ${JSON.stringify(report.layout)}`);
+  console.log(`MOBILE_NAV=PASS ${JSON.stringify({ layout: report.layout, navigation: report.navigation })}`);
 } catch (error) {
   exitCode = 1;
   report.pass = false;
