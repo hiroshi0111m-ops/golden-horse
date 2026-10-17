@@ -8,6 +8,7 @@ on:
     branches:
       - "automation/v176-offline-bet-recheck"
     paths:
+      - "FREE_AUTOMATION_STATUS.md"
       - "scripts/gh_v176_offline_bet_qa.mjs"
       - "scripts/create_v176_line_lifecycle_fix.py"
       - "scripts/gh_v176_line_lifecycle_contract.py"
