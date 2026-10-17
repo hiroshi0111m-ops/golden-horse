@@ -23,7 +23,7 @@ function readState(page) {
   return page.evaluate(() => ({
     gold: typeof state !== "undefined" ? Number(state.gold) : null,
     activeBets: typeof state !== "undefined" && Array.isArray(state.raceBets) ? state.raceBets.length : null,
-    betHistory: typeof state !== "undefined" && Array.isArray(state.betHistory) ? state.betHistory.length : null,
+    betHistory: typeof state !== "undefined" && Array.isArray(state.betHistory) ? state.betHistory.length : 0,
     settled: typeof raceState !== "undefined" ? !!raceState.settled : null,
     running: typeof raceState !== "undefined" ? !!raceState.running : null,
     transitioning: typeof raceState !== "undefined" ? !!raceState.transitioning : null,
