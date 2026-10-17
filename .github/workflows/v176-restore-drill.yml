@@ -1,0 +1,49 @@
+name: GOLDEN HORSE V176 restore drill
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v176-restore-drill"
+    paths:
+      - "RC_RECOVERY_MANIFEST.json"
+      - "scripts/gh_rc_restore_drill.py"
+      - "scripts/create_v173_mobile_nav_fix.py"
+      - "scripts/create_v174_final_tabs_fix.py"
+      - "scripts/create_v175_multitab_lifecycle_fix.py"
+      - "scripts/create_v176_line_lifecycle_fix.py"
+      - "scripts/gh_preflight.py"
+      - ".github/workflows/v176-restore-drill.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  restore-drill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Prove V176 current and V173 rollback can be rebuilt safely
+        run: python scripts/gh_rc_restore_drill.py
+
+      - name: Upload restore evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v176-restore-drill
+          path: |
+            gh-rc-restore-drill.json
+            gh-checkpoint-manifest-current.json
+            gh-checkpoint-manifest-rollback.json
+            RC_RECOVERY_MANIFEST.json
+          if-no-files-found: ignore
+          retention-days: 7
