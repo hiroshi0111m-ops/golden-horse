@@ -3,10 +3,10 @@
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-17
 CURRENT_VERSION: V174 FINAL FIVE TABS candidate
-CURRENT_CP: CP_V174_BET_TERMS_TAMPER_QA_PASS
-CURRENT_BRANCH: automation/v174-bet-terms-tamper-qa
-CURRENT_COMMIT: d739152f8b2e586380974f89059e3db5b6d1aa76
-CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/26
+CURRENT_CP: CP_V174_BET_SELECTION_TAMPER_QA_PASS
+CURRENT_BRANCH: automation/v174-bet-selection-tamper-qa
+CURRENT_COMMIT: d5c63156959091e7268ae2545e5a38dfc2c6ac17
+CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/27
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
@@ -25,6 +25,7 @@ NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G B
 - 保存状態を995G・active BET 1件から1000G・active BET 0件へ改ざん後に再読込しても995G・active BET 1件へ復元され、BET削除と5G返却の改ざん受理なしでPASS。
 - RESULT精算後の保存状態を1103G・履歴1件から1108G・履歴0件へ改ざん後に再読込しても1103G・履歴1件へ復元され、精算履歴削除と5G返却の改ざん受理なしでPASS。
 - 有効BET保存のstakeを5Gから100G、oddsを15.7から1570へ改ざん後に再読込してもstake 5G・odds 15.7・995G・active BET 1件へ復元され、払戻条件の保存値改ざん受理なしでPASS。
+- 有効BET保存の単勝対象馬を1番から7番へ差し替え後に再読込しても1番・995G・active BET 1件へ復元され、対象馬の保存値改ざん受理なしでPASS。
 
 ## RED
 
@@ -63,3 +64,4 @@ NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G B
 - 保存BET削除・5G返却改ざん拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/24
 - 精算履歴削除・5G返却改ざん拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/25
 - 有効BET払戻条件改ざん拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/26
+- 有効BET対象馬改ざん拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/27
