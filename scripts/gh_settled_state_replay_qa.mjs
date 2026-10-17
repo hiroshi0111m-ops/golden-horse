@@ -42,10 +42,10 @@ async function waitForPersistedState(page, gold, activeBets, betHistory) {
       if (
         Object.prototype.hasOwnProperty.call(value, "gold") &&
         Array.isArray(value.raceBets) &&
-        Array.isArray(value.betHistory) &&
         Number(value.gold) === expectedGold &&
         value.raceBets.length === expectedBets &&
-        value.betHistory.length === expectedHistory
+        (expectedHistory === null ||
+          (Array.isArray(value.betHistory) && value.betHistory.length === expectedHistory))
       ) return true;
       return Object.values(value).some(containsState);
     }
@@ -180,7 +180,7 @@ try {
   }
 
   await placeFiveGoldBet(page);
-  await waitForPersistedState(page, 995, 1, 0);
+  await waitForPersistedState(page, 995, 1, null);
   report.accepted = await readState(page);
   if (report.accepted.gold !== 995 || report.accepted.activeBets !== 1 || report.accepted.betHistory !== 0) {
     throw new Error("invalid accepted state " + JSON.stringify(report.accepted));
