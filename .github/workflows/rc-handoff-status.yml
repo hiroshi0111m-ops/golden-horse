@@ -1,0 +1,32 @@
+name: GOLDEN HORSE RC handoff status
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/rc-handoff-status"
+    paths:
+      - "FREE_AUTOMATION_STATUS.md"
+      - "scripts/gh_free_automation_status_contract.py"
+      - ".github/workflows/rc-handoff-status.yml"
+      - "docs/superpowers/plans/2026-10-17-rc-handoff-status.md"
+
+permissions:
+  contents: read
+
+jobs:
+  status-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate canonical handoff status
+        run: python scripts/gh_free_automation_status_contract.py
