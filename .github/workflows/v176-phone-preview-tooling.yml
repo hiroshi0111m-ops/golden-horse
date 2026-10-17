@@ -1,0 +1,75 @@
+name: GOLDEN HORSE V176 phone preview tooling
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v176-phone-test-ready"
+    paths:
+      - "scripts/serve_golden_horse.py"
+      - "scripts/gh_serve_active_index_test.py"
+      - "scripts/create_v176_line_lifecycle_fix.py"
+      - "scripts/gh_v176_line_lifecycle_contract.py"
+      - "scripts/gh_preflight.py"
+      - "scripts/gh_free_automation_status_contract.py"
+      - "FREE_AUTOMATION_STATUS.md"
+      - "RUN_V176_PHONE_TEST_FREE.bat"
+      - ".github/workflows/v176-phone-preview-tooling.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-v176-phone-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify exact active-index contract
+        run: python scripts/gh_serve_active_index_test.py
+
+      - name: Generate and preflight exact V176
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+        run: |
+          python scripts/create_v176_line_lifecycle_fix.py
+          python scripts/gh_v176_line_lifecycle_contract.py
+          python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
+
+      - name: Verify one-click Windows launcher contract
+        run: |
+          test -f RUN_V176_PHONE_TEST_FREE.bat
+          grep -F 'set "GH_ACTIVE_INDEX=checkpoints\V176_LINE_LIFECYCLE_FIX\index.html"' RUN_V176_PHONE_TEST_FREE.bat
+          grep -F 'scripts\create_v176_line_lifecycle_fix.py' RUN_V176_PHONE_TEST_FREE.bat
+          grep -F 'scripts\gh_v176_line_lifecycle_contract.py' RUN_V176_PHONE_TEST_FREE.bat
+          grep -F 'scripts\gh_preflight.py' RUN_V176_PHONE_TEST_FREE.bat
+          grep -F 'scripts\serve_golden_horse.py' RUN_V176_PHONE_TEST_FREE.bat
+          grep -F 'GUEST 1000G' RUN_V176_PHONE_TEST_FREE.bat
+          grep -F 'LINE内ブラウザ' RUN_V176_PHONE_TEST_FREE.bat
+
+      - name: Serve exact V176 and verify build marker
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+          GH_PORT: "4176"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python -u scripts/serve_golden_horse.py > /tmp/gh-v176-phone.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4176/ > /tmp/gh-v176-phone.html; then
+              break
+            fi
+            sleep 0.2
+          done
+          grep -F 'V176-LINE-LIFECYCLE-FIX' /tmp/gh-v176-phone.html
+          grep -F 'ACTIVE: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html' /tmp/gh-v176-phone.log

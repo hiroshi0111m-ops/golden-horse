@@ -10,7 +10,7 @@ CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: V176を物理Androidと実LINE内ブラウザでGUEST 1,000G→5G BET→7頭→RESULT→次レースまで確認する
+NEXT_ONE_ACTION: RUN_V176_PHONE_TEST_FREE.batを実行し、物理Androidと実LINE内ブラウザでGUEST 1,000G→5G BET→7頭→RESULT→次レースまで録画確認する
 
 ## PASS
 
@@ -30,6 +30,7 @@ NEXT_ONE_ACTION: V176を物理Androidと実LINE内ブラウザでGUEST 1,000G→
 - OFFICIAL RESULT精算後に精算前の有効BET保存状態を再投入して再読込しても995G・active BET 0件・履歴1件を維持し、BET復活・履歴消失・二重精算の入口なしでPASS。
 - レース1精算後995Gの保存状態を、レース2の5G BET受理後に再投入して再読込しても990G・active BET 1件・履歴1件を維持し、旧精算済み状態による新規BET消失・5G返却なしでPASS。
 - V176はrun 39064943862と最新head run 39064964822で、生成checksum `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`、mandatory guards、2タブ同時BET→精算→タブB再読込を各3回連続（計6回）PASS。active BET 0・履歴1件へ収束し、V175で残った古いタブBメモリ復活を再現しなかった。
+- V176物理スマホ準備ツールは、exact active-index、V176生成、V176固有契約、mandatory preflight、status contract、ローカル配信build marker確認をCIでPASS。これは起動準備ツールの検査結果であり、端末実走のPASSではない。
 
 ## RED
 
@@ -43,9 +44,9 @@ NEXT_ONE_ACTION: V176を物理Androidと実LINE内ブラウザでGUEST 1,000G→
 
 ## NOT TESTED
 
-- 物理AndroidでのV174完全フロー。
-- 物理iPhoneでのV174完全フロー。
-- 実LINE内ブラウザでのV174完全フロー。
+- 物理AndroidでのV176完全フロー。
+- 物理iPhoneでのV176完全フロー。
+- 実LINE内ブラウザでのV176完全フロー。
 - 実機音声同期。
 - 本番相当のGPSサーバー拒否、正式会員、SMS、本人確認、GDB ID、支払い状態、退店後G付与。
 
@@ -71,6 +72,8 @@ NEXT_ONE_ACTION: V176を物理Androidと実LINE内ブラウザでGUEST 1,000G→
 - V176候補検査: `python scripts/gh_v176_line_lifecycle_contract.py`
 - V176 current active index: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
 - V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`
+- V176物理スマホ起動: `RUN_V176_PHONE_TEST_FREE.bat`
+- V176物理スマホ準備workflow: `.github/workflows/v176-phone-preview-tooling.yml`
 - 復旧検査: `python scripts/gh_rc_restore_drill.py`
 - 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html python scripts/gh_preflight.py`
 - 通信断RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/19
@@ -85,4 +88,4 @@ NEXT_ONE_ACTION: V176を物理Androidと実LINE内ブラウザでGUEST 1,000G→
 - 旧保存状態リプレイ拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/28
 - 精算前保存状態リプレイ拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/29
 - 精算後保存状態による後続BET巻き戻し拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/30
-- 2タブ同時BET・精算競合RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
+- 2タブ同時BET・精算競合修正とV176 GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
