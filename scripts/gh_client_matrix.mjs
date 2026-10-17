@@ -92,6 +92,59 @@ async function placeFiveGoldBet(page, row) {
   return (await page.locator("#betSlips").innerText()).trim().slice(0, 300);
 }
 
+async function observeOfficialResult(page, row) {
+  const startedAt = Date.now();
+  const deadline = startedAt + 120_000;
+  row.resultTimeline = [];
+  let previous = "";
+
+  while (Date.now() < deadline) {
+    const current = await page.evaluate(() => {
+      const race = document.getElementById("raceScreen");
+      const overlay = document.getElementById("finishOverlay");
+      const panel = document.getElementById("finishPanel");
+      return {
+        raceOn: !!race?.classList.contains("on"),
+        finishOn: !!overlay?.classList.contains("on"),
+        finishHidden: !!panel?.classList.contains("hidden"),
+        finishText: (panel?.innerText || "").trim(),
+        settled: typeof raceState !== "undefined" ? !!raceState.settled : null,
+        activeBets: typeof state !== "undefined" && Array.isArray(state.raceBets) ? state.raceBets.length : null,
+        betHistory: typeof state !== "undefined" && Array.isArray(state.betHistory) ? state.betHistory.length : 0,
+        countdown: (document.getElementById("countdown")?.textContent || "").trim(),
+      };
+    });
+
+    const signature = JSON.stringify({
+      raceOn: current.raceOn,
+      finishOn: current.finishOn,
+      finishHidden: current.finishHidden,
+      settled: current.settled,
+      activeBets: current.activeBets,
+      betHistory: current.betHistory,
+      countdown: current.countdown,
+    });
+    if (signature !== previous) {
+      row.resultTimeline.push({
+        elapsedMs: Date.now() - startedAt,
+        ...current,
+        finishText: current.finishText.slice(0, 500),
+      });
+      previous = signature;
+    }
+
+    if (current.finishOn && !current.finishHidden && current.settled) return current;
+
+    if (!current.raceOn && !current.finishOn && current.betHistory >= 1 && current.activeBets === 0) {
+      throw new Error(`returned to BET before result was observed: ${JSON.stringify(current)}`);
+    }
+
+    await page.waitForTimeout(200);
+  }
+
+  throw new Error("official result was not observed within 120000ms");
+}
+
 async function runClient(browser, cfg) {
   const context = await browser.newContext(cfg.contextOptions);
   const page = await context.newPage();
@@ -165,13 +218,8 @@ async function runClient(browser, cfg) {
     row.runnerCount = await page.locator("#runners .runner").count();
     if (row.runnerCount !== 7) throw new Error(`runner count=${row.runnerCount}`);
 
-    await page.waitForFunction(() => {
-      const overlay = document.getElementById("finishOverlay");
-      const panel = document.getElementById("finishPanel");
-      return !!overlay?.classList.contains("on") && !panel?.classList.contains("hidden") &&
-        typeof raceState !== "undefined" && raceState.settled;
-    }, null, { timeout: 110_000 });
-    const resultText = (await page.locator("#finishPanel").innerText()).trim();
+    const observedResult = await observeOfficialResult(page, row);
+    const resultText = observedResult.finishText;
     if (!/OFFICIAL|RESULT|確定/i.test(resultText)) throw new Error("official result missing");
     row.resultType = resultText.split("\n").slice(0, 2).join(" / ");
 

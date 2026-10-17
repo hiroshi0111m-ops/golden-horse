@@ -1,0 +1,63 @@
+name: GOLDEN HORSE V174 iPhone result diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v174-final-five-tabs"
+    paths:
+      - "scripts/gh_iphone_result_diagnostic.mjs"
+      - "scripts/create_v174_final_tabs_fix.py"
+      - ".github/workflows/v174-iphone-diagnostic.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  iphone-result-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps webkit
+
+      - name: Generate V174
+        run: python scripts/create_v174_final_tabs_fix.py
+
+      - name: Start local server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
+          sleep 2
+
+      - name: Run three iPhone result timelines
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V174_FINAL_FIVE_TABS/index.html
+          GH_IPHONE_DIAG_RUNS: "3"
+        run: timeout 600s node scripts/gh_iphone_result_diagnostic.mjs
+
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v174-iphone-result-diagnostic
+          path: |
+            iphone-result-diagnostic-report.json
+            iphone-result-diagnostic-*.png
+          if-no-files-found: ignore
+          retention-days: 3
