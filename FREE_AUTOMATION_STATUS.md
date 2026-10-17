@@ -10,7 +10,7 @@ CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: 2タブ精算競合のタブB再読込中にgh_guest_isolated_v2_stateへ旧BET状態を書き戻す呼出元をstorage writer traceで特定する
+NEXT_ONE_ACTION: V175の2タブ同時BET→精算→タブB再読込QAを3回連続実行し、全PASS後のみCURRENT VERSIONをV175へ昇格する
 
 ## PASS
 
@@ -36,10 +36,13 @@ NEXT_ONE_ACTION: 2タブ精算競合のタブB再読込中にgh_guest_isolated_v
 - 権威BETサーバー、API、DBスキーマ、冪等受付、監査ログの実装先はこのリポジトリ内に存在しない。
 - PR #19は上記を隠さず保持する意図的RED証拠であり、PASSへ読み替えない。
 - 同一ゲスト状態を複製した2タブから同時に5G BET確認後、run 39052004832ではタブA精算後もタブB再読込が995G・active BET 1件・履歴なしを復活、run 39052226802では同手順PASSとなった。結果が実行順で分岐する精算競合のためFLAKY RED（PR #31）。
-- 診断run 39056497035で、タブB再読込直前の共有`gh_guest_isolated_v2_state`は精算済み（active BET 0・履歴1件）だが、再読込後に旧状態へ上書きされることを確認。run 39056689510再実行job 117466692656では、再読込後ハッシュ`b98a1014`が同一実行の同時BET確定直後ハッシュと完全一致し、タブB起動処理が古い確定直後スナップショットを書き戻すことを特定した。呼出元は未特定。
+- 診断run 39056497035で、タブB再読込直前の共有`gh_guest_isolated_v2_state`は精算済み（active BET 0・履歴1件）だが、再読込後に旧状態へ上書きされることを確認。run 39056689510再実行job 117466692656では、再読込後ハッシュ`b98a1014`が同一実行の同時BET確定直後ハッシュと完全一致し、タブBの古い確定直後スナップショット書戻しを確認した。
+- 呼出元は`FRIEND-V109-LOOP-RESILIENCE`の`visibilitychange(hidden)` / `pagehide`で無条件に呼ばれる`localSave()`。タブB再読込時に古いメモリ状態を共有`gh_guest_isolated_v2_state`へ書くため、タブAの精算済み状態を巻き戻す。V175候補はこの2箇所の保存を停止し、差分監査のみ残す最小修正。
 
 ## NOT TESTED
 
+- V175候補のGitHub Actions / Playwright実行。コネクタ経由commitではworkflowが起動せず、静的契約PASSをruntime PASSへ読み替えない。
+- V175候補の2タブ同時BET→精算→タブB再読込3回連続結果。
 - 物理AndroidでのV174完全フロー。
 - 物理iPhoneでのV174完全フロー。
 - 実LINE内ブラウザでのV174完全フロー。
@@ -54,11 +57,16 @@ NEXT_ONE_ACTION: 2タブ精算競合のタブB再読込中にgh_guest_isolated_v
 - 本番会員を変更しない。
 - G台帳を変更しない。
 - V166原本、V173 rollback、V174生成チェーンを上書きしない。
+- V175は新規候補としてのみ保持し、runtime全PASS前にCURRENTへ昇格しない。
 
 ## Resume Notes
 
 - V174生成: `python scripts/create_v174_final_tabs_fix.py`
 - V174 active index: `GH_ACTIVE_INDEX=checkpoints/V174_FINAL_FIVE_TABS/index.html`
+- V175候補生成: `python scripts/create_v175_multitab_lifecycle_fix.py`
+- V175候補検査: `python scripts/gh_v175_multitab_lifecycle_contract.py`
+- V175候補active index（検査時のみ）: `GH_ACTIVE_INDEX=checkpoints/V175_MULTITAB_LIFECYCLE_FIX/index.html`
+- V175 3回連続QA workflow: `.github/workflows/v175-multitab-lifecycle-qa.yml`
 - 復旧検査: `python scripts/gh_rc_restore_drill.py`
 - 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V174_FINAL_FIVE_TABS/index.html python scripts/gh_preflight.py`
 - 通信断RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/19
