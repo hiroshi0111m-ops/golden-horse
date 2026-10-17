@@ -1,0 +1,33 @@
+name: GOLDEN HORSE authoritative server inventory
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v174-offline-bet-qa"
+    paths:
+      - "scripts/gh_authoritative_server_inventory.py"
+      - ".github/workflows/authoritative-server-inventory.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v6
+
+      - name: Inventory authoritative server integration
+        run: python scripts/gh_authoritative_server_inventory.py
+
+      - name: Upload inventory evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-authoritative-server-inventory
+          path: authoritative-server-inventory.json
+          if-no-files-found: error
+          retention-days: 7
