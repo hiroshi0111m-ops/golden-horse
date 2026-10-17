@@ -1,0 +1,67 @@
+name: GOLDEN HORSE V174 double-submit QA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v174-double-submit-qa"
+    paths:
+      - "scripts/gh_double_submit_qa.mjs"
+      - "scripts/create_v174_final_tabs_fix.py"
+      - "scripts/create_v173_mobile_nav_fix.py"
+      - ".github/workflows/v174-double-submit-qa.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  double-submit-idempotency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Generate exact V174 and run preflight
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: |
+          python scripts/create_v174_final_tabs_fix.py
+          python scripts/gh_preflight.py
+
+      - name: Start local server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
+          sleep 2
+
+      - name: Reject duplicate confirm effects
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: timeout 240s node scripts/gh_double_submit_qa.mjs
+
+      - name: Upload double-submit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v174-double-submit-qa
+          path: |
+            double-submit-qa-report.json
+            double-submit-qa-*.png
+          if-no-files-found: ignore
+          retention-days: 3
