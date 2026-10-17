@@ -8,7 +8,9 @@ on:
       - "automation/v176-restore-drill"
     paths:
       - "RC_RECOVERY_MANIFEST.json"
+      - "FREE_AUTOMATION_STATUS.md"
       - "scripts/gh_rc_restore_drill.py"
+      - "scripts/gh_free_automation_status_contract.py"
       - "scripts/create_v173_mobile_nav_fix.py"
       - "scripts/create_v174_final_tabs_fix.py"
       - "scripts/create_v175_multitab_lifecycle_fix.py"
@@ -34,7 +36,9 @@ jobs:
           python-version: "3.12"
 
       - name: Prove V176 current and V173 rollback can be rebuilt safely
-        run: python scripts/gh_rc_restore_drill.py
+        run: |
+          python scripts/gh_rc_restore_drill.py
+          python scripts/gh_free_automation_status_contract.py
 
       - name: Upload restore evidence
         if: always()
