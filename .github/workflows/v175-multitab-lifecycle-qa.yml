@@ -1,4 +1,5 @@
 name: GOLDEN HORSE V175 multitab lifecycle QA
+run-name: V175 multitab lifecycle QA @ ${{ github.sha }}
 
 on:
   workflow_dispatch:
@@ -14,6 +15,10 @@ on:
       - ".github/workflows/v175-multitab-lifecycle-qa.yml"
       - "FREE_AUTOMATION_STATUS.md"
       - "scripts/gh_free_automation_status_contract.py"
+
+concurrency:
+  group: v175-multitab-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
