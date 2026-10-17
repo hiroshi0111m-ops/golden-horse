@@ -50,8 +50,9 @@ jobs:
         env:
           GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
           GH_PORT: "4176"
+          PYTHONUNBUFFERED: "1"
         run: |
-          python scripts/serve_golden_horse.py > /tmp/gh-v174-phone.log 2>&1 &
+          python -u scripts/serve_golden_horse.py > /tmp/gh-v174-phone.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           for attempt in $(seq 1 30); do
