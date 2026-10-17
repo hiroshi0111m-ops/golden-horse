@@ -1,0 +1,33 @@
+name: GOLDEN HORSE V174 phone preview tooling
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v174-final-five-tabs"
+    paths:
+      - "scripts/serve_golden_horse.py"
+      - "scripts/gh_serve_active_index_test.py"
+      - "scripts/create_v174_final_tabs_fix.py"
+      - "RUN_V174_PHONE_TEST_FREE.bat"
+      - ".github/workflows/v174-phone-preview-tooling.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-checkpoint-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: RED exact active-index contract
+        run: python scripts/gh_serve_active_index_test.py
