@@ -44,6 +44,82 @@ function readState(page) {
   }));
 }
 
+function fingerprintStorage(page) {
+  return page.evaluate(() => {
+    function summarize(storage) {
+      const output = [];
+      const interestingKey = /guest|fusion|race|bet|snapshot|ledger|state|safe|history/i;
+      for (let index = 0; index < storage.length; index += 1) {
+        const key = storage.key(index);
+        if (key === null) continue;
+        const raw = storage.getItem(key);
+        if (raw === null) continue;
+        const states = [];
+        try {
+          const root = JSON.parse(raw);
+          const seen = new WeakSet();
+          function walk(value, path, depth) {
+            if (!value || typeof value !== "object" || depth > 8 || seen.has(value)) return;
+            seen.add(value);
+            const hasGold = Object.prototype.hasOwnProperty.call(value, "gold");
+            const hasBets = Array.isArray(value.raceBets);
+            const hasHistory = Array.isArray(value.betHistory);
+            if (hasGold || hasBets || hasHistory) {
+              const metadata = {};
+              for (const [name, item] of Object.entries(value)) {
+                if (/time|updated|version|revision|sequence|seq|race.?id|settled/i.test(name) &&
+                    (typeof item === "string" || typeof item === "number" || typeof item === "boolean" || item === null)) {
+                  metadata[name] = item;
+                }
+              }
+              states.push({
+                path,
+                gold: hasGold ? Number(value.gold) : null,
+                activeBets: hasBets ? value.raceBets.length : null,
+                betHistory: hasHistory ? value.betHistory.length : null,
+                metadata,
+              });
+            }
+            if (Array.isArray(value)) {
+              value.slice(0, 20).forEach((item, child) => walk(item, path + "[" + child + "]", depth + 1));
+            } else {
+              Object.entries(value).slice(0, 100).forEach(([name, item]) => walk(item, path + "." + name, depth + 1));
+            }
+          }
+          walk(root, "$", 0);
+        } catch {
+          // Non-JSON entries are summarized by key and byte length only.
+        }
+        if (states.length || interestingKey.test(key)) {
+          output.push({ key, bytes: raw.length, states });
+        }
+      }
+      output.sort((a, b) => a.key.localeCompare(b.key));
+      return output;
+    }
+    return {
+      localStorage: summarize(localStorage),
+      sessionStorage: summarize(sessionStorage),
+    };
+  });
+}
+
+function compactFingerprints(snapshot) {
+  const result = {};
+  for (const [phase, tabs] of Object.entries(snapshot || {})) {
+    result[phase] = {};
+    for (const [tab, stores] of Object.entries(tabs || {})) {
+      result[phase][tab] = {};
+      for (const [store, entries] of Object.entries(stores || {})) {
+        result[phase][tab][store] = entries
+          .filter(entry => entry.states.length)
+          .map(entry => ({ key: entry.key, states: entry.states }));
+      }
+    }
+  }
+  return result;
+}
+
 async function prepareFiveGoldBet(page) {
   await page.locator("button.horsePick").first().click();
   await page.getByRole("button", { name: "5G", exact: true }).first().click();
@@ -137,6 +213,12 @@ try {
   await pageA.waitForTimeout(800);
   report.afterConcurrentConfirmA = await readState(pageA);
   report.afterConcurrentConfirmB = await readState(pageB);
+  report.storage = {
+    afterConcurrentConfirm: {
+      tabA: await fingerprintStorage(pageA),
+      tabB: await fingerprintStorage(pageB),
+    },
+  };
 
   await Promise.all([
     pageA.reload({ waitUntil: "domcontentloaded", timeout: 30_000 }),
@@ -145,6 +227,10 @@ try {
   await Promise.all([waitReady(pageA), waitReady(pageB)]);
   report.afterReloadA = await readState(pageA);
   report.afterReloadB = await readState(pageB);
+  report.storage.afterConcurrentReload = {
+    tabA: await fingerprintStorage(pageA),
+    tabB: await fingerprintStorage(pageB),
+  };
 
   const sameCanonicalBet = JSON.stringify(report.afterReloadA.bets) === JSON.stringify(report.afterReloadB.bets);
   report.failClosedAfterReload =
@@ -165,9 +251,19 @@ try {
 
   report.race = await finishRace(pageA);
   report.afterResultA = await readState(pageA);
+  report.storage.beforeTabBSettledReload = {
+    tabA: await fingerprintStorage(pageA),
+    tabB: await fingerprintStorage(pageB),
+  };
   await pageB.reload({ waitUntil: "domcontentloaded", timeout: 30_000 });
   await waitReady(pageB);
   report.afterResultB = await readState(pageB);
+  report.storage.afterTabBSettledReload = {
+    tabA: await fingerprintStorage(pageA),
+    tabB: await fingerprintStorage(pageB),
+  };
+  report.storageDiagnosis = compactFingerprints(report.storage);
+  console.log("TWO_TAB_STORAGE_DIAG=" + JSON.stringify(report.storageDiagnosis));
 
   if (
     report.afterResultA.activeBets !== 0 ||
@@ -200,6 +296,10 @@ try {
   exitCode = 1;
   report.pass = false;
   report.error = String(error);
+  if (report.storage) {
+    report.storageDiagnosis = compactFingerprints(report.storage);
+    console.error("TWO_TAB_STORAGE_DIAG=" + JSON.stringify(report.storageDiagnosis));
+  }
   console.error("TWO_TAB_CONCURRENT_BET_QA=FAIL " + String(error));
   await pageA.screenshot({ path: "two-tab-concurrent-bet-failure-a.png", fullPage: false }).catch(() => {});
   if (pageB) await pageB.screenshot({ path: "two-tab-concurrent-bet-failure-b.png", fullPage: false }).catch(() => {});
