@@ -36,6 +36,7 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 
 ## RED
 
+- V176 exact版でもrun 39077671694で通信断BETを再確認。`navigator.onLine=false`の確認後に1000G→995G、active BET 0→1となり、`V176_OFFLINE_BET_ACCEPTED_CLIENT_SIDE`でFAIL。V176生成・固有契約・mandatory preflight・build markerはPASSしたため、版取り違えではない。artifact `12117602449`、digest `ff672080b38b97eddb4bde4c48cfd4780dd0a558f3760e97fb72da59622513c1`。
 - 通信断BETはオフライン確認操作後も1000Gから995Gへ減り、active BET 1件としてクライアント内で受理される。
 - 権威BETサーバー、API、DBスキーマ、冪等受付、監査ログの実装先はこのリポジトリ内に存在しない。
 - PR #19は上記を隠さず保持する意図的RED証拠であり、PASSへ読み替えない。
@@ -80,6 +81,7 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 - 復旧検査: `python scripts/gh_rc_restore_drill.py`
 - 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html python scripts/gh_preflight.py`
 - 通信断RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/19
+- V176通信断再検査branch: `automation/v176-offline-bet-recheck` / workflow `.github/workflows/v176-offline-bet-recheck.yml`
 - 復旧GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/20
 - 引き継ぎ固定: https://github.com/hiroshi0111m-ops/golden-horse/pull/21
 - 再読込継続性GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/22
