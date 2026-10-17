@@ -64,14 +64,22 @@ async function placeFiveGoldBet(page) {
     return !!button && !button.disabled && !button.classList.contains("gh-v141-notready");
   });
   await page.locator("#betBtn").click();
-  await page.locator("#gh-v141-ok").waitFor({ state: "visible", timeout: 5_000 });
-  await page.locator("#gh-v141-ok").click();
+  const confirm = page.locator("#gh-v141-ok");
+  await confirm.waitFor({ state: "visible", timeout: 5_000 });
+  // Match the proven mobile-client path: avoid an unrealistically fast second tap
+  // while the confirmation guard and modal transition are still arming.
+  await page.waitForTimeout(700);
+  await confirm.click();
+  await page.waitForFunction(() => {
+    const text = (document.getElementById("betSlips")?.textContent || "").trim();
+    return text.length > 0 && !text.includes("まだ投票はありません");
+  }, null, { timeout: 8_000 });
   await page.waitForFunction(() =>
     typeof state !== "undefined" &&
     Number(state.gold) === 995 &&
     Array.isArray(state.raceBets) &&
     state.raceBets.length === 1
-  , null, { timeout: 8_000 });
+  , null, { timeout: 12_000 });
 }
 
 const browser = await chromium.launch({ headless: true });
