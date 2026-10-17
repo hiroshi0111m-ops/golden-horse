@@ -1,4 +1,5 @@
 name: GOLDEN HORSE V176 restore drill
+run-name: V176 to V173 restore drill @ ${{ github.sha }}
 
 on:
   workflow_dispatch:
