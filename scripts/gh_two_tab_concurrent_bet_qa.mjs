@@ -55,8 +55,20 @@ function fingerprintStorage(page) {
         const raw = storage.getItem(key);
         if (raw === null) continue;
         const states = [];
+        let parsedKind = "non-json";
+        let topLevelKeys = [];
+        let hash = 2166136261;
+        for (let offset = 0; offset < raw.length; offset += 1) {
+          hash ^= raw.charCodeAt(offset);
+          hash = Math.imul(hash, 16777619);
+        }
+        const fnv1a = (hash >>> 0).toString(16).padStart(8, "0");
         try {
           const root = JSON.parse(raw);
+          parsedKind = Array.isArray(root) ? "array" : (root === null ? "null" : typeof root);
+          if (root && typeof root === "object" && !Array.isArray(root)) {
+            topLevelKeys = Object.keys(root).slice(0, 80);
+          }
           const seen = new WeakSet();
           function walk(value, path, depth) {
             if (!value || typeof value !== "object" || depth > 8 || seen.has(value)) return;
@@ -91,7 +103,7 @@ function fingerprintStorage(page) {
           // Non-JSON entries are summarized by key and byte length only.
         }
         if (states.length || interestingKey.test(key)) {
-          output.push({ key, bytes: raw.length, states });
+          output.push({ key, bytes: raw.length, fnv1a, parsedKind, topLevelKeys, states });
         }
       }
       output.sort((a, b) => a.key.localeCompare(b.key));
@@ -112,8 +124,14 @@ function compactFingerprints(snapshot) {
       result[phase][tab] = {};
       for (const [store, entries] of Object.entries(stores || {})) {
         result[phase][tab][store] = entries
-          .filter(entry => entry.states.length)
-          .map(entry => ({ key: entry.key, states: entry.states }));
+          .map(entry => ({
+            key: entry.key,
+            bytes: entry.bytes,
+            fnv1a: entry.fnv1a,
+            parsedKind: entry.parsedKind,
+            topLevelKeys: entry.topLevelKeys,
+            states: entry.states,
+          }));
       }
     }
   }
