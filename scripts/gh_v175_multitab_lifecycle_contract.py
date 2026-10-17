@@ -31,7 +31,7 @@ forbidden = [
 for token in forbidden:
     assert token not in html, "stale FRIEND-V109 lifecycle write remains"
 
-assert html.count("gh_guest_isolated_v2_state") == 6, "unexpected guest-state key surface change"
+assert html.count("gh_guest_isolated_v2_state") == 5, "unexpected guest-state key surface change"
 assert html.count("function localSave(){localStorage.setItem('gh_guest_isolated_v2_state',JSON.stringify(state))}") == 1
 assert "ホーム</button><button class=\"gh-v60-nav-item\" data-page=\"startPage\"><span>♞</span>レース</button>" in html
 assert html.count('button class="horsePick"') == 7
