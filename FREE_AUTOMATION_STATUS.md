@@ -30,7 +30,7 @@ NEXT_ONE_ACTION: RUN_V176_PHONE_TEST_FREE.batを実行し、物理Androidと実L
 - OFFICIAL RESULT精算後に精算前の有効BET保存状態を再投入して再読込しても995G・active BET 0件・履歴1件を維持し、BET復活・履歴消失・二重精算の入口なしでPASS。
 - レース1精算後995Gの保存状態を、レース2の5G BET受理後に再投入して再読込しても990G・active BET 1件・履歴1件を維持し、旧精算済み状態による新規BET消失・5G返却なしでPASS。
 - V176はrun 39064943862と最新head run 39064964822で、生成checksum `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`、mandatory guards、2タブ同時BET→精算→タブB再読込を各3回連続（計6回）PASS。active BET 0・履歴1件へ収束し、V175で残った古いタブBメモリ復活を再現しなかった。
-- V176物理スマホ準備ツールは、exact active-index、V176生成、V176固有契約、mandatory preflight、status contract、ローカル配信build marker確認をCIでPASS。これは実機または実LINE内ブラウザのPASSではない。
+- V176物理スマホ準備ツールは、exact active-index、V176生成、V176固有契約、mandatory preflight、status contract、ローカル配信build marker確認をCIでPASS。これは起動準備ツールの検査結果であり、端末実走のPASSではない。
 
 ## RED
 
