@@ -1,0 +1,69 @@
+name: GOLDEN HORSE V174 client storage tamper QA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v174-client-storage-tamper-qa"
+    paths:
+      - "scripts/gh_client_storage_tamper_qa.mjs"
+      - "scripts/create_v174_final_tabs_fix.py"
+      - "scripts/create_v173_mobile_nav_fix.py"
+      - ".github/workflows/v174-client-storage-tamper-qa.yml"
+      - "FREE_AUTOMATION_STATUS.md"
+      - "scripts/gh_free_automation_status_contract.py"
+
+permissions:
+  contents: read
+
+jobs:
+  client-storage-tamper-fail-closed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Generate exact V174 and run preflight
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: |
+          python scripts/create_v174_final_tabs_fix.py
+          python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
+
+      - name: Start isolated V174 server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
+          sleep 2
+
+      - name: Require persisted Gold tampering to fail closed
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: timeout 120s node scripts/gh_client_storage_tamper_qa.mjs
+
+      - name: Upload tamper evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v174-client-storage-tamper-qa
+          path: |
+            client-storage-tamper-qa-report.json
+            client-storage-tamper-*.png
+          if-no-files-found: ignore
+          retention-days: 7

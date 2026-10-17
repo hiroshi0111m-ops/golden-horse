@@ -3,10 +3,10 @@
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-17
 CURRENT_VERSION: V174 FINAL FIVE TABS candidate
-CURRENT_CP: CP_V174_RELOAD_CONTINUITY_QA_PASS
-CURRENT_BRANCH: automation/v174-reload-continuity-qa
-CURRENT_COMMIT: 0bc48f0ffc4f7c430fc5a6a58963b7c09e22d0c7
-CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/22
+CURRENT_CP: CP_V174_CLIENT_STORAGE_TAMPER_QA_PASS
+CURRENT_BRANCH: automation/v174-client-storage-tamper-qa
+CURRENT_COMMIT: 0060d75c827dd7410e0567576fdf5583642197bb
+CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/23
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
@@ -21,6 +21,7 @@ NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G B
 - BET確定後の再読込は995G、active BET 1件、履歴0件を維持してPASS。
 - RESULT精算後の再読込は精算後G、active BET 0件、履歴1件を維持し、払戻と履歴の重複なしでPASS。
 - V174→V173復旧は双方のSHA-256完全一致とmandatory preflightでPASS。
+- 保存GをlocalStorage上で995Gから999,999Gへ改ざん後に再読込しても995G・active BET 1件へ復元され、クライアント保存値の改ざん受理なしでPASS。
 
 ## RED
 
@@ -55,3 +56,4 @@ NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G B
 - 復旧GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/20
 - 引き継ぎ固定: https://github.com/hiroshi0111m-ops/golden-horse/pull/21
 - 再読込継続性GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/22
+- クライアント保存G改ざん拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/23
