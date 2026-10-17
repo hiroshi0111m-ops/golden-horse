@@ -2,15 +2,15 @@
 
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-18
-CURRENT_VERSION: V174 FINAL FIVE TABS candidate
-CURRENT_CP: CP_V174_POST_SETTLEMENT_REPLAY_QA_PASS
-CURRENT_BRANCH: automation/v174-post-settlement-replay-qa
-CURRENT_COMMIT: 5e5638556556b9baa65a4ac0fa1b4033c4822caa
-CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/30
+CURRENT_VERSION: V176 LINE LIFECYCLE FIX candidate
+CURRENT_CP: CP_V176_MULTITAB_SETTLEMENT_3X_PASS
+CURRENT_BRANCH: automation/v174-two-tab-concurrent-bet-qa
+CURRENT_COMMIT: 0b51d9b6e04c6560d7e8385498246395f36fed1a
+CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G BET→7頭→OFFICIAL RESULT→手動次レース120秒を撮影確認する
+NEXT_ONE_ACTION: V176を物理Androidと実LINE内ブラウザでGUEST 1,000G→5G BET→7頭→RESULT→次レースまで確認する
 
 ## PASS
 
@@ -29,12 +29,17 @@ NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G B
 - 5G BET確定後にBET前の完全なlocalStorage/sessionStorage保存状態を再投入して再読込しても995G・active BET 1件を維持し、旧保存状態によるBET巻き戻しなしでPASS。
 - OFFICIAL RESULT精算後に精算前の有効BET保存状態を再投入して再読込しても995G・active BET 0件・履歴1件を維持し、BET復活・履歴消失・二重精算の入口なしでPASS。
 - レース1精算後995Gの保存状態を、レース2の5G BET受理後に再投入して再読込しても990G・active BET 1件・履歴1件を維持し、旧精算済み状態による新規BET消失・5G返却なしでPASS。
+- V176はrun 39064943862と最新head run 39064964822で、生成checksum `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`、mandatory guards、2タブ同時BET→精算→タブB再読込を各3回連続（計6回）PASS。active BET 0・履歴1件へ収束し、V175で残った古いタブBメモリ復活を再現しなかった。
 
 ## RED
 
 - 通信断BETはオフライン確認操作後も1000Gから995Gへ減り、active BET 1件としてクライアント内で受理される。
 - 権威BETサーバー、API、DBスキーマ、冪等受付、監査ログの実装先はこのリポジトリ内に存在しない。
 - PR #19は上記を隠さず保持する意図的RED証拠であり、PASSへ読み替えない。
+- 同一ゲスト状態を複製した2タブから同時に5G BET確認後、run 39052004832ではタブA精算後もタブB再読込が995G・active BET 1件・履歴なしを復活、run 39052226802では同手順PASSとなった。結果が実行順で分岐する精算競合のためFLAKY RED（PR #31）。
+- 診断run 39056497035で、タブB再読込直前の共有`gh_guest_isolated_v2_state`は精算済み（active BET 0・履歴1件）だが、再読込後に旧状態へ上書きされることを確認。run 39056689510再実行job 117466692656では、再読込後ハッシュ`b98a1014`が同一実行の同時BET確定直後ハッシュと完全一致し、タブBの古い確定直後スナップショット書戻しを確認した。
+- `FRIEND-V109-LOOP-RESILIENCE`の古いライフサイクル保存を止めたV175でもrun 39060858813 / 39064571834は3回連続gate前にFAIL。後者では共有`gh_guest_isolated_v2_state`が995G・active BET 0・履歴1件の精算済み状態を維持した一方、タブBのメモリだけが995G・active BET 1件・履歴0件へ戻った。V175をPASSへ読み替えない。
+- 残存呼出元は`GH_LINE_PERF9`の`visibilitychange(hidden)` / `pagehide`から呼ばれる`saveSafe()`内の`localSave()`。再読込直前に古いタブB状態を書き、読込後に別タブが共有保存を再修復する順序競合と一致する。V176候補はこの1か所のゲスト状態保存だけを止め、差分監査と独立したV129レース復旧スナップショットを残す。
 
 ## NOT TESTED
 
@@ -52,13 +57,22 @@ NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G B
 - 本番会員を変更しない。
 - G台帳を変更しない。
 - V166原本、V173 rollback、V174生成チェーンを上書きしない。
+- V175はFAIL証拠として保持し、V176をCURRENT候補とする。main自動マージと本番公開は行わない。
 
 ## Resume Notes
 
 - V174生成: `python scripts/create_v174_final_tabs_fix.py`
 - V174 active index: `GH_ACTIVE_INDEX=checkpoints/V174_FINAL_FIVE_TABS/index.html`
+- V175候補生成: `python scripts/create_v175_multitab_lifecycle_fix.py`
+- V175候補検査: `python scripts/gh_v175_multitab_lifecycle_contract.py`
+- V175候補active index（検査時のみ）: `GH_ACTIVE_INDEX=checkpoints/V175_MULTITAB_LIFECYCLE_FIX/index.html`
+- V175 3回連続QA workflow（FAIL証拠）: `.github/workflows/v175-multitab-lifecycle-qa.yml`
+- V176候補生成: `python scripts/create_v176_line_lifecycle_fix.py`
+- V176候補検査: `python scripts/gh_v176_line_lifecycle_contract.py`
+- V176 current active index: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
+- V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`
 - 復旧検査: `python scripts/gh_rc_restore_drill.py`
-- 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V174_FINAL_FIVE_TABS/index.html python scripts/gh_preflight.py`
+- 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html python scripts/gh_preflight.py`
 - 通信断RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/19
 - 復旧GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/20
 - 引き継ぎ固定: https://github.com/hiroshi0111m-ops/golden-horse/pull/21
@@ -71,3 +85,4 @@ NEXT_ONE_ACTION: RUN_V174_PHONE_TEST_FREE.batで物理Androidのレース→5G B
 - 旧保存状態リプレイ拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/28
 - 精算前保存状態リプレイ拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/29
 - 精算後保存状態による後続BET巻き戻し拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/30
+- 2タブ同時BET・精算競合RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/31

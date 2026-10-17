@@ -71,8 +71,8 @@ def main() -> int:
         return fail("STATUS_SCHEMA must be 1")
     if not re.fullmatch(r"2026-10-\d{2}", values["UPDATED_JST"][0]):
         return fail("UPDATED_JST must be a 2026-10 date")
-    if not values["CURRENT_VERSION"][0].startswith("V174 "):
-        return fail("CURRENT_VERSION must remain V174")
+    if not values["CURRENT_VERSION"][0].startswith(("V174 ", "V176 ")):
+        return fail("CURRENT_VERSION must remain reviewed V174 or V176")
     if not values["ROLLBACK_VERSION"][0].startswith("V173 "):
         return fail("ROLLBACK_VERSION must remain V173")
     if not re.fullmatch(r"[0-9a-f]{40}", values["CURRENT_COMMIT"][0]):
