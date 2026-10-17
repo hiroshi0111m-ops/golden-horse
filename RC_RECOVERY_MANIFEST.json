@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "current": {
-    "version": "V174 FINAL FIVE TABS candidate",
-    "cp": "CP_V174_DOUBLE_SUBMIT_QA_PASS",
-    "known_good_commit": "8a6b82bbbd3066306795ef8149e4dcdffae8dd0e",
-    "generator": "scripts/create_v174_final_tabs_fix.py",
-    "active_index": "checkpoints/V174_FINAL_FIVE_TABS/index.html",
-    "sha256": "d82fb5b0ec222f56340cd7eaf10bebfe63fda004f31348c39c0b9857a61319d8",
-    "marker": "V174-FINAL-FIVE-TABS"
+    "version": "V176 LINE LIFECYCLE FIX candidate",
+    "cp": "CP_V176_MULTITAB_SETTLEMENT_3X_PASS",
+    "known_good_commit": "0b51d9b6e04c6560d7e8385498246395f36fed1a",
+    "generator": "scripts/create_v176_line_lifecycle_fix.py",
+    "active_index": "checkpoints/V176_LINE_LIFECYCLE_FIX/index.html",
+    "sha256": "e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55",
+    "marker": "V176-LINE-LIFECYCLE-FIX"
   },
   "rollback": {
     "version": "V173 MOBILE NAV SAFE AREA candidate",
