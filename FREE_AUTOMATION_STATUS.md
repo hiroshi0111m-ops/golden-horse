@@ -31,6 +31,7 @@ NEXT_ONE_ACTION: RUN_V176_PHONE_TEST_FREE.batを実行し、物理Androidと実L
 - レース1精算後995Gの保存状態を、レース2の5G BET受理後に再投入して再読込しても990G・active BET 1件・履歴1件を維持し、旧精算済み状態による新規BET消失・5G返却なしでPASS。
 - V176はrun 39064943862と最新head run 39064964822で、生成checksum `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`、mandatory guards、2タブ同時BET→精算→タブB再読込を各3回連続（計6回）PASS。active BET 0・履歴1件へ収束し、V175で残った古いタブBメモリ復活を再現しなかった。
 - V176物理スマホ準備ツールは、exact active-index、V176生成、V176固有契約、mandatory preflight、status contract、ローカル配信build marker確認をCIでPASS。これは起動準備ツールの検査結果であり、端末実走のPASSではない。
+- V176→V173復旧ドリルはrun 39069060196で、V176 SHA-256 `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`とV173 SHA-256 `84d505571c0b34962e234cb04b4ca187516a0368adf40f6903eafd80ac0ea85d`の完全一致、両checkpointのmandatory preflight、証拠artifact `12114044355`（digest `76c934d48ab8fd111cdebecd6726e441e5338d9e2992a942603d2c84bad9c3ed`）をPASS。
 
 ## RED
 
@@ -89,3 +90,4 @@ NEXT_ONE_ACTION: RUN_V176_PHONE_TEST_FREE.batを実行し、物理Androidと実L
 - 精算前保存状態リプレイ拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/29
 - 精算後保存状態による後続BET巻き戻し拒否GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/30
 - 2タブ同時BET・精算競合修正とV176 GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
+- V176→V173復旧GREEN: https://github.com/hiroshi0111m-ops/golden-horse/pull/33
