@@ -34,7 +34,9 @@ async function placeFiveGoldBet(page,cycle){
     const button=document.getElementById("betBtn");
     return !!button&&!button.disabled&&!button.classList.contains("gh-v141-notready");
   },null,{timeout:12000});
-  await page.locator("#betBtn").click({force:true});
+  const betButton=page.locator("#betBtn");
+  await betButton.scrollIntoViewIfNeeded();
+  await betButton.click({timeout:10000});
   const confirm=page.locator("#gh-v141-ok");
   await confirm.waitFor({state:"visible",timeout:5000});
   await page.waitForTimeout(700);
