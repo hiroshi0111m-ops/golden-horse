@@ -18,7 +18,7 @@ permissions:
 jobs:
   exact-checkpoint-preview:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -29,5 +29,36 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: RED exact active-index contract
+      - name: Verify exact active-index contract
         run: python scripts/gh_serve_active_index_test.py
+
+      - name: Generate and preflight V174
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
+        run: |
+          python scripts/create_v174_final_tabs_fix.py
+          python scripts/gh_preflight.py
+
+      - name: Verify one-click Windows launcher contract
+        run: |
+          grep -F 'set "GH_ACTIVE_INDEX=checkpoints\V174_FINAL_FIVE_TABS\index.html"' RUN_V174_PHONE_TEST_FREE.bat
+          grep -F 'scripts\create_v174_final_tabs_fix.py' RUN_V174_PHONE_TEST_FREE.bat
+          grep -F 'scripts\gh_preflight.py' RUN_V174_PHONE_TEST_FREE.bat
+          grep -F 'scripts\serve_golden_horse.py' RUN_V174_PHONE_TEST_FREE.bat
+
+      - name: Serve exact V174 and verify marker
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V174_FINAL_FIVE_TABS/index.html
+          GH_PORT: "4176"
+        run: |
+          python scripts/serve_golden_horse.py > /tmp/gh-v174-phone.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4176/ > /tmp/gh-v174-phone.html; then
+              break
+            fi
+            sleep 0.2
+          done
+          grep -F 'V174-FINAL-FIVE-TABS' /tmp/gh-v174-phone.html
+          grep -F 'ACTIVE: checkpoints/V174_FINAL_FIVE_TABS/index.html' /tmp/gh-v174-phone.log
