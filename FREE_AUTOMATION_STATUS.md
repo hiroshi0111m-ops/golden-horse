@@ -10,7 +10,7 @@ CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: V175の2タブ同時BET→精算→タブB再読込QAを3回連続実行し、全PASS後のみCURRENT VERSIONをV175へ昇格する
+NEXT_ONE_ACTION: V176の2タブ同時BET→精算→タブB再読込QAを3回連続実行し、全PASS後のみCURRENT VERSIONをV176へ昇格する
 
 ## PASS
 
@@ -37,12 +37,13 @@ NEXT_ONE_ACTION: V175の2タブ同時BET→精算→タブB再読込QAを3回連
 - PR #19は上記を隠さず保持する意図的RED証拠であり、PASSへ読み替えない。
 - 同一ゲスト状態を複製した2タブから同時に5G BET確認後、run 39052004832ではタブA精算後もタブB再読込が995G・active BET 1件・履歴なしを復活、run 39052226802では同手順PASSとなった。結果が実行順で分岐する精算競合のためFLAKY RED（PR #31）。
 - 診断run 39056497035で、タブB再読込直前の共有`gh_guest_isolated_v2_state`は精算済み（active BET 0・履歴1件）だが、再読込後に旧状態へ上書きされることを確認。run 39056689510再実行job 117466692656では、再読込後ハッシュ`b98a1014`が同一実行の同時BET確定直後ハッシュと完全一致し、タブBの古い確定直後スナップショット書戻しを確認した。
-- 呼出元は`FRIEND-V109-LOOP-RESILIENCE`の`visibilitychange(hidden)` / `pagehide`で無条件に呼ばれる`localSave()`。タブB再読込時に古いメモリ状態を共有`gh_guest_isolated_v2_state`へ書くため、タブAの精算済み状態を巻き戻す。V175候補はこの2箇所の保存を停止し、差分監査のみ残す最小修正。
+- `FRIEND-V109-LOOP-RESILIENCE`の古いライフサイクル保存を止めたV175でもrun 39060858813 / 39064571834は3回連続gate前にFAIL。後者では共有`gh_guest_isolated_v2_state`が995G・active BET 0・履歴1件の精算済み状態を維持した一方、タブBのメモリだけが995G・active BET 1件・履歴0件へ戻った。V175をPASSへ読み替えない。
+- 残存呼出元は`GH_LINE_PERF9`の`visibilitychange(hidden)` / `pagehide`から呼ばれる`saveSafe()`内の`localSave()`。再読込直前に古いタブB状態を書き、読込後に別タブが共有保存を再修復する順序競合と一致する。V176候補はこの1か所のゲスト状態保存だけを止め、差分監査と独立したV129レース復旧スナップショットを残す。
 
 ## NOT TESTED
 
-- V175候補のGitHub Actions / Playwright実行。コネクタ経由commitではworkflowが起動せず、静的契約PASSをruntime PASSへ読み替えない。
-- V175候補の2タブ同時BET→精算→タブB再読込3回連続結果。
+- V176候補のGitHub Actions / Playwright実行。ローカルは公式V175 checksumチェーンを再現できないため構文と置換契約のみPASSで、runtime PASSへ読み替えない。
+- V176候補の2タブ同時BET→精算→タブB再読込3回連続結果。
 - 物理AndroidでのV174完全フロー。
 - 物理iPhoneでのV174完全フロー。
 - 実LINE内ブラウザでのV174完全フロー。
@@ -57,7 +58,7 @@ NEXT_ONE_ACTION: V175の2タブ同時BET→精算→タブB再読込QAを3回連
 - 本番会員を変更しない。
 - G台帳を変更しない。
 - V166原本、V173 rollback、V174生成チェーンを上書きしない。
-- V175は新規候補としてのみ保持し、runtime全PASS前にCURRENTへ昇格しない。
+- V175/V176は新規候補としてのみ保持し、V176 runtime全PASS前にCURRENTへ昇格しない。
 
 ## Resume Notes
 
@@ -66,7 +67,11 @@ NEXT_ONE_ACTION: V175の2タブ同時BET→精算→タブB再読込QAを3回連
 - V175候補生成: `python scripts/create_v175_multitab_lifecycle_fix.py`
 - V175候補検査: `python scripts/gh_v175_multitab_lifecycle_contract.py`
 - V175候補active index（検査時のみ）: `GH_ACTIVE_INDEX=checkpoints/V175_MULTITAB_LIFECYCLE_FIX/index.html`
-- V175 3回連続QA workflow: `.github/workflows/v175-multitab-lifecycle-qa.yml`
+- V175 3回連続QA workflow（FAIL証拠）: `.github/workflows/v175-multitab-lifecycle-qa.yml`
+- V176候補生成: `python scripts/create_v176_line_lifecycle_fix.py`
+- V176候補検査: `python scripts/gh_v176_line_lifecycle_contract.py`
+- V176候補active index（検査時のみ）: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
+- V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`
 - 復旧検査: `python scripts/gh_rc_restore_drill.py`
 - 静的preflight: `GH_ACTIVE_INDEX=checkpoints/V174_FINAL_FIVE_TABS/index.html python scripts/gh_preflight.py`
 - 通信断RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/19
