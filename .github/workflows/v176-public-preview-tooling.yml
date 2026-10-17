@@ -1,0 +1,71 @@
+name: GOLDEN HORSE V176 public preview tooling
+run-name: V176 public preview tooling @ ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v176-public-preview-ready"
+    paths:
+      - "START_GOLDEN_HORSE_PUBLIC_FREE.bat"
+      - "scripts/serve_golden_horse.py"
+      - "scripts/create_v176_line_lifecycle_fix.py"
+      - "scripts/gh_v176_line_lifecycle_contract.py"
+      - "scripts/gh_preflight.py"
+      - "scripts/gh_free_automation_status_contract.py"
+      - "FREE_AUTOMATION_STATUS.md"
+      - ".github/workflows/v176-public-preview-tooling.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-v176-public-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate and preflight exact V176
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+        run: |
+          python scripts/create_v176_line_lifecycle_fix.py
+          python scripts/gh_v176_line_lifecycle_contract.py
+          python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
+
+      - name: Require public launcher to fail closed on exact V176
+        run: |
+          grep -F 'set "GH_ACTIVE_INDEX=checkpoints\V176_LINE_LIFECYCLE_FIX\index.html"' START_GOLDEN_HORSE_PUBLIC_FREE.bat
+          grep -F 'scripts\create_v176_line_lifecycle_fix.py' START_GOLDEN_HORSE_PUBLIC_FREE.bat
+          grep -F 'scripts\gh_v176_line_lifecycle_contract.py' START_GOLDEN_HORSE_PUBLIC_FREE.bat
+          grep -F 'scripts\gh_preflight.py' START_GOLDEN_HORSE_PUBLIC_FREE.bat
+          grep -F 'scripts\serve_golden_horse.py' START_GOLDEN_HORSE_PUBLIC_FREE.bat
+          grep -F 'V176だけ' START_GOLDEN_HORSE_PUBLIC_FREE.bat
+          grep -F '一時URL' START_GOLDEN_HORSE_PUBLIC_FREE.bat
+
+      - name: Serve exact V176 and verify build marker
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+          GH_PORT: "4176"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python -u scripts/serve_golden_horse.py > /tmp/gh-v176-public.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4176/ > /tmp/gh-v176-public.html; then
+              break
+            fi
+            sleep 0.2
+          done
+          grep -F 'V176-LINE-LIFECYCLE-FIX' /tmp/gh-v176-public.html
+          grep -F 'ACTIVE: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html' /tmp/gh-v176-public.log
