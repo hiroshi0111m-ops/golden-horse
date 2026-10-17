@@ -18,9 +18,30 @@ const occurrences = source.split(oldLine).length - 1 + source.split(oldLineSpace
 if (occurrences !== 1) throw new Error(`expected one V172 URL declaration in ${sourceArg}, found ${occurrences}`);
 
 const replacement = `const url=${JSON.stringify(targetUrl)};`;
-const patched = source.includes(oldLine)
+let patched = source.includes(oldLine)
   ? source.replace(oldLine, replacement)
   : source.replace(oldLineSpaced, replacement);
+
+// The old three-cycle harness still force-clicked BET. A force click can land on
+// a temporary toast/overlay and then incorrectly report that the confirmation
+// dialog never opened. The client matrix already uses the correct user-like
+// actionability path. Apply the same strict normal click to the generated copy
+// only, while preserving the historical source test unchanged.
+if (path.basename(sourcePath) === "gh_3cycle_runtime.mjs") {
+  const oldForcedClick = '  await page.locator("#betBtn").click({force:true});';
+  const forcedOccurrences = patched.split(oldForcedClick).length - 1;
+  if (forcedOccurrences !== 1) {
+    throw new Error(`expected one stale forced BET click in ${sourceArg}, found ${forcedOccurrences}`);
+  }
+  const actionableClick = [
+    '  const betButton=page.locator("#betBtn");',
+    '  await betButton.scrollIntoViewIfNeeded();',
+    '  await betButton.click({timeout:10000});',
+  ].join("\n");
+  patched = patched.replace(oldForcedClick, actionableClick);
+  console.log("BET_ACTIONABILITY_PATCH=normal-click");
+}
+
 const generatedPath = path.join(
   path.dirname(sourcePath),
   `.gh-url-target-${path.basename(sourcePath)}-${process.pid}.mjs`,
