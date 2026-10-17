@@ -1,0 +1,85 @@
+name: GOLDEN HORSE V176 offline BET recheck
+
+run-name: V176 offline BET fail-closed recheck @ ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v176-offline-bet-recheck"
+    paths:
+      - "scripts/gh_v176_offline_bet_qa.mjs"
+      - "scripts/create_v176_line_lifecycle_fix.py"
+      - "scripts/gh_v176_line_lifecycle_contract.py"
+      - "scripts/gh_preflight.py"
+      - "scripts/gh_free_automation_status_contract.py"
+      - ".github/workflows/v176-offline-bet-recheck.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-bet-fail-closed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Generate and preflight exact V176
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+        run: |
+          python scripts/create_v176_line_lifecycle_fix.py
+          python scripts/gh_v176_line_lifecycle_contract.py
+          python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
+
+      - name: Start exact V176 server
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+          GH_PORT: "4176"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python -u scripts/serve_golden_horse.py > /tmp/gh-v176-offline.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4176/ > /tmp/gh-v176-offline.html; then
+              break
+            fi
+            sleep 0.2
+          done
+          grep -F 'V176-LINE-LIFECYCLE-FIX' /tmp/gh-v176-offline.html
+          grep -F 'ACTIVE: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html' /tmp/gh-v176-offline.log
+
+      - name: Require V176 offline BET to fail closed
+        env:
+          GH_TEST_URL: http://127.0.0.1:4176/
+        run: timeout 120s node scripts/gh_v176_offline_bet_qa.mjs
+
+      - name: Upload V176 offline-BET evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v176-offline-bet-recheck
+          path: |
+            v176-offline-bet-qa-report.json
+            v176-offline-bet-qa-*.png
+            /tmp/gh-v176-offline.log
+          if-no-files-found: ignore
+          retention-days: 7
