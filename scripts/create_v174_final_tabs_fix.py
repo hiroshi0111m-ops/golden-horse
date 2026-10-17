@@ -27,6 +27,11 @@ active_new = 'body:has(#home.active) .gh-v60-nav-item[data-page="home"],body:has
 assert html.count(active_old) == 1, "V173 navigation active selector not found"
 html = html.replace(active_old, active_new, 1)
 
+friend_hide_old = '#startPage .twoCol,#login,.gh-v65-anti-access{display:none!important}'
+friend_hide_new = '#startPage .twoCol,.gh-v65-anti-access{display:none!important}'
+assert html.count(friend_hide_old) == 1, "V173 friend-mode login hide rule not found"
+html = html.replace(friend_hide_old, friend_hide_new, 1)
+
 assert html.count("V173-MOBILE-NAV-SAFE-AREA") == 1, "V173 build marker not found"
 html = html.replace("V173-MOBILE-NAV-SAFE-AREA", "V174-FINAL-FIVE-TABS", 1)
 
