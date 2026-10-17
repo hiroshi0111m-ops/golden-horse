@@ -116,6 +116,50 @@ function fingerprintStorage(page) {
   });
 }
 
+function installStorageWriteTrace(page) {
+  return page.addInitScript(() => {
+    const writes = [];
+    Object.defineProperty(window, "__ghStorageWrites", {
+      value: writes,
+      configurable: false,
+      enumerable: false,
+      writable: false,
+    });
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function tracedSetItem(key, value) {
+      const raw = String(value);
+      const storageName = this === localStorage
+        ? "localStorage"
+        : (this === sessionStorage ? "sessionStorage" : "storage");
+      if (/guest|fusion|race|bet|snapshot|ledger|state|safe|history/i.test(String(key)) && writes.length < 500) {
+        function fnv1a(input) {
+          let hash = 2166136261;
+          if (input === null) return null;
+          for (let index = 0; index < input.length; index += 1) {
+            hash ^= input.charCodeAt(index);
+            hash = Math.imul(hash, 16777619);
+          }
+          return (hash >>> 0).toString(16).padStart(8, "0");
+        }
+        const before = this.getItem(key);
+        writes.push({
+          sequence: writes.length + 1,
+          storage: storageName,
+          key: String(key),
+          beforeFnv1a: fnv1a(before),
+          afterFnv1a: fnv1a(raw),
+          bytes: raw.length,
+          stack: String(new Error().stack || "")
+            .split("\n")
+            .slice(2, 9)
+            .map(line => line.replace(location.href, "<document>")),
+        });
+      }
+      return originalSetItem.apply(this, arguments);
+    };
+  });
+}
+
 function compactFingerprints(snapshot) {
   const result = {};
   for (const [phase, tabs] of Object.entries(snapshot || {})) {
@@ -273,9 +317,13 @@ try {
     tabA: await fingerprintStorage(pageA),
     tabB: await fingerprintStorage(pageB),
   };
+  await installStorageWriteTrace(pageB);
   await pageB.reload({ waitUntil: "domcontentloaded", timeout: 30_000 });
   await waitReady(pageB);
+  await pageB.waitForTimeout(500);
   report.afterResultB = await readState(pageB);
+  report.storageWritesAfterTabBReload = await pageB.evaluate(() => window.__ghStorageWrites || []);
+  console.log("TWO_TAB_STORAGE_WRITES=" + JSON.stringify(report.storageWritesAfterTabBReload));
   report.storage.afterTabBSettledReload = {
     tabA: await fingerprintStorage(pageA),
     tabB: await fingerprintStorage(pageB),
