@@ -55,35 +55,32 @@ try {
   await page.locator("#gh-v141-ok").waitFor({ state: "visible", timeout: 5_000 });
   await page.waitForTimeout(700);
 
-  report.confirmAttempt = await page.evaluate(() => {
-    const button = document.getElementById("gh-v141-ok");
-    if (!button) throw new Error("confirm button missing");
-    let deliveredClicks = 0;
-    button.addEventListener("click", () => { deliveredClicks += 1; }, true);
-    const before = {
-      disabled: button.disabled,
-      connected: button.isConnected,
-      modalOn: !!document.getElementById("gh-v141-confirm")?.classList.contains("on"),
-    };
-    button.click();
-    const afterFirst = {
-      disabled: button.disabled,
-      connected: button.isConnected,
-      modalOn: !!document.getElementById("gh-v141-confirm")?.classList.contains("on"),
-    };
-    button.click();
-    return {
-      attemptedClicks: 2,
-      deliveredClicks,
-      before,
-      afterFirst,
-      afterSecond: {
-        disabled: button.disabled,
-        connected: button.isConnected,
+  const confirm = page.locator("#gh-v141-ok");
+  const box = await confirm.boundingBox();
+  if (!box) throw new Error("confirm hit target missing");
+  const point = {
+    x: box.x + box.width / 2,
+    y: box.y + box.height / 2,
+  };
+  await page.evaluate(() => {
+    window.__ghDoubleSubmitEvents = [];
+    document.addEventListener("click", event => {
+      window.__ghDoubleSubmitEvents.push({
+        targetId: event.target?.id || null,
+        trusted: event.isTrusted,
         modalOn: !!document.getElementById("gh-v141-confirm")?.classList.contains("on"),
-      },
-    };
+      });
+    }, true);
   });
+  await page.touchscreen.tap(point.x, point.y);
+  await page.touchscreen.tap(point.x, point.y);
+  await page.waitForTimeout(100);
+  report.confirmAttempt = await page.evaluate(point => ({
+    attemptedTaps: 2,
+    point,
+    events: window.__ghDoubleSubmitEvents || [],
+    modalOnAfter: !!document.getElementById("gh-v141-confirm")?.classList.contains("on"),
+  }), point);
 
   await page.waitForFunction(() =>
     typeof state !== "undefined" &&
