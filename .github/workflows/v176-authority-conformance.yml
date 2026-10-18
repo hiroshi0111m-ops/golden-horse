@@ -51,7 +51,7 @@ jobs:
 
       - name: Self-test black-box runner against isolated mock API
         run: |
-          python -m unittest tests/test_gh_authority_api_conformance.py
+          python -m unittest -v tests/test_gh_authority_api_conformance.py 2>&1 | tee authority-runner-selftest-report.txt
 
       - name: Prove live API execution is still blocked
         run: |
@@ -70,6 +70,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: golden-horse-v176-authority-api-conformance-readiness
-          path: authority-api-conformance-report.json
+          path: |
+            authority-api-conformance-report.json
+            authority-runner-selftest-report.txt
           if-no-files-found: error
           retention-days: 7
