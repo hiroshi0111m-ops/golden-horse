@@ -3,14 +3,14 @@
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-18
 CURRENT_VERSION: V176 LINE LIFECYCLE FIX candidate
-CURRENT_CP: CP_V176_SECURITY_REGRESSION_FLAKY_RED
-CURRENT_BRANCH: automation/v176-security-regression-matrix
-CURRENT_COMMIT: bb1ab2a176a792af031ee8b20baa71fc9661f789
-CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/36
+CURRENT_CP: CP_V176_AUTHORITY_CONTRACT_PASS_SERVER_BLOCKED
+CURRENT_BRANCH: automation/v176-authority-contract-gate
+CURRENT_COMMIT: a0c3d68f85f1a0a7d7229581e36726e1dc505de4
+CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/37
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: V175/V176の複数タブ修正とクライアント改ざん拒否が衝突するため、クライアント保存を権威扱いせず、単調revision・冪等キー・サーバー署名を持つAPI/DB実装先を確定してから最小修正する
+NEXT_ONE_ACTION: GOLDEN HORSE専用の既存backend実装先を確定し、contracts/golden_horse_authoritative_state_v1.jsonに従って単調revision・署名・冪等BET受付を実装する。明示的な専用先が確認できるまで既存の別名Supabase projectへ書き込まない
 
 ## PASS
 
@@ -34,8 +34,13 @@ NEXT_ONE_ACTION: V175/V176の複数タブ修正とクライアント改ざん拒
 - V176→V173復旧ドリルはrun 39069060196で、V176 SHA-256 `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`とV173 SHA-256 `84d505571c0b34962e234cb04b4ca187516a0368adf40f6903eafd80ac0ea85d`の完全一致、両checkpointのmandatory preflight、証拠artifact `12114044355`（digest `76c934d48ab8fd111cdebecd6726e441e5338d9e2992a942603d2c84bad9c3ed`）をPASS。
 - V176一時公開準備ツールは、exact active-index、V176生成・固有契約、mandatory preflight、status contract、ローカル配信build markerをrun 39073621685でPASS。これは公開準備経路の検査であり、端末操作の合格証拠ではない。\n- exact V176の自然進行タイミングはrun 39081772440でAndroid Chrome相当（Pixel 7）とiPhone WebKit相当（iPhone 15）がともにPASS。レース開始→GOALは32.535秒 / 32.613秒、明示7秒RESULTホールドは7.027秒 / 7.070秒、GUEST 1,000G→確認付き5G BET→7頭→GOAL→OFFICIAL RESULT、PAGE_ERRORS=0。artifact `12119271817`（digest `fdf91d1c21e8e0ada4d49c9aea44b2b8330ff2890e749843b25de6454246be7c`）/ `12118724862`（digest `4d05ddf209a7f0bacfc147ea51e6319053f4485fc9cd5164c6f95d1a4906f029`）。
 
+- GOLDEN HORSE権威状態contractはrun 39089304794でexact V176生成・mandatory preflight・contract検証をPASS。artifact `12121154609`（digest `9de45995bf1cbf02ebe0dde35d288de70967bbde40f31ebb2b3f89c16a02e6be`）。これはcontractのPASSであり、server実装のPASSではない。
+
 ## RED
 
+- 3回目のexact V176セキュリティ回帰run 39085793725は3 PASS / 7 FAIL。再読込継続・二重BET確認・精算履歴改ざん拒否がPASSし、他7系統はFAIL。精算履歴だけ2回目FAIL→3回目PASSへ反転し、FLAKY REDを再確認した。
+- authority contract gate run 39089304794はcontract整合性をPASSしたが、server implementationはBLOCKED_MISSING。contract追加を改ざん対策の実装完了へ読み替えない。
+- 接続済みSupabaseを読み取り確認したが、GOLDEN HORSE専用と明示できるprojectは確認できなかった。既存の別名projectには一切変更を行わない。
 - exact V176セキュリティ回帰matrixは、run 39085268586で3 PASS / 7 FAIL、最終head run 39085548335で2 PASS / 8 FAIL。製品HTMLは未変更のまま、V174の旧合格をCURRENT V176へ再適用して新しい回帰と実行順依存を検出した。
 - V176で保存G改ざん999,999G、受付済みBET削除+5G返却、stake 5→100・odds 2.1→210、対象馬1→7が再読込後に受理された。
 - V176でBET前stale state（1000G・BET 0）、精算前state（995G・active BET 1・履歴0）、レース1精算済みstateのレース2後リプレイ（990G→995G）が受理された。
@@ -80,7 +85,10 @@ NEXT_ONE_ACTION: V175/V176の複数タブ修正とクライアント改ざん拒
 - V176 current active index: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
 - V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`\n- V176自然進行タイミングQA workflow: `.github/workflows/v176-race-timing-qa.yml`\n- V176自然進行タイミングQA script: `scripts/gh_v176_race_timing_qa.mjs`
 - V176セキュリティ回帰matrix: `.github/workflows/v176-security-regression-matrix.yml`
-- V176セキュリティ回帰FLAKY RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/36 / run 39085268586 / final-head run 39085548335
+- V176セキュリティ回帰FLAKY RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/36 / runs 39085268586, 39085548335, 39085793725
+- V176権威状態contract gate: https://github.com/hiroshi0111m-ops/golden-horse/pull/37 / run 39089304794
+- 権威状態contract: `contracts/golden_horse_authoritative_state_v1.json`
+- 権威backend readiness gate: `python scripts/gh_authority_contract_gate.py --require-implementation`
 - V176物理スマホ起動: `RUN_V176_PHONE_TEST_FREE.bat`
 - V176紫側・一時公開QA起動: `START_GOLDEN_HORSE_PUBLIC_FREE.bat`
 - V176物理スマホ準備workflow: `.github/workflows/v176-phone-preview-tooling.yml`

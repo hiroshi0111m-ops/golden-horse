@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "contract_id": "golden-horse-rc-authoritative-state-v1",
+  "release_target": "2026-10-20-rc",
+  "square_scope": {
+    "owner": "external_project",
+    "golden_horse_must_not_implement_square": true,
+    "allowed_payment_connector_fields": [
+      "payment_provider",
+      "external_payment_id",
+      "payment_status",
+      "paid_at",
+      "refund_status"
+    ]
+  },
+  "trust_boundary": {
+    "client_storage_authoritative": false,
+    "client_supplied_balance_authoritative": false,
+    "client_supplied_odds_authoritative": false,
+    "client_supplied_payout_authoritative": false,
+    "server_is_authoritative_for": [
+      "member_game_state",
+      "bet_acceptance",
+      "race_settlement",
+      "g_ledger",
+      "location_policy",
+      "visit_reward",
+      "audit_event"
+    ],
+    "server_secret_must_never_reach_client": true
+  },
+  "bet_acceptance": {
+    "required_request_fields": [
+      "member_id",
+      "race_id",
+      "bet_type",
+      "selections",
+      "stake_g",
+      "idempotency_key",
+      "client_revision",
+      "device_id",
+      "location_assertion_id"
+    ],
+    "required_response_fields": [
+      "accepted",
+      "server_revision",
+      "state_signature",
+      "bet_id",
+      "balance_g",
+      "accepted_at",
+      "audit_event_id",
+      "reject_reason"
+    ],
+    "idempotency_scope": [
+      "member_id",
+      "operation",
+      "idempotency_key"
+    ],
+    "offline_policy": "fail_closed",
+    "stale_revision_policy": "reject",
+    "duplicate_policy": "return_original_result_without_second_debit",
+    "server_computes": [
+      "accepted_odds",
+      "debit_g",
+      "payout_g"
+    ]
+  },
+  "state_integrity": {
+    "revision_rule": "strictly_monotonic_per_member",
+    "signature_rule": "server_generated_over_canonical_state_and_revision",
+    "reject": [
+      "unsigned_state",
+      "invalid_signature",
+      "revision_rollback",
+      "unknown_bet_id",
+      "client_balance_override",
+      "client_odds_override",
+      "client_payout_override"
+    ],
+    "audit_all_rejections": true
+  },
+  "gps_policy": {
+    "administrator_controls": [
+      "enabled",
+      "prohibited_radius_m"
+    ],
+    "server_rejects_inside_radius": [
+      "game_play",
+      "bet"
+    ],
+    "server_allows_inside_radius": [
+      "reservation",
+      "qr",
+      "payment",
+      "check_in",
+      "check_out"
+    ],
+    "fraud_signals": [
+      "mock_location",
+      "location_tampering",
+      "device_mismatch"
+    ],
+    "fraud_response": [
+      "reject_or_hold",
+      "append_audit_event"
+    ]
+  },
+  "visit_reward": {
+    "required_payment_connector_fields": [
+      "payment_provider",
+      "external_payment_id",
+      "payment_status",
+      "paid_at",
+      "refund_status"
+    ],
+    "required_link_fields": [
+      "reservation_id",
+      "external_payment_id",
+      "member_id",
+      "g_ledger_entry_id"
+    ],
+    "required_conditions": [
+      "payment_confirmed",
+      "actual_use_confirmed",
+      "check_out_confirmed",
+      "outside_prohibited_radius_when_gps_enabled",
+      "configured_delay_elapsed"
+    ],
+    "default_delay_minutes": 10,
+    "excluded_conditions": [
+      "cancelled",
+      "refunded",
+      "unused",
+      "duplicate_charge"
+    ],
+    "idempotency_scope": [
+      "reservation_id",
+      "external_payment_id",
+      "member_id",
+      "reward_type"
+    ],
+    "server_finalizes_g_grant": true
+  },
+  "audit": {
+    "append_only": true,
+    "required_fields": [
+      "audit_event_id",
+      "occurred_at",
+      "member_id",
+      "device_id",
+      "operation",
+      "decision",
+      "reason",
+      "server_revision",
+      "correlation_id"
+    ],
+    "sensitive_values_prohibited": [
+      "password",
+      "sms_code",
+      "recovery_token",
+      "server_signing_secret",
+      "full_payment_credential"
+    ]
+  },
+  "rc_gate": {
+    "implementation_required": true,
+    "accepted_backend_roots": [
+      "server",
+      "api",
+      "functions",
+      "netlify/functions",
+      "supabase/functions"
+    ],
+    "required_evidence": [
+      "offline_bet_rejected_by_server",
+      "duplicate_bet_single_debit",
+      "revision_rollback_rejected",
+      "state_signature_tamper_rejected",
+      "gps_radius_bet_rejected",
+      "visit_reward_duplicate_prevented",
+      "audit_event_recorded"
+    ]
+  }
+}
