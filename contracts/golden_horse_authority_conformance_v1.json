@@ -1,0 +1,539 @@
+{
+  "schema_version": 1,
+  "suite_id": "golden-horse-authority-conformance-v1",
+  "requires_isolated_test_environment": true,
+  "run_token": "{{run_id}}",
+  "payment_connector_fields": [
+    "payment_provider",
+    "external_payment_id",
+    "payment_status",
+    "paid_at",
+    "refund_status"
+  ],
+  "cases": [
+    {
+      "id": "initial_state",
+      "category": "authoritative_state",
+      "method": "GET",
+      "path": "/v1/state/guest-authority-qa-{{run_id}}",
+      "expected_status": 200,
+      "expected_fields": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "balance_g": 1000,
+        "server_revision": 0,
+        "state_signature": "$nonempty"
+      }
+    },
+    {
+      "id": "bet_accept",
+      "category": "idempotent_bet",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-bet-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-001",
+        "bet_type": "win",
+        "selections": [
+          1
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-bet-{{run_id}}",
+        "client_revision": 0,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-outside-{{run_id}}"
+      },
+      "expected_status": 201,
+      "expected_fields": {
+        "accepted": true,
+        "balance_g": 995,
+        "server_revision": 1,
+        "bet_id": "$nonempty",
+        "state_signature": "$nonempty",
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "bet_duplicate",
+      "category": "idempotent_bet",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-bet-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-001",
+        "bet_type": "win",
+        "selections": [
+          1
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-bet-{{run_id}}",
+        "client_revision": 0,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-outside-{{run_id}}"
+      },
+      "expected_status": 200,
+      "expected_fields": {
+        "accepted": true,
+        "balance_g": 995,
+        "server_revision": 1
+      },
+      "same_as": {
+        "bet_id": "bet_accept.bet_id",
+        "state_signature": "bet_accept.state_signature"
+      }
+    },
+    {
+      "id": "stale_revision_rejected",
+      "category": "revision_rollback",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-stale-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-stale-{{run_id}}",
+        "client_revision": 0,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-outside-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "stale_revision",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "inside_radius_bet_rejected",
+      "category": "gps_radius",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-gps-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-gps-{{run_id}}",
+        "client_revision": 1,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-inside-{{run_id}}"
+      },
+      "expected_status": 403,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "inside_prohibited_radius",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "mock_location_rejected",
+      "category": "gps_fraud_detection",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-mock-location-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-mock-location-{{run_id}}",
+        "client_revision": 1,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-mock-{{run_id}}"
+      },
+      "expected_status": 403,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "mock_location",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty",
+        "fraud_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "location_tampering_rejected",
+      "category": "gps_fraud_detection",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-location-tampering-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-location-tampering-{{run_id}}",
+        "client_revision": 1,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-tampered-{{run_id}}"
+      },
+      "expected_status": 403,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "location_tampering",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty",
+        "fraud_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "device_mismatch_rejected",
+      "category": "gps_fraud_detection",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-device-mismatch-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-device-mismatch-{{run_id}}",
+        "client_revision": 1,
+        "device_id": "qa-unrecognized-device-{{run_id}}",
+        "location_assertion_id": "qa-location-outside-{{run_id}}"
+      },
+      "expected_status": 403,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "device_mismatch",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty",
+        "fraud_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "checkout_allowed_inside_radius",
+      "category": "gps_allowed_operation",
+      "method": "POST",
+      "path": "/v1/visits/check-out",
+      "headers": {
+        "Idempotency-Key": "qa-checkout-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-inside-{{run_id}}"
+      },
+      "expected_status": 200,
+      "expected_fields": {
+        "checked_out": true,
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "reward_delay_not_elapsed_rejected",
+      "category": "visit_reward_precondition",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-delay-pending-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-delay-pending-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-delay-pending-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": false,
+        "idempotency_key": "qa-delay-pending-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "configured_delay_not_elapsed",
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "reward_inside_prohibited_radius_rejected",
+      "category": "visit_reward_precondition",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-reward-inside-radius-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-radius-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-radius-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": false,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-reward-inside-radius-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "inside_prohibited_radius",
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "visit_reward_granted",
+      "category": "visit_reward",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-reward-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-reward-{{run_id}}"
+      },
+      "expected_status": 201,
+      "expected_fields": {
+        "granted": true,
+        "g_ledger_entry_id": "$nonempty",
+        "audit_event_id": "$nonempty",
+        "reservation_id": "qa-reservation-{{run_id}}",
+        "external_payment_id": "qa-payment-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}"
+      }
+    },
+    {
+      "id": "visit_reward_duplicate",
+      "category": "visit_reward",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-reward-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-reward-{{run_id}}"
+      },
+      "expected_status": 200,
+      "expected_fields": {
+        "granted": true
+      },
+      "same_as": {
+        "g_ledger_entry_id": "visit_reward_granted.g_ledger_entry_id",
+        "audit_event_id": "visit_reward_granted.audit_event_id",
+        "reservation_id": "visit_reward_granted.reservation_id",
+        "external_payment_id": "visit_reward_granted.external_payment_id",
+        "member_id": "visit_reward_granted.member_id"
+      }
+    },
+    {
+      "id": "visit_reward_scope_retry",
+      "category": "visit_reward",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-reward-scope-retry-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-reward-scope-retry-{{run_id}}"
+      },
+      "expected_status": 200,
+      "expected_fields": {
+        "granted": true
+      },
+      "same_as": {
+        "g_ledger_entry_id": "visit_reward_granted.g_ledger_entry_id",
+        "audit_event_id": "visit_reward_granted.audit_event_id",
+        "reservation_id": "visit_reward_granted.reservation_id",
+        "external_payment_id": "visit_reward_granted.external_payment_id",
+        "member_id": "visit_reward_granted.member_id"
+      }
+    },
+    {
+      "category": "visit_reward_exclusion",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-cancelled-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-cancelled-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-cancelled-payment-{{run_id}}",
+        "payment_status": "cancelled",
+        "paid_at": null,
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-cancelled-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "cancelled",
+        "audit_event_id": "$nonempty"
+      },
+      "id": "cancelled_reward_rejected"
+    },
+    {
+      "id": "refunded_reward_rejected",
+      "category": "visit_reward_exclusion",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-refund-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-refunded-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-refunded-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-refund-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "refunded",
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "category": "visit_reward_exclusion",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-unused-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-unused-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-unused-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": false,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-unused-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "unused",
+        "audit_event_id": "$nonempty"
+      },
+      "id": "unused_reward_rejected"
+    },
+    {
+      "category": "visit_reward_exclusion",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-duplicate-charge-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-duplicate-charge-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-duplicate-charge-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-duplicate-charge-{{run_id}}",
+        "duplicate_charge_detected": true
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "duplicate_charge",
+        "audit_event_id": "$nonempty"
+      },
+      "id": "duplicate_charge_reward_rejected"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+name: GOLDEN HORSE V176 authority API conformance
+
+on:
+  push:
+    branches:
+      - automation/v176-authority-conformance
+    paths:
+      - contracts/golden_horse_authoritative_state_v1.json
+      - contracts/golden_horse_authority_conformance_v1.json
+      - scripts/gh_authority_contract_gate.py
+      - scripts/gh_authority_api_conformance.py
+      - tests/test_gh_authority_api_conformance.py
+      - .github/workflows/v176-authority-conformance.yml
+      - FREE_AUTOMATION_STATUS.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  conformance-readiness:
+    name: API conformance ready / live target blocker proven
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify exact V176 and mandatory guards
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+        run: |
+          python scripts/create_v176_line_lifecycle_fix.py
+          python scripts/gh_v176_line_lifecycle_contract.py
+          python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
+
+      - name: Validate authority contract and conformance fixture
+        run: |
+          python -m py_compile \
+            scripts/gh_authority_contract_gate.py \
+            scripts/gh_authority_api_conformance.py
+          python scripts/gh_authority_contract_gate.py
+          python scripts/gh_authority_api_conformance.py
+
+      - name: Self-test black-box runner against isolated mock API
+        run: |
+          python -m unittest -v tests/test_gh_authority_api_conformance.py 2>&1 | tee authority-runner-selftest-report.txt
+
+      - name: Prove live API execution is still blocked
+        run: |
+          set +e
+          python scripts/gh_authority_api_conformance.py --require-api
+          conformance_rc=$?
+          set -e
+          if [ "$conformance_rc" -ne 2 ]; then
+            echo "Expected missing-API blocker exit 2, got $conformance_rc"
+            exit 1
+          fi
+          echo "Confirmed: fixture and runner are valid, but no isolated GOLDEN HORSE API target is configured."
+
+      - name: Upload conformance readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v176-authority-api-conformance-readiness
+          path: |
+            authority-api-conformance-report.json
+            authority-runner-selftest-report.txt
+          if-no-files-found: error
+          retention-days: 7
