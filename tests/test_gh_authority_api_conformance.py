@@ -35,6 +35,9 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     disconnect_first_bet = False
     bet_disconnect_done = False
     bet_disconnect_replay_done = False
+    disconnect_first_reward = False
+    reward_disconnect_done = False
+    reward_disconnect_replay_done = False
     expected_authorization: str | None = None
     authorization_seen = False
 
@@ -267,6 +270,24 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
                 "g_ledger_entry_id": "ledger-selftest",
                 "audit_event_id": "audit-reward",
             }
+            if (
+                key == "qa-reward-selftest"
+                and type(self).disconnect_first_reward
+                and not type(self).reward_disconnect_done
+            ):
+                type(self).reward_disconnect_done = True
+                self.connection.shutdown(socket.SHUT_RDWR)
+                self.connection.close()
+                return
+            if (
+                duplicate
+                and key == "qa-reward-selftest"
+                and type(self).disconnect_first_reward
+                and not type(self).reward_disconnect_replay_done
+            ):
+                type(self).reward_disconnect_replay_done = True
+                self.send_json(201, payload)
+                return
             if not duplicate and type(self).violate_reward_link:
                 payload.pop("external_payment_id")
             if (
@@ -324,6 +345,9 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.disconnect_first_bet = False
         AuthorityMockHandler.bet_disconnect_done = False
         AuthorityMockHandler.bet_disconnect_replay_done = False
+        AuthorityMockHandler.disconnect_first_reward = False
+        AuthorityMockHandler.reward_disconnect_done = False
+        AuthorityMockHandler.reward_disconnect_replay_done = False
         AuthorityMockHandler.expected_authorization = None
         AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
@@ -365,6 +389,48 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             self.assertEqual(len(decoded["cases"]), 18)
             self.assertTrue(all(case["status"] == "PASS" for case in decoded["cases"]))
             self.assertEqual(AuthorityMockHandler.request_count, 18)
+
+    def test_reward_transport_disconnect_reuses_existing_ledger_entry(self) -> None:
+        AuthorityMockHandler.disconnect_first_reward = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            self.assertEqual(decoded["api_execution"], "PASS")
+            granted = next(
+                case
+                for case in decoded["cases"]
+                if case["id"] == "visit_reward_granted"
+            )
+            duplicate = next(
+                case
+                for case in decoded["cases"]
+                if case["id"] == "visit_reward_duplicate"
+            )
+            self.assertEqual(granted["status"], "PASS")
+            self.assertEqual(granted["transport_attempts"], 2)
+            self.assertEqual(duplicate["status"], "PASS")
+            self.assertEqual(AuthorityMockHandler.request_count, 19)
 
     def test_transport_disconnect_retries_same_idempotency_key_without_double_debit(self) -> None:
         AuthorityMockHandler.disconnect_first_bet = True
