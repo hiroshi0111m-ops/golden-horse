@@ -29,6 +29,7 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     violate_unused_reward = False
     violate_reward_link = False
     violate_reward_scope_retry = False
+    violate_reward_delay = False
     expected_authorization: str | None = None
     authorization_seen = False
 
@@ -173,6 +174,30 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
             )
             return
 
+        if (
+            self.path == "/v1/visit-rewards/finalize"
+            and key == "qa-delay-pending-selftest"
+        ):
+            if type(self).violate_reward_delay:
+                self.send_json(
+                    201,
+                    {
+                        "granted": True,
+                        "g_ledger_entry_id": "ledger-delay-wrong",
+                        "audit_event_id": "audit-delay-wrong",
+                    },
+                )
+                return
+            self.send_json(
+                409,
+                {
+                    "granted": False,
+                    "reject_reason": "configured_delay_not_elapsed",
+                    "audit_event_id": "audit-delay-pending",
+                },
+            )
+            return
+
         if self.path == "/v1/visit-rewards/finalize" and key in {
             "qa-reward-selftest",
             "qa-reward-scope-retry-selftest",
@@ -249,6 +274,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.violate_unused_reward = False
         AuthorityMockHandler.violate_reward_link = False
         AuthorityMockHandler.violate_reward_scope_retry = False
+        AuthorityMockHandler.violate_reward_delay = False
         AuthorityMockHandler.expected_authorization = None
         AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
@@ -260,7 +286,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         self.server.server_close()
         self.thread.join(timeout=5)
 
-    def test_sixteen_case_suite_passes_against_isolated_mock(self) -> None:
+    def test_seventeen_case_suite_passes_against_isolated_mock(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             report = Path(directory) / "report.json"
             result = subprocess.run(
@@ -287,9 +313,9 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             decoded = json.loads(report.read_text(encoding="utf-8"))
             self.assertEqual(decoded["fixture_validation"], "PASS")
             self.assertEqual(decoded["api_execution"], "PASS")
-            self.assertEqual(len(decoded["cases"]), 16)
+            self.assertEqual(len(decoded["cases"]), 17)
             self.assertTrue(all(case["status"] == "PASS" for case in decoded["cases"]))
-            self.assertEqual(AuthorityMockHandler.request_count, 16)
+            self.assertEqual(AuthorityMockHandler.request_count, 17)
 
     def test_duplicate_second_debit_is_reported_as_failure(self) -> None:
         AuthorityMockHandler.violate_duplicate_bet = True
@@ -476,6 +502,45 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
                 any(
                     "visit_reward_granted.g_ledger_entry_id" in error
                     for error in retry["errors"]
+                )
+            )
+
+    def test_reward_before_configured_delay_is_reported_as_failure(self) -> None:
+        AuthorityMockHandler.violate_reward_delay = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            pending = next(
+                case
+                for case in decoded["cases"]
+                if case["id"] == "reward_delay_not_elapsed_rejected"
+            )
+            self.assertEqual(pending["status"], "FAIL")
+            self.assertTrue(
+                any(
+                    "HTTP status" in error or "granted" in error
+                    for error in pending["errors"]
                 )
             )
 

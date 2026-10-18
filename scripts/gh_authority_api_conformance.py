@@ -37,10 +37,12 @@ REQUIRED_CATEGORIES = {
     "gps_fraud_detection",
     "gps_allowed_operation",
     "visit_reward",
+    "visit_reward_precondition",
     "visit_reward_exclusion",
 }
 GPS_FRAUD_REASONS = {"mock_location", "location_tampering", "device_mismatch"}
 VISIT_REWARD_EXCLUSION_REASONS = {"cancelled", "refunded", "unused", "duplicate_charge"}
+VISIT_REWARD_PRECONDITION_REASONS = {"configured_delay_not_elapsed"}
 REQUIRED_REWARD_LINK_FIELDS = {
     "reservation_id",
     "external_payment_id",
@@ -104,6 +106,7 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
     prior_ids: set[str] = set()
     fraud_reasons_seen: set[str] = set()
     exclusion_reasons_seen: set[str] = set()
+    precondition_reasons_seen: set[str] = set()
     for index, case in enumerate(cases):
         prefix = f"cases[{index}]"
         if not isinstance(case, dict):
@@ -155,7 +158,11 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
         else:
             require(isinstance(case.get("body"), dict), f"{prefix}.body is required", errors)
 
-        if category in {"visit_reward", "visit_reward_exclusion"}:
+        if category in {
+            "visit_reward",
+            "visit_reward_precondition",
+            "visit_reward_exclusion",
+        }:
             body = case.get("body", {})
             if isinstance(body, dict):
                 connector_fields = set(body).intersection(PAYMENT_FIELDS)
@@ -206,6 +213,39 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
                 require(
                     expected_links.items() <= same_as.items(),
                     f"{prefix} duplicate reward must preserve all prior linkage IDs",
+                    errors,
+                )
+
+        if category == "visit_reward_precondition":
+            body = case.get("body", {})
+            require(
+                expected_status == 409,
+                f"{prefix} reward precondition must expect HTTP 409",
+                errors,
+            )
+            if isinstance(expected_fields, dict):
+                reason = expected_fields.get("reject_reason")
+                if isinstance(reason, str):
+                    precondition_reasons_seen.add(reason)
+                require(
+                    reason in VISIT_REWARD_PRECONDITION_REASONS,
+                    f"{prefix} reward precondition has an unsupported reject_reason",
+                    errors,
+                )
+                require(
+                    expected_fields.get("granted") is False,
+                    f"{prefix} reward precondition must deny the G grant",
+                    errors,
+                )
+                require(
+                    expected_fields.get("audit_event_id") == "$nonempty",
+                    f"{prefix} reward precondition must require an audit event",
+                    errors,
+                )
+            if isinstance(body, dict):
+                require(
+                    body.get("configured_delay_elapsed") is False,
+                    f"{prefix} must prove the configured delay has not elapsed",
                     errors,
                 )
 
@@ -308,6 +348,11 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
             prior_ids.add(case_id)
 
     require(
+        precondition_reasons_seen == VISIT_REWARD_PRECONDITION_REASONS,
+        "reward preconditions must cover configured_delay_not_elapsed exactly",
+        errors,
+    )
+    require(
         exclusion_reasons_seen == VISIT_REWARD_EXCLUSION_REASONS,
         "reward exclusions must cover cancelled, refunded, unused, and duplicate_charge exactly",
         errors,
@@ -332,6 +377,7 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
         "location_tampering_rejected",
         "device_mismatch_rejected",
         "checkout_allowed_inside_radius",
+        "reward_delay_not_elapsed_rejected",
         "visit_reward_granted",
         "visit_reward_duplicate",
         "visit_reward_scope_retry",

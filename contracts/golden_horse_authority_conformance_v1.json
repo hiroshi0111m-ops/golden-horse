@@ -261,6 +261,35 @@
       }
     },
     {
+      "id": "reward_delay_not_elapsed_rejected",
+      "category": "visit_reward_precondition",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-delay-pending-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-delay-pending-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-delay-pending-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": false,
+        "idempotency_key": "qa-delay-pending-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "configured_delay_not_elapsed",
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
       "id": "visit_reward_granted",
       "category": "visit_reward",
       "method": "POST",
