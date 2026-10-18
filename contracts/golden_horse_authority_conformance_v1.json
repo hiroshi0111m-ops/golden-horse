@@ -286,7 +286,10 @@
       "expected_fields": {
         "granted": true,
         "g_ledger_entry_id": "$nonempty",
-        "audit_event_id": "$nonempty"
+        "audit_event_id": "$nonempty",
+        "reservation_id": "qa-reservation-{{run_id}}",
+        "external_payment_id": "qa-payment-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}"
       }
     },
     {
@@ -317,7 +320,10 @@
       },
       "same_as": {
         "g_ledger_entry_id": "visit_reward_granted.g_ledger_entry_id",
-        "audit_event_id": "visit_reward_granted.audit_event_id"
+        "audit_event_id": "visit_reward_granted.audit_event_id",
+        "reservation_id": "visit_reward_granted.reservation_id",
+        "external_payment_id": "visit_reward_granted.external_payment_id",
+        "member_id": "visit_reward_granted.member_id"
       }
     },
     {

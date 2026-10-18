@@ -27,6 +27,7 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     violate_duplicate_bet = False
     violate_mock_location_evidence = False
     violate_unused_reward = False
+    violate_reward_link = False
     expected_authorization: str | None = None
     authorization_seen = False
 
@@ -184,14 +185,17 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
                 return
             duplicate = type(self).reward_seen
             type(self).reward_seen = True
-            self.send_json(
-                200 if duplicate else 201,
-                {
-                    "granted": True,
-                    "g_ledger_entry_id": "ledger-selftest",
-                    "audit_event_id": "audit-reward",
-                },
-            )
+            payload = {
+                "granted": True,
+                "reservation_id": body["reservation_id"],
+                "external_payment_id": body["external_payment_id"],
+                "member_id": body["member_id"],
+                "g_ledger_entry_id": "ledger-selftest",
+                "audit_event_id": "audit-reward",
+            }
+            if not duplicate and type(self).violate_reward_link:
+                payload.pop("external_payment_id")
+            self.send_json(200 if duplicate else 201, payload)
             return
 
         exclusion_reasons = {
@@ -233,6 +237,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.violate_duplicate_bet = False
         AuthorityMockHandler.violate_mock_location_evidence = False
         AuthorityMockHandler.violate_unused_reward = False
+        AuthorityMockHandler.violate_reward_link = False
         AuthorityMockHandler.expected_authorization = None
         AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
@@ -386,6 +391,42 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
                     "HTTP status" in error or "granted" in error
                     for error in unused_case["errors"]
                 )
+            )
+
+    def test_missing_reward_link_is_reported_as_failure(self) -> None:
+        AuthorityMockHandler.violate_reward_link = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            reward = next(
+                case
+                for case in decoded["cases"]
+                if case["id"] == "visit_reward_granted"
+            )
+            self.assertEqual(reward["status"], "FAIL")
+            self.assertTrue(
+                any("external_payment_id" in error for error in reward["errors"])
             )
 
     def test_missing_api_url_returns_blocker_without_false_pass(self) -> None:

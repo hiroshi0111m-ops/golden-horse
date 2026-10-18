@@ -41,6 +41,12 @@ REQUIRED_CATEGORIES = {
 }
 GPS_FRAUD_REASONS = {"mock_location", "location_tampering", "device_mismatch"}
 VISIT_REWARD_EXCLUSION_REASONS = {"cancelled", "refunded", "unused", "duplicate_charge"}
+REQUIRED_REWARD_LINK_FIELDS = {
+    "reservation_id",
+    "external_payment_id",
+    "member_id",
+    "g_ledger_entry_id",
+}
 ALLOWED_METHODS = {"GET", "POST"}
 SENSITIVE_HEADERS = {"authorization", "cookie", "proxy-authorization", "x-api-key"}
 
@@ -168,6 +174,38 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
                 require(
                     not set(body).intersection(forbidden_aliases),
                     f"{prefix} contains a forbidden payment implementation field",
+                    errors,
+                )
+
+        if category == "visit_reward":
+            body = case.get("body", {})
+            same_as = case.get("same_as", {})
+            if expected_status == 201 and isinstance(expected_fields, dict):
+                require(
+                    REQUIRED_REWARD_LINK_FIELDS.issubset(expected_fields),
+                    f"{prefix} successful reward must return reservation, payment, member, and G ledger linkage",
+                    errors,
+                )
+                if isinstance(body, dict):
+                    for field in REQUIRED_REWARD_LINK_FIELDS - {"g_ledger_entry_id"}:
+                        require(
+                            expected_fields.get(field) == body.get(field),
+                            f"{prefix} successful reward must echo {field}",
+                            errors,
+                        )
+                require(
+                    expected_fields.get("g_ledger_entry_id") == "$nonempty",
+                    f"{prefix} successful reward must require a G ledger entry",
+                    errors,
+                )
+            if expected_status == 200 and isinstance(same_as, dict):
+                expected_links = {
+                    field: f"visit_reward_granted.{field}"
+                    for field in REQUIRED_REWARD_LINK_FIELDS
+                }
+                require(
+                    expected_links.items() <= same_as.items(),
+                    f"{prefix} duplicate reward must preserve all prior linkage IDs",
                     errors,
                 )
 
