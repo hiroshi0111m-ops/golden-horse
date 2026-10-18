@@ -1,0 +1,92 @@
+name: GOLDEN HORSE V176 race timing QA
+run-name: V176 race timing QA @ ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "automation/v176-race-timing-qa"
+    paths:
+      - "scripts/gh_v176_race_timing_qa.mjs"
+      - ".github/workflows/v176-race-timing-qa.yml"
+      - "scripts/create_v176_line_lifecycle_fix.py"
+      - "scripts/gh_v176_line_lifecycle_contract.py"
+      - "FREE_AUTOMATION_STATUS.md"
+      - "scripts/gh_free_automation_status_contract.py"
+
+concurrency:
+  group: v176-race-timing-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-emulation:
+    name: ${{ matrix.label }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Android Chrome emulation
+            browser: chromium
+            device: Pixel 7
+            suffix: android-chrome
+          - label: iPhone WebKit emulation
+            browser: webkit
+            device: iPhone 15
+            suffix: iphone-webkit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright browser
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps "${{ matrix.browser }}"
+
+      - name: Generate exact V176 and run mandatory guards
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+        run: |
+          python scripts/create_v176_line_lifecycle_fix.py
+          python scripts/gh_v176_line_lifecycle_contract.py
+          python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
+
+      - name: Start isolated exact-V176 server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
+          sleep 2
+
+      - name: Measure natural race and result timing
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+          GH_BROWSER: ${{ matrix.browser }}
+          GH_DEVICE: ${{ matrix.device }}
+          GH_TIMING_REPORT: v176-race-timing-${{ matrix.suffix }}.json
+          GH_TIMING_SCREENSHOT: v176-race-timing-${{ matrix.suffix }}.png
+        run: timeout 180s node scripts/gh_v176_race_timing_qa.mjs
+
+      - name: Upload timing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v176-race-timing-${{ matrix.suffix }}
+          path: |
+            v176-race-timing-${{ matrix.suffix }}.json
+            v176-race-timing-${{ matrix.suffix }}.png
+          if-no-files-found: ignore
+          retention-days: 7
