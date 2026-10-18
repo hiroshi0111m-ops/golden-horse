@@ -25,6 +25,7 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     reward_seen = False
     request_count = 0
     violate_duplicate_bet = False
+    violate_mock_location_evidence = False
     expected_authorization: str | None = None
     authorization_seen = False
 
@@ -137,6 +138,28 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
             )
             return
 
+        fraud_reasons = {
+            "qa-mock-location-selftest": "mock_location",
+            "qa-location-tampering-selftest": "location_tampering",
+            "qa-device-mismatch-selftest": "device_mismatch",
+        }
+        if self.path == "/v1/bets" and key in fraud_reasons:
+            payload = {
+                "accepted": False,
+                "reject_reason": fraud_reasons[key],
+                "balance_g": 995,
+                "server_revision": 1,
+                "audit_event_id": f"audit-{fraud_reasons[key]}",
+                "fraud_event_id": f"fraud-{fraud_reasons[key]}",
+            }
+            if (
+                key == "qa-mock-location-selftest"
+                and type(self).violate_mock_location_evidence
+            ):
+                payload.pop("fraud_event_id")
+            self.send_json(403, payload)
+            return
+
         if self.path == "/v1/visits/check-out":
             self.send_json(
                 200,
@@ -190,6 +213,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.reward_seen = False
         AuthorityMockHandler.request_count = 0
         AuthorityMockHandler.violate_duplicate_bet = False
+        AuthorityMockHandler.violate_mock_location_evidence = False
         AuthorityMockHandler.expected_authorization = None
         AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
@@ -201,7 +225,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         self.server.server_close()
         self.thread.join(timeout=5)
 
-    def test_nine_case_suite_passes_against_isolated_mock(self) -> None:
+    def test_twelve_case_suite_passes_against_isolated_mock(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             report = Path(directory) / "report.json"
             result = subprocess.run(
@@ -228,9 +252,9 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             decoded = json.loads(report.read_text(encoding="utf-8"))
             self.assertEqual(decoded["fixture_validation"], "PASS")
             self.assertEqual(decoded["api_execution"], "PASS")
-            self.assertEqual(len(decoded["cases"]), 9)
+            self.assertEqual(len(decoded["cases"]), 12)
             self.assertTrue(all(case["status"] == "PASS" for case in decoded["cases"]))
-            self.assertEqual(AuthorityMockHandler.request_count, 9)
+            self.assertEqual(AuthorityMockHandler.request_count, 12)
 
     def test_duplicate_second_debit_is_reported_as_failure(self) -> None:
         AuthorityMockHandler.violate_duplicate_bet = True
@@ -268,6 +292,42 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             )
             self.assertTrue(
                 any("bet_accept.bet_id" in error for error in duplicate["errors"])
+            )
+
+    def test_missing_fraud_event_is_reported_as_failure(self) -> None:
+        AuthorityMockHandler.violate_mock_location_evidence = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            fraud_case = next(
+                case
+                for case in decoded["cases"]
+                if case["id"] == "mock_location_rejected"
+            )
+            self.assertEqual(fraud_case["status"], "FAIL")
+            self.assertTrue(
+                any("fraud_event_id" in error for error in fraud_case["errors"])
             )
 
     def test_missing_api_url_returns_blocker_without_false_pass(self) -> None:

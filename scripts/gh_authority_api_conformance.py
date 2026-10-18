@@ -34,10 +34,12 @@ REQUIRED_CATEGORIES = {
     "idempotent_bet",
     "revision_rollback",
     "gps_radius",
+    "gps_fraud_detection",
     "gps_allowed_operation",
     "visit_reward",
     "visit_reward_exclusion",
 }
+GPS_FRAUD_REASONS = {"mock_location", "location_tampering", "device_mismatch"}
 ALLOWED_METHODS = {"GET", "POST"}
 SENSITIVE_HEADERS = {"authorization", "cookie", "proxy-authorization", "x-api-key"}
 
@@ -93,6 +95,7 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
     ids: set[str] = set()
     categories: set[str] = set()
     prior_ids: set[str] = set()
+    fraud_reasons_seen: set[str] = set()
     for index, case in enumerate(cases):
         prefix = f"cases[{index}]"
         if not isinstance(case, dict):
@@ -166,6 +169,41 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
                     errors,
                 )
 
+        if category == "gps_fraud_detection":
+            body = case.get("body", {})
+            require(method == "POST", f"{prefix} fraud check must use POST", errors)
+            require(expected_status == 403, f"{prefix} fraud check must expect HTTP 403", errors)
+            if isinstance(body, dict):
+                require(
+                    {"member_id", "device_id", "location_assertion_id"}.issubset(body),
+                    f"{prefix} fraud check must bind member, device, and location assertion",
+                    errors,
+                )
+            if isinstance(expected_fields, dict):
+                reason = expected_fields.get("reject_reason")
+                if isinstance(reason, str):
+                    fraud_reasons_seen.add(reason)
+                require(
+                    expected_fields.get("accepted") is False,
+                    f"{prefix} fraud check must reject the BET",
+                    errors,
+                )
+                require(
+                    reason in GPS_FRAUD_REASONS,
+                    f"{prefix} fraud check has an unsupported reject_reason",
+                    errors,
+                )
+                require(
+                    expected_fields.get("audit_event_id") == "$nonempty",
+                    f"{prefix} fraud check must require an audit event",
+                    errors,
+                )
+                require(
+                    expected_fields.get("fraud_event_id") == "$nonempty",
+                    f"{prefix} fraud check must require a fraud event",
+                    errors,
+                )
+
         same_as = case.get("same_as", {})
         require(isinstance(same_as, dict), f"{prefix}.same_as must be an object", errors)
         if isinstance(same_as, dict):
@@ -191,6 +229,11 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
             prior_ids.add(case_id)
 
     require(
+        fraud_reasons_seen == GPS_FRAUD_REASONS,
+        "GPS fraud cases must cover mock_location, location_tampering, and device_mismatch exactly",
+        errors,
+    )
+    require(
         categories == REQUIRED_CATEGORIES,
         "fixture categories do not exactly match the required authority coverage",
         errors,
@@ -201,6 +244,9 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
         "bet_duplicate",
         "stale_revision_rejected",
         "inside_radius_bet_rejected",
+        "mock_location_rejected",
+        "location_tampering_rejected",
+        "device_mismatch_rejected",
         "checkout_allowed_inside_radius",
         "visit_reward_granted",
         "visit_reward_duplicate",

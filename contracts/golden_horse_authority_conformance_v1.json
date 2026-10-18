@@ -36,7 +36,9 @@
         "member_id": "guest-authority-qa-{{run_id}}",
         "race_id": "qa-race-001",
         "bet_type": "win",
-        "selections": [1],
+        "selections": [
+          1
+        ],
         "stake_g": 5,
         "idempotency_key": "qa-bet-{{run_id}}",
         "client_revision": 0,
@@ -65,7 +67,9 @@
         "member_id": "guest-authority-qa-{{run_id}}",
         "race_id": "qa-race-001",
         "bet_type": "win",
-        "selections": [1],
+        "selections": [
+          1
+        ],
         "stake_g": 5,
         "idempotency_key": "qa-bet-{{run_id}}",
         "client_revision": 0,
@@ -95,7 +99,9 @@
         "member_id": "guest-authority-qa-{{run_id}}",
         "race_id": "qa-race-002",
         "bet_type": "win",
-        "selections": [2],
+        "selections": [
+          2
+        ],
         "stake_g": 5,
         "idempotency_key": "qa-stale-{{run_id}}",
         "client_revision": 0,
@@ -123,7 +129,9 @@
         "member_id": "guest-authority-qa-{{run_id}}",
         "race_id": "qa-race-002",
         "bet_type": "win",
-        "selections": [2],
+        "selections": [
+          2
+        ],
         "stake_g": 5,
         "idempotency_key": "qa-gps-{{run_id}}",
         "client_revision": 1,
@@ -137,6 +145,99 @@
         "balance_g": 995,
         "server_revision": 1,
         "audit_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "mock_location_rejected",
+      "category": "gps_fraud_detection",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-mock-location-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-mock-location-{{run_id}}",
+        "client_revision": 1,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-mock-{{run_id}}"
+      },
+      "expected_status": 403,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "mock_location",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty",
+        "fraud_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "location_tampering_rejected",
+      "category": "gps_fraud_detection",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-location-tampering-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-location-tampering-{{run_id}}",
+        "client_revision": 1,
+        "device_id": "qa-device-{{run_id}}",
+        "location_assertion_id": "qa-location-tampered-{{run_id}}"
+      },
+      "expected_status": 403,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "location_tampering",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty",
+        "fraud_event_id": "$nonempty"
+      }
+    },
+    {
+      "id": "device_mismatch_rejected",
+      "category": "gps_fraud_detection",
+      "method": "POST",
+      "path": "/v1/bets",
+      "headers": {
+        "Idempotency-Key": "qa-device-mismatch-{{run_id}}"
+      },
+      "body": {
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "race_id": "qa-race-002",
+        "bet_type": "win",
+        "selections": [
+          2
+        ],
+        "stake_g": 5,
+        "idempotency_key": "qa-device-mismatch-{{run_id}}",
+        "client_revision": 1,
+        "device_id": "qa-unrecognized-device-{{run_id}}",
+        "location_assertion_id": "qa-location-outside-{{run_id}}"
+      },
+      "expected_status": 403,
+      "expected_fields": {
+        "accepted": false,
+        "reject_reason": "device_mismatch",
+        "balance_g": 995,
+        "server_revision": 1,
+        "audit_event_id": "$nonempty",
+        "fraud_event_id": "$nonempty"
       }
     },
     {
