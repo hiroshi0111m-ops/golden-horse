@@ -3,14 +3,14 @@
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-18
 CURRENT_VERSION: V176 LINE LIFECYCLE FIX candidate
-CURRENT_CP: CP_V176_MOBILE_TIMING_EMULATION_PASS
-CURRENT_BRANCH: automation/v176-race-timing-qa
-CURRENT_COMMIT: 6aa3f6f6e6ad8a8fe5d0ac91986338801b95c0ec
-CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/35
+CURRENT_CP: CP_V176_SECURITY_REGRESSION_7_OF_10_RED
+CURRENT_BRANCH: automation/v176-security-regression-matrix
+CURRENT_COMMIT: a65c735f07812c5fcbc538d5dd75e8ce1e245666
+CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/36
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
-NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し、紫側・物理Android・実LINE内ブラウザで同じ完全フローを録画確認する
+NEXT_ONE_ACTION: V175/V176の複数タブ修正とクライアント改ざん拒否が衝突するため、クライアント保存を権威扱いせず、単調revision・冪等キー・サーバー署名を持つAPI/DB実装先を確定してから最小修正する
 
 ## PASS
 
@@ -21,14 +21,14 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 - BET確定後の再読込は995G、active BET 1件、履歴0件を維持してPASS。
 - RESULT精算後の再読込は精算後G、active BET 0件、履歴1件を維持し、払戻と履歴の重複なしでPASS。
 - V174→V173復旧は双方のSHA-256完全一致とmandatory preflightでPASS。
-- 保存GをlocalStorage上で995Gから999,999Gへ改ざん後に再読込しても995G・active BET 1件へ復元され、クライアント保存値の改ざん受理なしでPASS。
-- 保存状態を995G・active BET 1件から1000G・active BET 0件へ改ざん後に再読込しても995G・active BET 1件へ復元され、BET削除と5G返却の改ざん受理なしでPASS。
+- V174限定PASS（V176では回帰RED）: 保存GをlocalStorage上で995Gから999,999Gへ改ざん後に再読込しても995G・active BET 1件へ復元され、クライアント保存値の改ざん受理なしでPASS。
+- V174限定PASS（V176では回帰RED）: 保存状態を995G・active BET 1件から1000G・active BET 0件へ改ざん後に再読込しても995G・active BET 1件へ復元され、BET削除と5G返却の改ざん受理なしでPASS。
 - RESULT精算後の保存状態を1103G・履歴1件から1108G・履歴0件へ改ざん後に再読込しても1103G・履歴1件へ復元され、精算履歴削除と5G返却の改ざん受理なしでPASS。
-- 有効BET保存のstakeを5Gから100G、oddsを15.7から1570へ改ざん後に再読込してもstake 5G・odds 15.7・995G・active BET 1件へ復元され、払戻条件の保存値改ざん受理なしでPASS。
-- 有効BET保存の単勝対象馬を1番から7番へ差し替え後に再読込しても1番・995G・active BET 1件へ復元され、対象馬の保存値改ざん受理なしでPASS。
-- 5G BET確定後にBET前の完全なlocalStorage/sessionStorage保存状態を再投入して再読込しても995G・active BET 1件を維持し、旧保存状態によるBET巻き戻しなしでPASS。
-- OFFICIAL RESULT精算後に精算前の有効BET保存状態を再投入して再読込しても995G・active BET 0件・履歴1件を維持し、BET復活・履歴消失・二重精算の入口なしでPASS。
-- レース1精算後995Gの保存状態を、レース2の5G BET受理後に再投入して再読込しても990G・active BET 1件・履歴1件を維持し、旧精算済み状態による新規BET消失・5G返却なしでPASS。
+- V174限定PASS（V176では回帰RED）: 有効BET保存のstakeを5Gから100G、oddsを15.7から1570へ改ざん後に再読込してもstake 5G・odds 15.7・995G・active BET 1件へ復元され、払戻条件の保存値改ざん受理なしでPASS。
+- V174限定PASS（V176では回帰RED）: 有効BET保存の単勝対象馬を1番から7番へ差し替え後に再読込しても1番・995G・active BET 1件へ復元され、対象馬の保存値改ざん受理なしでPASS。
+- V174限定PASS（V176では回帰RED）: 5G BET確定後にBET前の完全なlocalStorage/sessionStorage保存状態を再投入して再読込しても995G・active BET 1件を維持し、旧保存状態によるBET巻き戻しなしでPASS。
+- V174限定PASS（V176では回帰RED）: OFFICIAL RESULT精算後に精算前の有効BET保存状態を再投入して再読込しても995G・active BET 0件・履歴1件を維持し、BET復活・履歴消失・二重精算の入口なしでPASS。
+- V174限定PASS（V176では回帰RED）: レース1精算後995Gの保存状態を、レース2の5G BET受理後に再投入して再読込しても990G・active BET 1件・履歴1件を維持し、旧精算済み状態による新規BET消失・5G返却なしでPASS。
 - V176はrun 39064943862と最新head run 39064964822で、生成checksum `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`、mandatory guards、2タブ同時BET→精算→タブB再読込を各3回連続（計6回）PASS。active BET 0・履歴1件へ収束し、V175で残った古いタブBメモリ復活を再現しなかった。
 - V176物理スマホ準備ツールは、exact active-index、V176生成、V176固有契約、mandatory preflight、status contract、ローカル配信build marker確認をCIでPASS。これは起動準備ツールの検査結果であり、端末実走のPASSではない。
 - V176→V173復旧ドリルはrun 39069060196で、V176 SHA-256 `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`とV173 SHA-256 `84d505571c0b34962e234cb04b4ca187516a0368adf40f6903eafd80ac0ea85d`の完全一致、両checkpointのmandatory preflight、証拠artifact `12114044355`（digest `76c934d48ab8fd111cdebecd6726e441e5338d9e2992a942603d2c84bad9c3ed`）をPASS。
@@ -36,6 +36,11 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 
 ## RED
 
+- exact V176セキュリティ回帰matrix run 39085268586は10系統中3 PASS / 7 FAIL。製品HTMLは未変更のまま、V174の旧合格をCURRENT V176へ再適用して新しい回帰を検出した。
+- V176で保存G改ざん999,999G、受付済みBET削除+5G返却、stake 5→100・odds 2.1→210、対象馬1→7が再読込後に受理された。
+- V176でBET前stale state（1000G・BET 0）、精算前state（995G・active BET 1・履歴0）、レース1精算済みstateのレース2後リプレイ（990G→995G）が受理された。
+- 同matrixで精算履歴改ざん拒否、BET/精算後再読込継続、二重確認冪等性の3系統はPASS。全体をGREENへ読み替えない。
+- V174の同検査はGREENだった。V175/V176で複数タブの古い状態上書きを止めるためpagehide/visibilitychangeのlocalSaveを除去した結果、改ざん値を再読込直前に正常メモリで上書きしていた偶発的防御も消えた挙動と一致する。クライアントだけで再び保存すると2タブ競合を再発させるため、権威サーバーなしの単純復活は行わない。
 - 通信断BETはオフライン確認操作後も1000Gから995Gへ減り、active BET 1件としてクライアント内で受理される。
 - 権威BETサーバー、API、DBスキーマ、冪等受付、監査ログの実装先はこのリポジトリ内に存在しない。
 - PR #19は上記を隠さず保持する意図的RED証拠であり、PASSへ読み替えない。
@@ -74,6 +79,8 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 - V176候補検査: `python scripts/gh_v176_line_lifecycle_contract.py`
 - V176 current active index: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
 - V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`\n- V176自然進行タイミングQA workflow: `.github/workflows/v176-race-timing-qa.yml`\n- V176自然進行タイミングQA script: `scripts/gh_v176_race_timing_qa.mjs`
+- V176セキュリティ回帰matrix: `.github/workflows/v176-security-regression-matrix.yml`
+- V176セキュリティ回帰RED: https://github.com/hiroshi0111m-ops/golden-horse/pull/36 / run 39085268586
 - V176物理スマホ起動: `RUN_V176_PHONE_TEST_FREE.bat`
 - V176紫側・一時公開QA起動: `START_GOLDEN_HORSE_PUBLIC_FREE.bat`
 - V176物理スマホ準備workflow: `.github/workflows/v176-phone-preview-tooling.yml`
