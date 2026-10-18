@@ -28,6 +28,7 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     violate_mock_location_evidence = False
     violate_unused_reward = False
     violate_reward_link = False
+    violate_reward_scope_retry = False
     expected_authorization: str | None = None
     authorization_seen = False
 
@@ -172,7 +173,10 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
             )
             return
 
-        if self.path == "/v1/visit-rewards/finalize" and key == "qa-reward-selftest":
+        if self.path == "/v1/visit-rewards/finalize" and key in {
+            "qa-reward-selftest",
+            "qa-reward-scope-retry-selftest",
+        }:
             required_payment = {
                 "payment_provider",
                 "external_payment_id",
@@ -195,6 +199,12 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
             }
             if not duplicate and type(self).violate_reward_link:
                 payload.pop("external_payment_id")
+            if (
+                key == "qa-reward-scope-retry-selftest"
+                and type(self).violate_reward_scope_retry
+            ):
+                payload["g_ledger_entry_id"] = "ledger-scope-retry-wrong"
+                payload["audit_event_id"] = "audit-scope-retry-wrong"
             self.send_json(200 if duplicate else 201, payload)
             return
 
@@ -238,6 +248,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.violate_mock_location_evidence = False
         AuthorityMockHandler.violate_unused_reward = False
         AuthorityMockHandler.violate_reward_link = False
+        AuthorityMockHandler.violate_reward_scope_retry = False
         AuthorityMockHandler.expected_authorization = None
         AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
@@ -249,7 +260,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         self.server.server_close()
         self.thread.join(timeout=5)
 
-    def test_fifteen_case_suite_passes_against_isolated_mock(self) -> None:
+    def test_sixteen_case_suite_passes_against_isolated_mock(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             report = Path(directory) / "report.json"
             result = subprocess.run(
@@ -276,9 +287,9 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             decoded = json.loads(report.read_text(encoding="utf-8"))
             self.assertEqual(decoded["fixture_validation"], "PASS")
             self.assertEqual(decoded["api_execution"], "PASS")
-            self.assertEqual(len(decoded["cases"]), 15)
+            self.assertEqual(len(decoded["cases"]), 16)
             self.assertTrue(all(case["status"] == "PASS" for case in decoded["cases"]))
-            self.assertEqual(AuthorityMockHandler.request_count, 15)
+            self.assertEqual(AuthorityMockHandler.request_count, 16)
 
     def test_duplicate_second_debit_is_reported_as_failure(self) -> None:
         AuthorityMockHandler.violate_duplicate_bet = True
@@ -427,6 +438,45 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             self.assertEqual(reward["status"], "FAIL")
             self.assertTrue(
                 any("external_payment_id" in error for error in reward["errors"])
+            )
+
+    def test_new_key_reward_retry_cannot_create_second_ledger_entry(self) -> None:
+        AuthorityMockHandler.violate_reward_scope_retry = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            retry = next(
+                case
+                for case in decoded["cases"]
+                if case["id"] == "visit_reward_scope_retry"
+            )
+            self.assertEqual(retry["status"], "FAIL")
+            self.assertTrue(
+                any(
+                    "visit_reward_granted.g_ledger_entry_id" in error
+                    for error in retry["errors"]
+                )
             )
 
     def test_missing_api_url_returns_blocker_without_false_pass(self) -> None:
