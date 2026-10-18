@@ -1,0 +1,117 @@
+name: GOLDEN HORSE V176 security regression matrix
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-regression:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        include:
+          - name: client storage tamper
+            script: scripts/gh_client_storage_tamper_qa.mjs
+            timeout_seconds: 120
+            report: client-storage-tamper-qa-report.json
+            screenshots: client-storage-tamper-*.png
+          - name: accepted BET record tamper
+            script: scripts/gh_bet_record_tamper_qa.mjs
+            timeout_seconds: 120
+            report: bet-record-tamper-qa-report.json
+            screenshots: bet-record-tamper-*.png
+          - name: active BET terms tamper
+            script: scripts/gh_bet_terms_tamper_qa.mjs
+            timeout_seconds: 180
+            report: bet-terms-tamper-qa-report.json
+            screenshots: bet-terms-tamper-*.png
+          - name: active BET selection tamper
+            script: scripts/gh_bet_selection_tamper_qa.mjs
+            timeout_seconds: 180
+            report: bet-selection-tamper-qa-report.json
+            screenshots: bet-selection-tamper-*.png
+          - name: settled history tamper
+            script: scripts/gh_settled_history_tamper_qa.mjs
+            timeout_seconds: 300
+            report: settled-history-tamper-qa-report.json
+            screenshots: settled-history-tamper-*.png
+          - name: stale storage replay
+            script: scripts/gh_storage_replay_qa.mjs
+            timeout_seconds: 180
+            report: storage-replay-qa-report.json
+            screenshots: storage-replay-*.png
+          - name: settled state replay
+            script: scripts/gh_settled_state_replay_qa.mjs
+            timeout_seconds: 300
+            report: settled-state-replay-qa-report.json
+            screenshots: settled-replay-*.png
+          - name: post-settlement replay
+            script: scripts/gh_post_settlement_replay_qa.mjs
+            timeout_seconds: 300
+            report: post-settlement-replay-qa-report.json
+            screenshots: post-settlement-replay-*.png
+          - name: reload continuity
+            script: scripts/gh_reload_continuity_qa.mjs
+            timeout_seconds: 300
+            report: reload-continuity-qa-report.json
+            screenshots: reload-continuity-*.png
+          - name: duplicate BET confirmation
+            script: scripts/gh_double_submit_qa.mjs
+            timeout_seconds: 240
+            report: double-submit-qa-report.json
+            screenshots: double-submit-qa-*.png
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Generate exact V176 and run mandatory guards
+        env:
+          GH_ACTIVE_INDEX: checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+        run: |
+          python scripts/create_v176_line_lifecycle_fix.py
+          python scripts/gh_v176_line_lifecycle_contract.py
+          python scripts/gh_preflight.py
+          python scripts/gh_free_automation_status_contract.py
+
+      - name: Start isolated exact-V176 server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 > /tmp/gh-http.log 2>&1 &
+          sleep 2
+
+      - name: Run exact-V176 regression
+        env:
+          GH_TEST_URL: http://127.0.0.1:4173/checkpoints/V176_LINE_LIFECYCLE_FIX/index.html
+        run: timeout ${{ matrix.timeout_seconds }}s node ${{ matrix.script }}
+
+      - name: Upload regression evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-horse-v176-${{ strategy.job-index }}-${{ matrix.name }}
+          path: |
+            ${{ matrix.report }}
+            ${{ matrix.screenshots }}
+          if-no-files-found: ignore
+          retention-days: 7
