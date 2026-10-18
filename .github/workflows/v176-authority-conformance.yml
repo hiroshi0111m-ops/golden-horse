@@ -10,6 +10,7 @@ on:
       - scripts/gh_authority_contract_gate.py
       - scripts/gh_authority_api_conformance.py
       - .github/workflows/v176-authority-conformance.yml
+      - FREE_AUTOMATION_STATUS.md
   workflow_dispatch:
 
 permissions:
