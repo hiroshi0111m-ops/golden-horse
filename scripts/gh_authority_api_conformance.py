@@ -334,6 +334,7 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
         "checkout_allowed_inside_radius",
         "visit_reward_granted",
         "visit_reward_duplicate",
+        "visit_reward_scope_retry",
         "cancelled_reward_rejected",
         "refunded_reward_rejected",
         "unused_reward_rejected",
