@@ -9,6 +9,7 @@ on:
       - contracts/golden_horse_authority_conformance_v1.json
       - scripts/gh_authority_contract_gate.py
       - scripts/gh_authority_api_conformance.py
+      - tests/test_gh_authority_api_conformance.py
       - .github/workflows/v176-authority-conformance.yml
       - FREE_AUTOMATION_STATUS.md
   workflow_dispatch:
@@ -47,6 +48,10 @@ jobs:
             scripts/gh_authority_api_conformance.py
           python scripts/gh_authority_contract_gate.py
           python scripts/gh_authority_api_conformance.py
+
+      - name: Self-test black-box runner against isolated mock API
+        run: |
+          python -m unittest tests/test_gh_authority_api_conformance.py
 
       - name: Prove live API execution is still blocked
         run: |
