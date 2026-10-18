@@ -15,7 +15,7 @@ const report = {
   browserName,
   deviceName,
   note: "Playwright mobile emulation only. This is not physical-device, real LINE in-app-browser, or audio-synchronization evidence.",
-  requirement: "Exact V176 guest starts at 1000G, accepts one confirmed 5G BET, starts seven runners, reaches GOAL and OFFICIAL RESULT, keeps natural race timing at 30-40s and result display at 6-9s.",
+  requirement: "Exact V176 guest starts at 1000G, accepts one confirmed 5G BET, starts seven runners, reaches GOAL and OFFICIAL RESULT, keeps natural race timing at 30-40s and the explicit seven-second result hold at 6-9s. Total result-panel visibility is recorded separately because WebKit runs the existing narrated official-result sequence before the hold.",
   startedAt: new Date().toISOString(),
   marks: {},
   phaseLog: [],
@@ -57,6 +57,7 @@ try {
     const phase = document.getElementById("racePhase");
     const result = document.getElementById("finishPanel");
     const race = document.getElementById("raceScreen");
+    const resultCountdown = document.getElementById("resultCountdown");
 
     const recordPhase = () => {
       const value = (phase?.textContent || "").trim();
@@ -73,12 +74,14 @@ try {
         !!race && race.classList.contains("on") &&
         getComputedStyle(result).display !== "none";
       if (visible) mark("resultVisible");
+      if (visible && (resultCountdown?.textContent || "").trim() === "7") mark("resultHoldStarted");
       if (!visible && window.__ghTiming.marks.resultVisible) mark("resultHidden");
     };
 
     new MutationObserver(recordPhase).observe(phase, { childList: true, subtree: true, characterData: true });
     new MutationObserver(recordResult).observe(result, { attributes: true, attributeFilter: ["class", "style"] });
     new MutationObserver(recordResult).observe(race, { attributes: true, attributeFilter: ["class", "style"] });
+    new MutationObserver(recordResult).observe(resultCountdown, { childList: true, subtree: true, characterData: true });
     document.addEventListener("gh:fanfare-ended", () => mark("fanfareEnded"));
     recordPhase();
     recordResult();
@@ -113,6 +116,7 @@ try {
   await page.waitForFunction(() => window.__ghTiming?.marks?.resultVisible, null, { timeout: 70_000 });
   report.resultText = (await page.locator("#finishPanel").innerText()).trim();
   if (!/OFFICIAL|RESULT|確定/i.test(report.resultText)) throw new Error("OFFICIAL RESULT missing");
+  await page.waitForFunction(() => window.__ghTiming?.marks?.resultHoldStarted, null, { timeout: 70_000 });
   await page.waitForFunction(() => window.__ghTiming?.marks?.resultHidden, null, { timeout: 70_000 });
 
   const timing = await page.evaluate(() => window.__ghTiming);
@@ -122,12 +126,14 @@ try {
     fanfarePhaseToStartMs: Math.round(timing.marks.startShown - timing.marks.fanfareShown),
     readyToStartMs: Math.round(timing.marks.startShown - timing.marks.readyShown),
     raceStartToGoalMs: Math.round(timing.marks.goalShown - timing.marks.startShown),
-    resultVisibleMs: Math.round(timing.marks.resultHidden - timing.marks.resultVisible),
+    resultNarrationMs: Math.round(timing.marks.resultHoldStarted - timing.marks.resultVisible),
+    resultHoldMs: Math.round(timing.marks.resultHidden - timing.marks.resultHoldStarted),
+    totalResultPanelMs: Math.round(timing.marks.resultHidden - timing.marks.resultVisible),
   };
 
   assertRange("readyToStart", report.measurements.readyToStartMs, 600, 1_000);
   assertRange("raceStartToGoal", report.measurements.raceStartToGoalMs, 30_000, 40_000);
-  assertRange("resultVisible", report.measurements.resultVisibleMs, 6_000, 9_000);
+  assertRange("resultHold", report.measurements.resultHoldMs, 6_000, 9_000);
   if (report.pageErrors.length) throw new Error(`page errors: ${report.pageErrors.join(" | ")}`);
   report.status = "PASS";
   console.log(`V176_RACE_TIMING=PASS browser=${browserName} device=${deviceName} ${JSON.stringify(report.measurements)}`);
