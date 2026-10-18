@@ -290,6 +290,35 @@
       }
     },
     {
+      "id": "reward_inside_prohibited_radius_rejected",
+      "category": "visit_reward_precondition",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-reward-inside-radius-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-radius-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-radius-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": false,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-reward-inside-radius-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "inside_prohibited_radius",
+        "audit_event_id": "$nonempty"
+      }
+    },
+    {
       "id": "visit_reward_granted",
       "category": "visit_reward",
       "method": "POST",

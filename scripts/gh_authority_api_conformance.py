@@ -42,7 +42,14 @@ REQUIRED_CATEGORIES = {
 }
 GPS_FRAUD_REASONS = {"mock_location", "location_tampering", "device_mismatch"}
 VISIT_REWARD_EXCLUSION_REASONS = {"cancelled", "refunded", "unused", "duplicate_charge"}
-VISIT_REWARD_PRECONDITION_REASONS = {"configured_delay_not_elapsed"}
+VISIT_REWARD_PRECONDITION_REASONS = {
+    "configured_delay_not_elapsed",
+    "inside_prohibited_radius",
+}
+VISIT_REWARD_PRECONDITION_SIGNALS = {
+    "configured_delay_not_elapsed": ("configured_delay_elapsed", False),
+    "inside_prohibited_radius": ("outside_prohibited_radius_when_gps_enabled", False),
+}
 REQUIRED_REWARD_LINK_FIELDS = {
     "reservation_id",
     "external_payment_id",
@@ -218,20 +225,24 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
 
         if category == "visit_reward_precondition":
             body = case.get("body", {})
+            reason = (
+                expected_fields.get("reject_reason")
+                if isinstance(expected_fields, dict)
+                else None
+            )
             require(
                 expected_status == 409,
                 f"{prefix} reward precondition must expect HTTP 409",
                 errors,
             )
+            if isinstance(reason, str):
+                precondition_reasons_seen.add(reason)
+            require(
+                reason in VISIT_REWARD_PRECONDITION_REASONS,
+                f"{prefix} reward precondition has an unsupported reject_reason",
+                errors,
+            )
             if isinstance(expected_fields, dict):
-                reason = expected_fields.get("reject_reason")
-                if isinstance(reason, str):
-                    precondition_reasons_seen.add(reason)
-                require(
-                    reason in VISIT_REWARD_PRECONDITION_REASONS,
-                    f"{prefix} reward precondition has an unsupported reject_reason",
-                    errors,
-                )
                 require(
                     expected_fields.get("granted") is False,
                     f"{prefix} reward precondition must deny the G grant",
@@ -242,10 +253,11 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
                     f"{prefix} reward precondition must require an audit event",
                     errors,
                 )
-            if isinstance(body, dict):
+            if isinstance(body, dict) and reason in VISIT_REWARD_PRECONDITION_SIGNALS:
+                signal, expected_value = VISIT_REWARD_PRECONDITION_SIGNALS[reason]
                 require(
-                    body.get("configured_delay_elapsed") is False,
-                    f"{prefix} must prove the configured delay has not elapsed",
+                    body.get(signal) is expected_value,
+                    f"{prefix} must prove {signal} is {expected_value}",
                     errors,
                 )
 
@@ -349,7 +361,7 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
 
     require(
         precondition_reasons_seen == VISIT_REWARD_PRECONDITION_REASONS,
-        "reward preconditions must cover configured_delay_not_elapsed exactly",
+        "reward preconditions must cover configured_delay_not_elapsed and inside_prohibited_radius exactly",
         errors,
     )
     require(
@@ -378,6 +390,7 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
         "device_mismatch_rejected",
         "checkout_allowed_inside_radius",
         "reward_delay_not_elapsed_rejected",
+        "reward_inside_prohibited_radius_rejected",
         "visit_reward_granted",
         "visit_reward_duplicate",
         "visit_reward_scope_retry",
