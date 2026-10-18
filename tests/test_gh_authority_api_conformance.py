@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import subprocess
 import sys
 import tempfile
@@ -31,6 +32,9 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     violate_reward_scope_retry = False
     violate_reward_delay = False
     violate_reward_radius = False
+    disconnect_first_bet = False
+    bet_disconnect_done = False
+    bet_disconnect_replay_done = False
     expected_authorization: str | None = None
     authorization_seen = False
 
@@ -105,6 +109,22 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
                 "state_signature": "sig-after-bet",
                 "audit_event_id": "audit-bet",
             }
+            if (
+                type(self).disconnect_first_bet
+                and not type(self).bet_disconnect_done
+            ):
+                type(self).bet_disconnect_done = True
+                self.connection.shutdown(socket.SHUT_RDWR)
+                self.connection.close()
+                return
+            if (
+                duplicate
+                and type(self).disconnect_first_bet
+                and not type(self).bet_disconnect_replay_done
+            ):
+                type(self).bet_disconnect_replay_done = True
+                self.send_json(201, payload)
+                return
             if duplicate and type(self).violate_duplicate_bet:
                 payload.update(
                     {
@@ -301,6 +321,9 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.violate_reward_scope_retry = False
         AuthorityMockHandler.violate_reward_delay = False
         AuthorityMockHandler.violate_reward_radius = False
+        AuthorityMockHandler.disconnect_first_bet = False
+        AuthorityMockHandler.bet_disconnect_done = False
+        AuthorityMockHandler.bet_disconnect_replay_done = False
         AuthorityMockHandler.expected_authorization = None
         AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
@@ -342,6 +365,44 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             self.assertEqual(len(decoded["cases"]), 18)
             self.assertTrue(all(case["status"] == "PASS" for case in decoded["cases"]))
             self.assertEqual(AuthorityMockHandler.request_count, 18)
+
+    def test_transport_disconnect_retries_same_idempotency_key_without_double_debit(self) -> None:
+        AuthorityMockHandler.disconnect_first_bet = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            self.assertEqual(decoded["api_execution"], "PASS")
+            accepted = next(
+                case for case in decoded["cases"] if case["id"] == "bet_accept"
+            )
+            duplicate = next(
+                case for case in decoded["cases"] if case["id"] == "bet_duplicate"
+            )
+            self.assertEqual(accepted["status"], "PASS")
+            self.assertEqual(accepted["transport_attempts"], 2)
+            self.assertEqual(duplicate["status"], "PASS")
+            self.assertEqual(AuthorityMockHandler.request_count, 19)
 
     def test_duplicate_second_debit_is_reported_as_failure(self) -> None:
         AuthorityMockHandler.violate_duplicate_bet = True

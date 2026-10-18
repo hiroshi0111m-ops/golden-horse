@@ -450,7 +450,8 @@ def execute_case(
     run_id: str,
     timeout: float,
     bearer_token: str | None,
-) -> tuple[int | None, dict[str, Any] | None, str | None]:
+    transport_retries: int,
+) -> tuple[int | None, dict[str, Any] | None, str | None, int]:
     rendered = replace_token(case, token, run_id)
     url = base_url.rstrip("/") + rendered["path"]
     headers = {
@@ -466,34 +467,50 @@ def execute_case(
         body = json.dumps(rendered["body"], ensure_ascii=False).encode("utf-8")
         headers["Content-Type"] = "application/json"
 
-    request = urllib.request.Request(
-        url,
-        data=body,
-        headers=headers,
-        method=rendered["method"],
+    retry_safe = rendered["method"] == "GET" or any(
+        key.lower() == "idempotency-key" and value
+        for key, value in headers.items()
     )
+    max_attempts = 1 + transport_retries if retry_safe else 1
     status: int | None = None
     raw = b""
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            status = response.status
-            raw = response.read()
-    except urllib.error.HTTPError as error:
-        status = error.code
-        raw = error.read()
-    except (urllib.error.URLError, TimeoutError, OSError) as error:
-        return None, None, f"connection failed: {type(error).__name__}"
+
+    for attempt in range(1, max_attempts + 1):
+        request = urllib.request.Request(
+            url,
+            data=body,
+            headers=headers,
+            method=rendered["method"],
+        )
+        status = None
+        raw = b""
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                status = response.status
+                raw = response.read()
+        except urllib.error.HTTPError as error:
+            status = error.code
+            raw = error.read()
+        except (urllib.error.URLError, TimeoutError, OSError) as error:
+            if attempt < max_attempts:
+                continue
+            return (
+                None,
+                None,
+                f"connection failed after {attempt} attempt(s): {type(error).__name__}",
+                attempt,
+            )
+        break
 
     if not raw:
-        return status, None, "response body is empty"
+        return status, None, "response body is empty", attempt
     try:
         decoded = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
-        return status, None, "response body is not UTF-8 JSON"
+        return status, None, "response body is not UTF-8 JSON", attempt
     if not isinstance(decoded, dict):
-        return status, None, "response JSON must be an object"
-    return status, decoded, None
-
+        return status, None, "response JSON must be an object", attempt
+    return status, decoded, None, attempt
 
 def write_report(report: dict[str, Any], output: Path) -> None:
     output.write_text(
@@ -509,6 +526,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=REPORT_PATH)
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--timeout-seconds", type=float, default=10.0)
+    parser.add_argument("--transport-retries", type=int, choices=range(0, 4), default=1)
     parser.add_argument("--require-api", action="store_true")
     args = parser.parse_args()
 
@@ -543,6 +561,7 @@ def main() -> int:
         "api_execution": "NOT_RUN",
         "api_target_configured": bool(args.base_url),
         "authentication_configured": bool(os.environ.get("GH_AUTHORITY_API_BEARER_TOKEN")),
+        "transport_retries": args.transport_retries,
         "errors": fixture_errors,
         "cases": [],
         "note": (
@@ -577,13 +596,14 @@ def main() -> int:
         if blocked:
             report["cases"].append({"id": case["id"], "status": "NOT_RUN"})
             continue
-        actual_status, response, transport_error = execute_case(
+        actual_status, response, transport_error, transport_attempts = execute_case(
             args.base_url,
             case,
             fixture["run_token"],
             run_id,
             args.timeout_seconds,
             os.environ.get("GH_AUTHORITY_API_BEARER_TOKEN"),
+            args.transport_retries,
         )
         case_errors: list[str] = []
         if transport_error:
@@ -617,6 +637,7 @@ def main() -> int:
             "status": "PASS" if not case_errors else "FAIL",
             "expected_http_status": case["expected_status"],
             "actual_http_status": actual_status,
+            "transport_attempts": transport_attempts,
             "errors": case_errors,
         }
         report["cases"].append(case_result)
