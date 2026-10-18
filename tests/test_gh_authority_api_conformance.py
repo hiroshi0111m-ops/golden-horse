@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -23,6 +24,9 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     bet_seen = False
     reward_seen = False
     request_count = 0
+    violate_duplicate_bet = False
+    expected_authorization: str | None = None
+    authorization_seen = False
 
     def log_message(self, format: str, *args: Any) -> None:
         return
@@ -45,6 +49,13 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         type(self).request_count += 1
+        if type(self).expected_authorization is not None:
+            type(self).authorization_seen = (
+                self.headers.get("Authorization") == type(self).expected_authorization
+            )
+            if not type(self).authorization_seen:
+                self.send_json(401, {"error": "unauthorized"})
+                return
         if self.path == "/v1/state/guest-authority-qa-selftest":
             self.send_json(
                 200,
@@ -80,17 +91,24 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
                 return
             duplicate = type(self).bet_seen
             type(self).bet_seen = True
-            self.send_json(
-                200 if duplicate else 201,
-                {
-                    "accepted": True,
-                    "balance_g": 995,
-                    "server_revision": 1,
-                    "bet_id": "bet-selftest",
-                    "state_signature": "sig-after-bet",
-                    "audit_event_id": "audit-bet",
-                },
-            )
+            payload = {
+                "accepted": True,
+                "balance_g": 995,
+                "server_revision": 1,
+                "bet_id": "bet-selftest",
+                "state_signature": "sig-after-bet",
+                "audit_event_id": "audit-bet",
+            }
+            if duplicate and type(self).violate_duplicate_bet:
+                payload.update(
+                    {
+                        "balance_g": 990,
+                        "server_revision": 2,
+                        "bet_id": "bet-duplicate-wrong",
+                        "state_signature": "sig-duplicate-wrong",
+                    }
+                )
+            self.send_json(200 if duplicate else 201, payload)
             return
 
         if self.path == "/v1/bets" and key == "qa-stale-selftest":
@@ -171,6 +189,9 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.bet_seen = False
         AuthorityMockHandler.reward_seen = False
         AuthorityMockHandler.request_count = 0
+        AuthorityMockHandler.violate_duplicate_bet = False
+        AuthorityMockHandler.expected_authorization = None
+        AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -210,6 +231,115 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             self.assertEqual(len(decoded["cases"]), 9)
             self.assertTrue(all(case["status"] == "PASS" for case in decoded["cases"]))
             self.assertEqual(AuthorityMockHandler.request_count, 9)
+
+    def test_duplicate_second_debit_is_reported_as_failure(self) -> None:
+        AuthorityMockHandler.violate_duplicate_bet = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            self.assertEqual(decoded["api_execution"], "FAIL")
+            duplicate = next(
+                case for case in decoded["cases"] if case["id"] == "bet_duplicate"
+            )
+            self.assertEqual(duplicate["status"], "FAIL")
+            self.assertTrue(
+                any("balance_g" in error for error in duplicate["errors"])
+            )
+            self.assertTrue(
+                any("bet_accept.bet_id" in error for error in duplicate["errors"])
+            )
+
+    def test_missing_api_url_returns_blocker_without_false_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            environment = os.environ.copy()
+            environment.pop("GH_AUTHORITY_API_URL", None)
+            environment.pop("GH_AUTHORITY_API_BEARER_TOKEN", None)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                env=environment,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            self.assertEqual(decoded["fixture_validation"], "PASS")
+            self.assertEqual(decoded["api_execution"], "BLOCKED_NO_URL")
+            self.assertTrue(
+                all(case["status"] == "NOT_RUN" for case in decoded["cases"])
+            )
+
+    def test_bearer_token_is_used_but_never_written_to_evidence(self) -> None:
+        secret = "qa-secret-must-not-leak"
+        AuthorityMockHandler.expected_authorization = f"Bearer {secret}"
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            environment = os.environ.copy()
+            environment["GH_AUTHORITY_API_BEARER_TOKEN"] = secret
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                env=environment,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            evidence = report.read_text(encoding="utf-8")
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertTrue(AuthorityMockHandler.authorization_seen)
+            self.assertNotIn(secret, result.stdout)
+            self.assertNotIn(secret, result.stderr)
+            self.assertNotIn(secret, evidence)
+            decoded = json.loads(evidence)
+            self.assertTrue(decoded["authentication_configured"])
+            self.assertEqual(decoded["api_execution"], "PASS")
 
 
 if __name__ == "__main__":
