@@ -404,8 +404,16 @@ def main() -> int:
             case_errors.extend(
                 compare_expected(
                     response,
-                    case["expected_fields"],
-                    case.get("same_as", {}),
+                    replace_token(
+                        case["expected_fields"],
+                        fixture["run_token"],
+                        run_id,
+                    ),
+                    replace_token(
+                        case.get("same_as", {}),
+                        fixture["run_token"],
+                        run_id,
+                    ),
                     prior_responses,
                 )
             )
