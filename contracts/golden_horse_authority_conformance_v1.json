@@ -321,6 +321,35 @@
       }
     },
     {
+      "category": "visit_reward_exclusion",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-cancelled-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-cancelled-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-cancelled-payment-{{run_id}}",
+        "payment_status": "cancelled",
+        "paid_at": null,
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-cancelled-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "cancelled",
+        "audit_event_id": "$nonempty"
+      },
+      "id": "cancelled_reward_rejected"
+    },
+    {
       "id": "refunded_reward_rejected",
       "category": "visit_reward_exclusion",
       "method": "POST",
@@ -348,6 +377,65 @@
         "reject_reason": "refunded",
         "audit_event_id": "$nonempty"
       }
+    },
+    {
+      "category": "visit_reward_exclusion",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-unused-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-unused-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-unused-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": false,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-unused-{{run_id}}"
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "unused",
+        "audit_event_id": "$nonempty"
+      },
+      "id": "unused_reward_rejected"
+    },
+    {
+      "category": "visit_reward_exclusion",
+      "method": "POST",
+      "path": "/v1/visit-rewards/finalize",
+      "headers": {
+        "Idempotency-Key": "qa-duplicate-charge-{{run_id}}"
+      },
+      "body": {
+        "reservation_id": "qa-duplicate-charge-reservation-{{run_id}}",
+        "member_id": "guest-authority-qa-{{run_id}}",
+        "payment_provider": "qa-provider",
+        "external_payment_id": "qa-duplicate-charge-payment-{{run_id}}",
+        "payment_status": "paid",
+        "paid_at": "2026-10-18T00:00:00Z",
+        "refund_status": "not_refunded",
+        "actual_use_confirmed": true,
+        "check_out_confirmed": true,
+        "outside_prohibited_radius_when_gps_enabled": true,
+        "configured_delay_elapsed": true,
+        "idempotency_key": "qa-duplicate-charge-{{run_id}}",
+        "duplicate_charge_detected": true
+      },
+      "expected_status": 409,
+      "expected_fields": {
+        "granted": false,
+        "reject_reason": "duplicate_charge",
+        "audit_event_id": "$nonempty"
+      },
+      "id": "duplicate_charge_reward_rejected"
     }
   ]
 }

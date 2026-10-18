@@ -40,6 +40,7 @@ REQUIRED_CATEGORIES = {
     "visit_reward_exclusion",
 }
 GPS_FRAUD_REASONS = {"mock_location", "location_tampering", "device_mismatch"}
+VISIT_REWARD_EXCLUSION_REASONS = {"cancelled", "refunded", "unused", "duplicate_charge"}
 ALLOWED_METHODS = {"GET", "POST"}
 SENSITIVE_HEADERS = {"authorization", "cookie", "proxy-authorization", "x-api-key"}
 
@@ -96,6 +97,7 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
     categories: set[str] = set()
     prior_ids: set[str] = set()
     fraud_reasons_seen: set[str] = set()
+    exclusion_reasons_seen: set[str] = set()
     for index, case in enumerate(cases):
         prefix = f"cases[{index}]"
         if not isinstance(case, dict):
@@ -169,6 +171,45 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
                     errors,
                 )
 
+        if category == "visit_reward_exclusion":
+            body = case.get("body", {})
+            require(
+                expected_status == 409,
+                f"{prefix} reward exclusion must expect HTTP 409",
+                errors,
+            )
+            if isinstance(expected_fields, dict):
+                reason = expected_fields.get("reject_reason")
+                if isinstance(reason, str):
+                    exclusion_reasons_seen.add(reason)
+                require(
+                    reason in VISIT_REWARD_EXCLUSION_REASONS,
+                    f"{prefix} reward exclusion has an unsupported reject_reason",
+                    errors,
+                )
+                require(
+                    expected_fields.get("granted") is False,
+                    f"{prefix} reward exclusion must deny the G grant",
+                    errors,
+                )
+                require(
+                    expected_fields.get("audit_event_id") == "$nonempty",
+                    f"{prefix} reward exclusion must require an audit event",
+                    errors,
+                )
+                if isinstance(body, dict):
+                    exclusion_signal_ok = {
+                        "cancelled": body.get("payment_status") == "cancelled",
+                        "refunded": body.get("refund_status") == "refunded",
+                        "unused": body.get("actual_use_confirmed") is False,
+                        "duplicate_charge": body.get("duplicate_charge_detected") is True,
+                    }.get(reason, False)
+                    require(
+                        exclusion_signal_ok,
+                        f"{prefix} request body must carry its exclusion signal",
+                        errors,
+                    )
+
         if category == "gps_fraud_detection":
             body = case.get("body", {})
             require(method == "POST", f"{prefix} fraud check must use POST", errors)
@@ -229,6 +270,11 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
             prior_ids.add(case_id)
 
     require(
+        exclusion_reasons_seen == VISIT_REWARD_EXCLUSION_REASONS,
+        "reward exclusions must cover cancelled, refunded, unused, and duplicate_charge exactly",
+        errors,
+    )
+    require(
         fraud_reasons_seen == GPS_FRAUD_REASONS,
         "GPS fraud cases must cover mock_location, location_tampering, and device_mismatch exactly",
         errors,
@@ -250,7 +296,10 @@ def validate_fixture(fixture: dict[str, Any]) -> list[str]:
         "checkout_allowed_inside_radius",
         "visit_reward_granted",
         "visit_reward_duplicate",
+        "cancelled_reward_rejected",
         "refunded_reward_rejected",
+        "unused_reward_rejected",
+        "duplicate_charge_reward_rejected",
     ]
     require(
         [case.get("id") for case in cases if isinstance(case, dict)] == required_order,

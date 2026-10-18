@@ -26,6 +26,7 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
     request_count = 0
     violate_duplicate_bet = False
     violate_mock_location_evidence = False
+    violate_unused_reward = False
     expected_authorization: str | None = None
     authorization_seen = False
 
@@ -193,13 +194,30 @@ class AuthorityMockHandler(BaseHTTPRequestHandler):
             )
             return
 
-        if self.path == "/v1/visit-rewards/finalize" and key == "qa-refund-selftest":
+        exclusion_reasons = {
+            "qa-cancelled-selftest": "cancelled",
+            "qa-refund-selftest": "refunded",
+            "qa-unused-selftest": "unused",
+            "qa-duplicate-charge-selftest": "duplicate_charge",
+        }
+        if self.path == "/v1/visit-rewards/finalize" and key in exclusion_reasons:
+            reason = exclusion_reasons[key]
+            if key == "qa-unused-selftest" and type(self).violate_unused_reward:
+                self.send_json(
+                    201,
+                    {
+                        "granted": True,
+                        "g_ledger_entry_id": "ledger-unused-wrong",
+                        "audit_event_id": "audit-unused-wrong",
+                    },
+                )
+                return
             self.send_json(
                 409,
                 {
                     "granted": False,
-                    "reject_reason": "refunded",
-                    "audit_event_id": "audit-refund",
+                    "reject_reason": reason,
+                    "audit_event_id": f"audit-{reason}",
                 },
             )
             return
@@ -214,6 +232,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         AuthorityMockHandler.request_count = 0
         AuthorityMockHandler.violate_duplicate_bet = False
         AuthorityMockHandler.violate_mock_location_evidence = False
+        AuthorityMockHandler.violate_unused_reward = False
         AuthorityMockHandler.expected_authorization = None
         AuthorityMockHandler.authorization_seen = False
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), AuthorityMockHandler)
@@ -225,7 +244,7 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
         self.server.server_close()
         self.thread.join(timeout=5)
 
-    def test_twelve_case_suite_passes_against_isolated_mock(self) -> None:
+    def test_fifteen_case_suite_passes_against_isolated_mock(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             report = Path(directory) / "report.json"
             result = subprocess.run(
@@ -252,9 +271,9 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             decoded = json.loads(report.read_text(encoding="utf-8"))
             self.assertEqual(decoded["fixture_validation"], "PASS")
             self.assertEqual(decoded["api_execution"], "PASS")
-            self.assertEqual(len(decoded["cases"]), 12)
+            self.assertEqual(len(decoded["cases"]), 15)
             self.assertTrue(all(case["status"] == "PASS" for case in decoded["cases"]))
-            self.assertEqual(AuthorityMockHandler.request_count, 12)
+            self.assertEqual(AuthorityMockHandler.request_count, 15)
 
     def test_duplicate_second_debit_is_reported_as_failure(self) -> None:
         AuthorityMockHandler.violate_duplicate_bet = True
@@ -328,6 +347,45 @@ class AuthorityConformanceRunnerTest(unittest.TestCase):
             self.assertEqual(fraud_case["status"], "FAIL")
             self.assertTrue(
                 any("fraud_event_id" in error for error in fraud_case["errors"])
+            )
+
+    def test_unused_visit_wrongly_granted_is_reported_as_failure(self) -> None:
+        AuthorityMockHandler.violate_unused_reward = True
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(RUNNER),
+                    "--base-url",
+                    f"http://127.0.0.1:{self.server.server_port}",
+                    "--fixture",
+                    str(FIXTURE),
+                    "--output",
+                    str(report),
+                    "--run-id",
+                    "selftest",
+                    "--require-api",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            decoded = json.loads(report.read_text(encoding="utf-8"))
+            unused_case = next(
+                case
+                for case in decoded["cases"]
+                if case["id"] == "unused_reward_rejected"
+            )
+            self.assertEqual(unused_case["status"], "FAIL")
+            self.assertTrue(
+                any(
+                    "HTTP status" in error or "granted" in error
+                    for error in unused_case["errors"]
+                )
             )
 
     def test_missing_api_url_returns_blocker_without_false_pass(self) -> None:
