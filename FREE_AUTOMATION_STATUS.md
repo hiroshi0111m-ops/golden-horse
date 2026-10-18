@@ -3,9 +3,9 @@
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-18
 CURRENT_VERSION: V176 LINE LIFECYCLE FIX candidate
-CURRENT_CP: CP_V176_REWARD_DELAY_CONFORMANCE_READY_API_BLOCKED
+CURRENT_CP: CP_V176_REWARD_GPS_CONFORMANCE_READY_API_BLOCKED
 CURRENT_BRANCH: automation/v176-authority-conformance
-CURRENT_COMMIT: 02b938fca7675868f27f4cd0c47e256ee7913ae4
+CURRENT_COMMIT: ba7b24a6e1ad4a4dd6c46348c64624ab9008f516
 CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/38
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
@@ -35,13 +35,13 @@ NEXT_ONE_ACTION: GOLDEN HORSE専用の隔離済みbackend/API実装先を確定�
 - V176一時公開準備ツールは、exact active-index、V176生成・固有契約、mandatory preflight、status contract、ローカル配信build markerをrun 39073621685でPASS。これは公開準備経路の検査であり、端末操作の合格証拠ではない。\n- exact V176の自然進行タイミングはrun 39081772440でAndroid Chrome相当（Pixel 7）とiPhone WebKit相当（iPhone 15）がともにPASS。レース開始→GOALは32.535秒 / 32.613秒、明示7秒RESULTホールドは7.027秒 / 7.070秒、GUEST 1,000G→確認付き5G BET→7頭→GOAL→OFFICIAL RESULT、PAGE_ERRORS=0。artifact `12119271817`（digest `fdf91d1c21e8e0ada4d49c9aea44b2b8330ff2890e749843b25de6454246be7c`）/ `12118724862`（digest `4d05ddf209a7f0bacfc147ea51e6319053f4485fc9cd5164c6f95d1a4906f029`）。
 
 - GOLDEN HORSE権威状態contractはrun 39089304794でexact V176生成・mandatory preflight・contract検証をPASS。artifact `12121154609`（digest `9de45995bf1cbf02ebe0dde35d288de70967bbde40f31ebb2b3f89c16a02e6be`）。これはcontractのPASSであり、server実装のPASSではない。
-- 権威API conformance準備はrun 39113457731でexact V176・mandatory guards・contract・17ケースfixture・runner構文・隔離mock API自己試験9件をPASS。設定遅延未達（`configured_delay_elapsed=false`）ではG付与を409拒否し監査イベントを必須化し、遅延前に誤付与する実装をFAIL検知した。別冪等キー再送、GPS不正3経路、G付与除外4条件、結合欠落検知も維持。artifact `12131835813`（digest `b214d6c15223365f07cad78eb710dcc0a449f4f048341fb84836160420284310`）、generic guard run 39113457748もPASS。これは検査器のPASSであり、live APIのPASSではない.
+- 権威API conformance準備はrun 39117486001でexact V176・mandatory guards・contract・18ケースfixture・runner構文・隔離mock API自己試験10件をPASS。設定遅延未達（`configured_delay_elapsed=false`）とGPS有効時の禁止半径内（`outside_prohibited_radius_when_gps_enabled=false`）ではG付与を409拒否し監査イベントを必須化し、両条件で誤付与する実装をFAIL検知した。別冪等キー再送、GPS不正3経路、G付与除外4条件、結合欠落検知も維持。artifact `12133056999`（digest `25c687a34d019cc2d33952129616b49f1ee2296dd94d9e81b031c7f73cac4ca5`）、generic guard run 39117486003（Runtime smoke含む）もPASS。これは検査器のPASSであり、live APIのPASSではない。
 
 ## RED
 
 - 3回目のexact V176セキュリティ回帰run 39085793725は3 PASS / 7 FAIL。再読込継続・二重BET確認・精算履歴改ざん拒否がPASSし、他7系統はFAIL。精算履歴だけ2回目FAIL→3回目PASSへ反転し、FLAKY REDを再確認した。
 - authority contract gate run 39089304794はcontract整合性をPASSしたが、server implementationはBLOCKED_MISSING。contract追加を改ざん対策の実装完了へ読み替えない。
-- authority API conformance run 39113457731は17ケースfixture/runnerと隔離mock自己試験9件をPASSしたが、live実行はGH_AUTHORITY_API_URL未設定のためBLOCKED_NO_URL。設定遅延未達拒否、別冪等キー再送、GPS不正3経路、G付与除外4条件、予約・支払い・会員・G台帳の結合を実サーバー検証済みへ読み替えない.
+- authority API conformance run 39117486001は18ケースfixture/runnerと隔離mock自己試験10件をPASSしたが、live実行はGH_AUTHORITY_API_URL未設定のためBLOCKED_NO_URL。設定遅延未達拒否、GPS有効時の禁止半径内G付与拒否、別冪等キー再送、GPS不正3経路、G付与除外4条件、予約・支払い・会員・G台帳の結合を実サーバー検証済みへ読み替えない。
 - 接続済みSupabaseを読み取り確認したが、GOLDEN HORSE専用と明示できるprojectは確認できなかった。既存の別名projectには一切変更を行わない。
 - exact V176セキュリティ回帰matrixは、run 39085268586で3 PASS / 7 FAIL、最終head run 39085548335で2 PASS / 8 FAIL。製品HTMLは未変更のまま、V174の旧合格をCURRENT V176へ再適用して新しい回帰と実行順依存を検出した。
 - V176で保存G改ざん999,999G、受付済みBET削除+5G返却、stake 5→100・odds 2.1→210、対象馬1→7が再読込後に受理された。
@@ -63,7 +63,7 @@ NEXT_ONE_ACTION: GOLDEN HORSE専用の隔離済みbackend/API実装先を確定�
 - 実LINE内ブラウザでのV176完全フロー。
 - 実機音声同期。
 - 本番相当のGPSサーバー拒否、正式会員、SMS、本人確認、GDB ID、支払い状態、退店後G付与。
-- 隔離済みGOLDEN HORSE APIに対する設定遅延未達拒否・別冪等キー再送・GPS不正3経路・G付与除外4条件・予約/支払い/会員/G台帳結合を含む17ケースauthority conformance実走。
+- 隔離済みGOLDEN HORSE APIに対する設定遅延未達拒否・GPS有効時の禁止半径内G付与拒否・別冪等キー再送・GPS不正3経路・G付与除外4条件・予約/支払い/会員/G台帳結合を含む18ケースauthority conformance実走。
 
 ## PROTECTED / DO NOT TOUCH
 
@@ -92,7 +92,7 @@ NEXT_ONE_ACTION: GOLDEN HORSE専用の隔離済みbackend/API実装先を確定�
 - V176権威状態contract gate: https://github.com/hiroshi0111m-ops/golden-horse/pull/37 / run 39089304794
 - 権威状態contract: `contracts/golden_horse_authoritative_state_v1.json`
 - 権威backend readiness gate: `python scripts/gh_authority_contract_gate.py --require-implementation`
-- V176権威API conformance: https://github.com/hiroshi0111m-ops/golden-horse/pull/38 / run 39113457731
+- V176権威API conformance: https://github.com/hiroshi0111m-ops/golden-horse/pull/38 / run 39117486001
 - 権威API fixture: `contracts/golden_horse_authority_conformance_v1.json`
 - 権威API live gate: `GH_AUTHORITY_API_URL=<isolated-test-api> python scripts/gh_authority_api_conformance.py --require-api`
 - V176物理スマホ起動: `RUN_V176_PHONE_TEST_FREE.bat`
