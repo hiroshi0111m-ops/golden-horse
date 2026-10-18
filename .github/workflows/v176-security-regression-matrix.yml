@@ -2,16 +2,6 @@ name: GOLDEN HORSE V176 security regression matrix
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "automation/v176-security-regression-matrix"
-    paths:
-      - ".github/workflows/v176-security-regression-matrix.yml"
-      - "scripts/gh_*_qa.mjs"
-      - "scripts/create_v17*.py"
-      - "scripts/gh_v176_line_lifecycle_contract.py"
-      - "scripts/gh_free_automation_status_contract.py"
-      - "FREE_AUTOMATION_STATUS.md"
 
 permissions:
   contents: read
