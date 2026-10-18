@@ -3,10 +3,10 @@
 STATUS_SCHEMA: 1
 UPDATED_JST: 2026-10-18
 CURRENT_VERSION: V176 LINE LIFECYCLE FIX candidate
-CURRENT_CP: CP_V176_MULTITAB_SETTLEMENT_3X_PASS
-CURRENT_BRANCH: automation/v174-two-tab-concurrent-bet-qa
-CURRENT_COMMIT: 0b51d9b6e04c6560d7e8385498246395f36fed1a
-CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/31
+CURRENT_CP: CP_V176_MOBILE_TIMING_EMULATION_PASS
+CURRENT_BRANCH: automation/v176-race-timing-qa
+CURRENT_COMMIT: 6aa3f6f6e6ad8a8fe5d0ac91986338801b95c0ec
+CURRENT_PR: https://github.com/hiroshi0111m-ops/golden-horse/pull/35
 ROLLBACK_VERSION: V173 MOBILE NAV SAFE AREA candidate
 ROLLBACK_CP: CP_V173_MOBILE_NAV_SAFE_AREA_REGRESSION_PASS
 ROLLBACK_COMMIT: 5d2a0fcb8f6b3aa996717e8d0d5d7f836f83219b
@@ -32,7 +32,7 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 - V176はrun 39064943862と最新head run 39064964822で、生成checksum `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`、mandatory guards、2タブ同時BET→精算→タブB再読込を各3回連続（計6回）PASS。active BET 0・履歴1件へ収束し、V175で残った古いタブBメモリ復活を再現しなかった。
 - V176物理スマホ準備ツールは、exact active-index、V176生成、V176固有契約、mandatory preflight、status contract、ローカル配信build marker確認をCIでPASS。これは起動準備ツールの検査結果であり、端末実走のPASSではない。
 - V176→V173復旧ドリルはrun 39069060196で、V176 SHA-256 `e6bb1504e75f558e783e0693a686d52666dd34667edf9f2cf5278133bed9ba55`とV173 SHA-256 `84d505571c0b34962e234cb04b4ca187516a0368adf40f6903eafd80ac0ea85d`の完全一致、両checkpointのmandatory preflight、証拠artifact `12114044355`（digest `76c934d48ab8fd111cdebecd6726e441e5338d9e2992a942603d2c84bad9c3ed`）をPASS。
-- V176一時公開準備ツールは、exact active-index、V176生成・固有契約、mandatory preflight、status contract、ローカル配信build markerをrun 39073621685でPASS。これは公開準備経路の検査であり、端末操作の合格証拠ではない。
+- V176一時公開準備ツールは、exact active-index、V176生成・固有契約、mandatory preflight、status contract、ローカル配信build markerをrun 39073621685でPASS。これは公開準備経路の検査であり、端末操作の合格証拠ではない。\n- exact V176の自然進行タイミングはrun 39081772440でAndroid Chrome相当（Pixel 7）とiPhone WebKit相当（iPhone 15）がともにPASS。レース開始→GOALは32.535秒 / 32.613秒、明示7秒RESULTホールドは7.027秒 / 7.070秒、GUEST 1,000G→確認付き5G BET→7頭→GOAL→OFFICIAL RESULT、PAGE_ERRORS=0。artifact `12119271817`（digest `fdf91d1c21e8e0ada4d49c9aea44b2b8330ff2890e749843b25de6454246be7c`）/ `12118724862`（digest `4d05ddf209a7f0bacfc147ea51e6319053f4485fc9cd5164c6f95d1a4906f029`）。
 
 ## RED
 
@@ -42,7 +42,7 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 - 同一ゲスト状態を複製した2タブから同時に5G BET確認後、run 39052004832ではタブA精算後もタブB再読込が995G・active BET 1件・履歴なしを復活、run 39052226802では同手順PASSとなった。結果が実行順で分岐する精算競合のためFLAKY RED（PR #31）。
 - 診断run 39056497035で、タブB再読込直前の共有`gh_guest_isolated_v2_state`は精算済み（active BET 0・履歴1件）だが、再読込後に旧状態へ上書きされることを確認。run 39056689510再実行job 117466692656では、再読込後ハッシュ`b98a1014`が同一実行の同時BET確定直後ハッシュと完全一致し、タブBの古い確定直後スナップショット書戻しを確認した。
 - `FRIEND-V109-LOOP-RESILIENCE`の古いライフサイクル保存を止めたV175でもrun 39060858813 / 39064571834は3回連続gate前にFAIL。後者では共有`gh_guest_isolated_v2_state`が995G・active BET 0・履歴1件の精算済み状態を維持した一方、タブBのメモリだけが995G・active BET 1件・履歴0件へ戻った。V175をPASSへ読み替えない。
-- 残存呼出元は`GH_LINE_PERF9`の`visibilitychange(hidden)` / `pagehide`から呼ばれる`saveSafe()`内の`localSave()`。再読込直前に古いタブB状態を書き、読込後に別タブが共有保存を再修復する順序競合と一致する。V176候補はこの1か所のゲスト状態保存だけを止め、差分監査と独立したV129レース復旧スナップショットを残す。
+- 残存呼出元は`GH_LINE_PERF9`の`visibilitychange(hidden)` / `pagehide`から呼ばれる`saveSafe()`内の`localSave()`。再読込直前に古いタブB状態を書き、読込後に別タブが共有保存を再修復する順序競合と一致する。V176候補はこの1か所のゲスト状態保存だけを止め、差分監査と独立したV129レース復旧スナップショットを残す。\n- WebKit相当ではRESULTパネル表示後に既存の正式結果ナレーションが11.763秒進み、その後7.070秒ホールドするため、パネル総表示は18.833秒。Chrome相当はナレーション1.331秒、総表示8.358秒。明示7秒ホールドは両方正常だが、音声を含む総表示7秒要件とみなす場合は未達であり、実機音声同期確認前にPASSへ読み替えない。
 
 ## NOT TESTED
 
@@ -73,7 +73,7 @@ NEXT_ONE_ACTION: START_GOLDEN_HORSE_PUBLIC_FREE.batでV176一時URLを発行し�
 - V176候補生成: `python scripts/create_v176_line_lifecycle_fix.py`
 - V176候補検査: `python scripts/gh_v176_line_lifecycle_contract.py`
 - V176 current active index: `GH_ACTIVE_INDEX=checkpoints/V176_LINE_LIFECYCLE_FIX/index.html`
-- V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`
+- V176 3回連続QA workflow: `.github/workflows/v176-line-lifecycle-qa.yml`\n- V176自然進行タイミングQA workflow: `.github/workflows/v176-race-timing-qa.yml`\n- V176自然進行タイミングQA script: `scripts/gh_v176_race_timing_qa.mjs`
 - V176物理スマホ起動: `RUN_V176_PHONE_TEST_FREE.bat`
 - V176紫側・一時公開QA起動: `START_GOLDEN_HORSE_PUBLIC_FREE.bat`
 - V176物理スマホ準備workflow: `.github/workflows/v176-phone-preview-tooling.yml`
