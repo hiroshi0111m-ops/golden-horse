@@ -1,0 +1,9 @@
+node_modules
+dist
+.astro
+.emdash
+.env
+.env.*
+data.db*
+uploads
+.git

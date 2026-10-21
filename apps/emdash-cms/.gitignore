@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.emdash/
+emdash-env.d.ts
+.env
+.env.*
+!.env.example
+data.db*
+uploads/
+*.log

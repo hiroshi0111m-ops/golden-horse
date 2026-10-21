@@ -1,0 +1,17 @@
+services:
+  cms:
+    build: .
+    ports:
+      - "127.0.0.1:4321:4321"
+    env_file:
+      - .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4321
+      EMDASH_SITE_URL: ${EMDASH_SITE_URL:-http://localhost:4321}
+    volumes:
+      - emdash-data:/data
+    restart: unless-stopped
+
+volumes:
+  emdash-data:

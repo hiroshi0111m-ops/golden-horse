@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="記事・画像の管理">
+  <p class="eyebrow">ASTRO + EMDASH</p>
+  <h1>記事も画像も、<br />ここから管理。</h1>
+  <p>お知らせやコラムを作成し、下書きから公開まで管理できます。</p>
+  <nav class="actions" aria-label="管理と記事">
+    <a class="button primary" href="/_emdash/admin/">管理画面を開く</a>
+    <a class="button" href="/emdash-test/">公開記事を見る</a>
+  </nav>
+  <section class="panel">
+    <h2>初めて使うとき</h2>
+    <ol>
+      <li>管理画面でサイト情報と管理者アカウントを設定します。</li>
+      <li>ご自身の端末でパスキーを登録します。</li>
+      <li>Postsで記事を作成し、保存してから公開します。</li>
+    </ol>
+    <p>公開した記事は「公開記事を見る」に表示されます。</p>
+  </section>
+  <footer><a href="https://docs.emdashcms.com/existing-project/">EmDash公式ガイド</a></footer>
+</Layout>
