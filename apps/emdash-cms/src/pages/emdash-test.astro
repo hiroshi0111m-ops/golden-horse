@@ -1,0 +1,20 @@
+---
+import { getEmDashCollection } from 'emdash';
+import Layout from '../layouts/Layout.astro';
+
+const { entries: posts, error } = await getEmDashCollection('posts');
+if (error) throw error;
+---
+<Layout title="公開記事">
+  <p class="eyebrow">PUBLISHED POSTS</p>
+  <h1>公開記事</h1>
+  {posts.length === 0 ? (
+    <p class="panel">公開済みの記事はまだありません。管理画面で記事を作成し、公開してください。</p>
+  ) : (
+    <ul class="panel">{posts.map((post) => <li>{post.data.title}</li>)}</ul>
+  )}
+  <nav class="actions" aria-label="ページ移動">
+    <a class="button primary" href="/_emdash/admin/">記事を管理する</a>
+    <a class="button" href="/">ホームへ</a>
+  </nav>
+</Layout>
